@@ -9,7 +9,9 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "validate": "npm run typecheck && npm run test"
+    "validate": "npm run typecheck && npm run test",
+    "standalone": "node scripts/build-standalone.mjs",
+    "verify:standalone": "node scripts/build-standalone.mjs && node scripts/verify-standalone.mjs $PWD/standalone.html"
   },
   "dependencies": {
     "clsx": "2.1.1",
