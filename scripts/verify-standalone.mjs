@@ -21,6 +21,7 @@ const { DISHES } = await import("../.verify-dishes.mjs");
 const { FLAVOURS } = await import("../.verify-flavours.mjs");
 const { EVENTS } = await import("../.verify-events.mjs");
 const { INGREDIENTS } = await import("../.verify-ingredients.mjs");
+const { MOMENTS } = await import("../.verify-moments.mjs");
 const DISHES_LEN = DISHES.length;
 
 const browser = await chromium.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
@@ -148,6 +149,70 @@ const seasonalDishes = new Set(
 );
 const pantryExclusive = pantryOnly.filter((id) => !seasonalDishes.has(id));
 console.log(`pantry-only dishes never blocked: ${pantryExclusive.length > 0 ? "checked ✓" : "none to check"}`);
+
+// --- the five newer panes must render and agree with the TypeScript ---------
+function matchesEvent2(d, f) {
+  if (f.tier && !d.tiers.includes(f.tier)) return false;
+  if (f.categories && !f.categories.includes(d.category)) return false;
+  if (f.formats && !f.formats.includes(d.format)) return false;
+  if (f.needsLicence !== undefined && d.needsLicence !== f.needsLicence) return false;
+  if (f.veg !== undefined && d.veg !== f.veg) return false;
+  if (f.subOrigins && !f.subOrigins.some((o) => d.subOrigin.startsWith(o))) return false;
+  return true;
+}
+
+await page.getByRole("tab", { name: "The evening" }).click();
+console.log("\nEvent moments");
+for (const m of MOMENTS) {
+  const expected = DISHES.filter((d) => matchesEvent2(d, m.filter)).length;
+  const txt = await page.locator(`[data-moment="${m.id}"]`).innerText();
+  const shown = Number((txt.match(/(\d+) dishes/) || [])[1]);
+  const ok = shown === expected;
+  if (!ok) failures++;
+  console.log(`  ${m.id.padEnd(9)} ${String(shown).padStart(3)} ${ok ? "✓" : "✗ expected " + expected}`);
+}
+
+// Format axis: selecting one narrows to exactly that format.
+// Clear whatever the flavour checks above left selected, or this measures
+// the intersection rather than the axis.
+await page.getByRole("tab", { name: "Find dishes" }).click();
+await page.waitForTimeout(90);
+const clearBtn = page.locator("#clearFind");
+if (await clearBtn.count()) {
+  await clearBtn.click();
+  await page.waitForTimeout(90);
+}
+await page.locator('[data-fmt="live-station"]').click();
+await page.waitForTimeout(90);
+const liveShown = Number((await page.locator("#findCount b").innerText()).trim());
+const liveExpected = DISHES.filter((d) => d.format === "live-station").length;
+if (liveShown !== liveExpected) failures++;
+console.log(`\nformat axis · live-station  ${liveShown} ${liveShown === liveExpected ? "✓" : "✗ expected " + liveExpected}`);
+await page.locator('[data-fmt="live-station"]').click();
+
+// Compare: three tiers, each quoting a positive per-guest figure.
+await page.getByRole("tab", { name: "Compare" }).click();
+await page.waitForTimeout(150);
+const cards = await page.locator("#cmpBody .card").count();
+if (cards !== 3) failures++;
+console.log(`compare tiers rendered: ${cards} ${cards === 3 ? "✓" : "✗ expected 3"}`);
+
+// Graph: node count and orphan count must match the TypeScript's view.
+await page.getByRole("tab", { name: "Ingredients" }).click();
+await page.waitForTimeout(200);
+const nodes = await page.locator("#graphSvg circle").count();
+// 24 ingredient nodes plus the centre.
+if (nodes !== 25) failures++;
+console.log(`graph nodes: ${nodes} ${nodes === 25 ? "✓" : "✗ expected 25"}`);
+const orphanTxt = await page.locator("#graphOrphans h2").innerText();
+console.log(`graph orphans: ${orphanTxt.replace(/[^0-9]/g, "")} (informational)`);
+
+// Builder: a stacked live-station selection must raise a blocker.
+await page.getByRole("tab", { name: "Build a menu" }).click();
+await page.waitForTimeout(150);
+const runSheetRows = await page.locator("#quote ol li").count();
+if (runSheetRows < 2) failures++;
+console.log(`run sheet steps: ${runSheetRows} ${runSheetRows >= 2 ? "✓" : "✗ expected at least 2"}`);
 
 await browser.close();
 

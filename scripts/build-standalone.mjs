@@ -42,6 +42,7 @@ const DISHES = loadData("dishes.ts", "DISHES");
 const FLAVOURS = loadData("flavours.ts", "FLAVOURS");
 const EVENTS = loadData("events.ts", "EVENTS");
 const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
+const MOMENTS = loadData("moments.ts", "MOMENTS");
 
 if (DISHES.length < 100) {
   throw new Error(`Expected the full matrix, extracted only ${DISHES.length}`);
@@ -89,7 +90,10 @@ const FLAVOUR_AXES = ["sweet","savoury","rich","tart","smoky","spiced","fresh"];
 
 const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL,
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
-  ingredients: INGREDIENTS, order: CATEGORY_ORDER,
+  ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS,
+  formats: { "drop-off": "Drop-off", buffet: "Buffet", plated: "Plated", "live-station": "Live station" },
+  cap: { fryer: 2, oven: 4, liveStation: 2, griddle: 3 },
+  lead: { cold: 1440, oven: 240, hob: 180, griddle: 30, fryer: 15 },
   months: ["January","February","March","April","May","June","July","August","September","October","November","December"] });
 
 const html = `<title>Aye Si Cena</title>
@@ -240,9 +244,12 @@ footer p{margin:0 0 7px;max-width:70ch}
     <span class="brand">Aye <em>Si</em> Cena</span>
     <nav role="tablist" aria-label="Sections">
       <button class="tab" role="tab" data-pane="home" aria-selected="true">Home</button>
+      <button class="tab" role="tab" data-pane="moments" aria-selected="false">The evening</button>
       <button class="tab" role="tab" data-pane="find" aria-selected="false">Find dishes</button>
       <button class="tab" role="tab" data-pane="menu" aria-selected="false">The matrix</button>
       <button class="tab" role="tab" data-pane="seasonal" aria-selected="false">Season</button>
+      <button class="tab" role="tab" data-pane="compare" aria-selected="false">Compare</button>
+      <button class="tab" role="tab" data-pane="graph" aria-selected="false">Ingredients</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
     </nav>
@@ -275,6 +282,36 @@ footer p{margin:0 0 7px;max-width:70ch}
     <div class="grid g3" id="homeSigs" style="margin-top:24px"></div>
   </section>
 
+  <section class="pane" id="pane-moments" hidden>
+    <h1>The evening</h1>
+    <p class="lede">Point at the part of the night you are trying to fill. The bar under each
+      moment shows how much of the matrix serves it — which is also where the gaps are.</p>
+    <ol id="momentArc" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:30px 0 0;padding:0;list-style:none"></ol>
+    <div id="momentBody" style="margin-top:34px;border-top:1px solid var(--line);padding-top:22px"></div>
+  </section>
+
+  <section class="pane" id="pane-compare" hidden>
+    <h1>What the money buys</h1>
+    <p class="lede">The same event at all three tiers, side by side. Set the head count and the
+      difference between a boxed lunch and a plated dinner becomes a number.</p>
+    <fieldset style="margin-top:26px">
+      <legend>Guests</legend>
+      <input type="number" id="cmpGuests" min="1" max="500" value="30" aria-label="Guests">
+    </fieldset>
+    <div id="cmpBody" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))"></div>
+  </section>
+
+  <section class="pane" id="pane-graph" hidden>
+    <h1>What unlocks what</h1>
+    <p class="lede">Every ingredient sized by how much menu it opens up. What belongs on a standing
+      order, and which dishes carry an ingredient nothing else uses.</p>
+    <div class="grid" style="grid-template-columns:1fr;margin-top:28px">
+      <div id="graphSvg" style="overflow-x:auto"></div>
+      <div id="graphList"></div>
+    </div>
+    <div id="graphOrphans" style="margin-top:34px;border-top:1px solid var(--line);padding-top:22px"></div>
+  </section>
+
   <section class="pane" id="pane-find" hidden>
     <h1>Find dishes</h1>
     <p class="lede">Start from the event or start from the palate. Pick what you are planning and
@@ -287,6 +324,10 @@ footer p{margin:0 0 7px;max-width:70ch}
     <fieldset>
       <legend>Flavour compass</legend>
       <div class="chips" id="flavChips"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Service format</legend>
+      <div class="chips" id="fmtChips"></div>
     </fieldset>
     <div id="findCount" style="border-top:1px solid var(--line);padding-top:18px;margin-bottom:20px"></div>
     <div id="findResults"></div>
@@ -369,6 +410,7 @@ var D = JSON.parse(document.getElementById("data").textContent);
 var DISHES = D.dishes, TIERS = D.tiers, K = D.k, LABELS = D.labels;
 var FLAV = D.flavours, EVENTS = D.events, AXES = D.axes;
 var INGS = D.ingredients, MONTHS = D.months;
+var MOMENTS = D.moments, FORMATS = D.formats, CAP = D.cap, LEAD = D.lead;
 var ORDER = D.order;
 
 function soles(n){ return "S/ " + n.toFixed(2); }
@@ -426,7 +468,7 @@ function buildQuote(dishes, guests, tierId){
 var tabs = [].slice.call(document.querySelectorAll(".tab"));
 function show(name){
   tabs.forEach(function(t){ t.setAttribute("aria-selected", String(t.dataset.pane === name)); });
-  ["home","find","menu","seasonal","packages","builder"].forEach(function(p){
+  ["home","moments","find","menu","seasonal","compare","graph","packages","builder"].forEach(function(p){
     document.getElementById("pane-" + p).hidden = (p !== name);
   });
   window.scrollTo(0,0);
@@ -526,7 +568,7 @@ function matchesEvent(d, f){
   return true;
 }
 
-var evtId = null, flav = [], flavMode = "any";
+var evtId = null, flav = [], flavMode = "any", fmts = [];
 
 document.getElementById("evtGrid").innerHTML = EVENTS.map(function(e){
   return "<button class='pick' data-evt='" + e.id + "' aria-pressed='false'>" +
@@ -537,6 +579,13 @@ document.getElementById("evtGrid").innerHTML = EVENTS.map(function(e){
 document.getElementById("evtGrid").addEventListener("click", function(e){
   var b = e.target.closest("[data-evt]"); if (!b) return;
   evtId = (evtId === b.dataset.evt) ? null : b.dataset.evt;
+  renderFind();
+});
+
+document.getElementById("fmtChips").addEventListener("click", function(e){
+  var b = e.target.closest("[data-fmt]"); if (!b) return;
+  var i = fmts.indexOf(b.dataset.fmt);
+  if (i > -1) fmts.splice(i,1); else fmts.push(b.dataset.fmt);
   renderFind();
 });
 
@@ -551,15 +600,21 @@ document.getElementById("flavChips").addEventListener("click", function(e){
   renderFind();
 });
 
+document.addEventListener("input", function(e){
+  if (e.target && e.target.id === "svcTime"){ serviceTime = e.target.value || "19:30"; render(); }
+});
+
 document.addEventListener("click", function(e){
-  if (e.target && e.target.id === "clearFind"){ evtId = null; flav = []; renderFind(); }
+  if (e.target && e.target.id === "clearFind"){ evtId = null; flav = []; fmts = []; renderFind(); }
 });
 
 function renderFind(){
   var ev = null;
   for (var i = 0; i < EVENTS.length; i++) if (EVENTS[i].id === evtId) ev = EVENTS[i];
 
-  var base = ev ? DISHES.filter(function(d){ return matchesEvent(d, ev.filter); }) : DISHES;
+  var eventBase = ev ? DISHES.filter(function(d){ return matchesEvent(d, ev.filter); }) : DISHES;
+  // Flavour counts must respect the format axis, or the compass lies.
+  var base = fmts.length ? eventBase.filter(function(d){ return fmts.indexOf(d.format) > -1; }) : eventBase;
   var out = base;
   if (flav.length){
     out = out.filter(function(d){
@@ -585,10 +640,18 @@ function renderFind(){
     ? "<button class='chip mono' data-flav='__mode' style='font-size:11px'>match: " + flavMode + "</button>"
     : "");
 
+  document.getElementById("fmtChips").innerHTML = Object.keys(FORMATS).map(function(f){
+    var n = eventBase.filter(function(d){ return d.format === f; }).length;
+    var on = fmts.indexOf(f) > -1;
+    return "<button class='chip' data-fmt='" + f + "' aria-pressed='" + on + "'" +
+      (n === 0 && !on ? " disabled" : "") + ">" + esc(FORMATS[f]) +
+      " <span class='mono tnum' style='font-size:11px;opacity:.65'>" + n + "</span></button>";
+  }).join("");
+
   document.getElementById("findCount").innerHTML =
     "<span class='mono' style='font-size:14px'><b class='tnum'>" + out.length +
     "</b> <span class='muted'>of " + DISHES.length + " dishes</span></span>" +
-    ((ev || flav.length)
+    ((ev || flav.length || fmts.length)
       ? " <button id='clearFind' class='linkbtn mono'>clear filters</button>"
       : "");
 
@@ -714,8 +777,302 @@ function renderSeason(){
 
 renderSeason();
 
+// --- moments -------------------------------------------------------------
+var momentId = MOMENTS[0].id;
+
+document.getElementById("momentArc").addEventListener("click", function(e){
+  var b = e.target.closest("[data-moment]"); if (!b) return;
+  momentId = b.dataset.moment; renderMoments();
+});
+
+function renderMoments(){
+  var counts = {}, maxN = 1;
+  MOMENTS.forEach(function(m){
+    counts[m.id] = DISHES.filter(function(d){ return matchesEvent(d, m.filter); }).length;
+    if (counts[m.id] > maxN) maxN = counts[m.id];
+  });
+
+  document.getElementById("momentArc").innerHTML = MOMENTS.map(function(m, i){
+    var on = m.id === momentId, n = counts[m.id];
+    var w = Math.max(8, Math.round((n / maxN) * 100));
+    return "<li><button class='pick' data-moment='" + m.id + "' aria-pressed='" + on + "'" +
+      (on ? " style='border-color:var(--aji);background:var(--surface)'" : "") + ">" +
+      "<span class='mono' style='font-size:10px;color:var(--ink-3)'>" +
+      (i < 9 ? "0" : "") + (i + 1) + "</span>" +
+      "<span class='pick-name' style='display:block;margin-top:3px'>" + esc(m.name) + "</span>" +
+      "<span style='display:block;height:3px;border-radius:2px;background:var(--aji);margin-top:11px;width:" + w + "%'></span>" +
+      "<span class='mono tnum' style='display:block;font-size:11px;color:var(--ink-2);margin-top:5px'>" +
+      n + " dishes</span></button></li>";
+  }).join("");
+
+  var m = null;
+  for (var i = 0; i < MOMENTS.length; i++) if (MOMENTS[i].id === momentId) m = MOMENTS[i];
+  var rows = DISHES.filter(function(d){ return matchesEvent(d, m.filter); });
+
+  document.getElementById("momentBody").innerHTML =
+    "<h2>" + esc(m.name) + "</h2><p class='lede' style='margin-top:7px'>" + esc(m.blurb) + "</p>" +
+    "<div class='grid g3' style='margin-top:20px'>" + rows.map(function(d){
+      return "<div class='card' style='padding:15px'>" +
+        "<div class='pick-top'><span class='pick-name'>" + esc(d.name) + "</span>" +
+        "<span class='pick-price tnum'>" + soles(d.price) + "</span></div>" +
+        "<span class='dna'><span class='u'>" + esc(d.origin) +
+        "</span> <span style='color:var(--ink-3)'>&rarr;</span> <span class='p'>" + esc(d.subOrigin) + "</span></span>" +
+        "<div style='margin-top:9px;display:flex;flex-wrap:wrap;gap:4px'>" +
+        "<span class='mono flavtag' style='text-transform:none'>" + esc(FORMATS[d.format]) + "</span>" +
+        (d.needsLicence ? "<span class='mono flavtag' style='color:var(--warn);text-transform:none'>licence</span>" : "") +
+        (d.veg ? "<span class='mono flavtag' style='color:var(--good);text-transform:none'>veg</span>" : "") +
+        "</div></div>";
+    }).join("") + "</div>";
+}
+renderMoments();
+
+// --- conflicts (mirrors lib/conflicts.ts) ---------------------------------
+function blendedFoodCost(sel, tierId){
+  if (!sel.length) return 0;
+  var t = TIERS[tierId];
+  var canapes = sel.filter(function(d){ return d.category === "canape"; });
+  var plates  = sel.filter(function(d){ return d.category !== "canape"; });
+  var cost = 0, value = 0;
+  if (canapes.length){
+    var ac = canapes.reduce(function(s,d){ return s + d.cost; }, 0) / canapes.length;
+    var av = canapes.reduce(function(s,d){ return s + d.price; }, 0) / canapes.length;
+    cost += ac * t.bitesPerGuest; value += av * t.bitesPerGuest;
+  }
+  plates.forEach(function(d){ cost += d.cost; value += d.price; });
+  return value > 0 ? cost / value : 0;
+}
+
+function findConflicts(sel, tierId){
+  var out = [];
+
+  // allergen: a course where every dish shares one
+  var byCat = {};
+  sel.forEach(function(d){ (byCat[d.category] = byCat[d.category] || []).push(d); });
+  Object.keys(byCat).forEach(function(cat){
+    var list = byCat[cat];
+    if (list.length < 2) return;
+    ["gluten","dairy","egg","fish","shellfish","nuts","pork","alcohol"].forEach(function(a){
+      if (list.every(function(d){ return d.allergens.indexOf(a) > -1; })){
+        out.push({ severity:"blocker", kind:"allergen",
+          title: "No " + a + "-free option in " + LABELS[cat],
+          detail: "All " + list.length + " dishes in this course contain " + a +
+            ". A guest avoiding it has nothing to eat at this course." });
+      }
+    });
+  });
+
+  // kitchen contention
+  function using(k){ return sel.filter(function(d){ return d.equipment.indexOf(k) > -1; }); }
+  var fry = using("fryer");
+  if (fry.length > CAP.fryer) out.push({ severity:"warning", kind:"kitchen",
+    title: fry.length + " fried dishes, one fryer",
+    detail: "Frying is sequential and oil temperature drops between batches. Above " +
+      CAP.fryer + " the last one reaches the guest cold." });
+  var ov = using("oven");
+  if (ov.length > CAP.oven) out.push({ severity:"warning", kind:"kitchen",
+    title: ov.length + " oven dishes in one service",
+    detail: "Pastry, sponge and roasting all want different temperatures. Above " +
+      CAP.oven + " you are either staging or compromising one of them." });
+  var live = sel.filter(function(d){ return d.format === "live-station"; });
+  if (live.length > CAP.liveStation) out.push({ severity:"blocker", kind:"kitchen",
+    title: live.length + " live stations",
+    detail: "Each live station needs someone standing at it for the whole service. Above " +
+      CAP.liveStation + " this is a staffing cost the quote does not carry." });
+  var gr = using("griddle");
+  if (gr.length > CAP.griddle) out.push({ severity:"warning", kind:"kitchen",
+    title: gr.length + " griddle items",
+    detail: "One plancha, cooked to order. Above " + CAP.griddle + " the queue is the problem." });
+
+  // margin
+  if (sel.length){
+    var blended = blendedFoodCost(sel, tierId);
+    if (blended > K.FC_MAX){
+      var worst = sel.slice().sort(function(a,b){ return b.cost/b.price - a.cost/a.price; }).slice(0,3);
+      out.push({ severity:"warning", kind:"margin",
+        title: "Blended food cost " + (blended*100).toFixed(1) + "%",
+        detail: "Above the " + Math.round(K.FC_MAX*100) + "% ceiling. The heaviest items are " +
+          worst.map(function(d){ return d.name; }).join(", ") + ". Swap one out or lift the price." });
+    }
+  }
+
+  return out.sort(function(a,b){
+    return a.severity === b.severity ? 0 : (a.severity === "blocker" ? -1 : 1);
+  });
+}
+
+// --- run sheet (mirrors lib/runsheet.ts) ----------------------------------
+var STATION = { cold:"Cold section", oven:"Oven", hob:"Stove", griddle:"Plancha", fryer:"Fryer" };
+
+function leadStation(d){
+  var best = "cold", bestLead = -1;
+  d.equipment.forEach(function(e){
+    if (LEAD[e] !== undefined && LEAD[e] > bestLead){ bestLead = LEAD[e]; best = e; }
+  });
+  return best;
+}
+
+function addMinutes(hhmm, mins){
+  var parts = hhmm.split(":"), h = Number(parts[0]), m = Number(parts[1]);
+  if (!isFinite(h) || !isFinite(m)) return hhmm;
+  var total = (((h*60 + m + mins) % 1440) + 1440) % 1440;
+  return ("0" + Math.floor(total/60)).slice(-2) + ":" + ("0" + (total%60)).slice(-2);
+}
+
+function buildRunSheet(sel, serviceTime){
+  if (!sel.length) return [];
+  var groups = {};
+  sel.forEach(function(d){ var st = leadStation(d); (groups[st] = groups[st] || []).push(d); });
+  var steps = Object.keys(groups).map(function(st){
+    var offset = LEAD[st] || 60;
+    return { offset: offset, station: STATION[st] || st,
+      label: st === "cold" ? "Prep and set — done the day before"
+           : st === "fryer" ? "Fry to order, into service"
+           : "Start " + (STATION[st] || st).toLowerCase() + " work",
+      dishes: groups[st].map(function(d){ return d.name; }),
+      clock: addMinutes(serviceTime, -offset) };
+  });
+  steps.push({ offset:0, station:"Pass", label:"Service", dishes:[], clock:serviceTime });
+  return steps.sort(function(a,b){ return b.offset - a.offset; });
+}
+
+// --- compare ---------------------------------------------------------------
+var cmpGuestsEl = document.getElementById("cmpGuests");
+cmpGuestsEl.addEventListener("input", renderCompare);
+
+function renderCompare(){
+  var guests = Math.max(1, parseInt(cmpGuestsEl.value, 10) || 1);
+  document.getElementById("cmpBody").innerHTML = ["scran","buffet","plated"].map(function(tid){
+    var t = TIERS[tid];
+    var pool = DISHES.filter(function(d){ return d.tiers.indexOf(tid) > -1; });
+    var menu = [];
+    ["canape","main","side","dessert"].forEach(function(cat){
+      var best = pool.filter(function(d){ return d.category === cat; })
+        .sort(function(a,b){ return a.cost/a.price - b.cost/b.price; })[0];
+      if (best) menu.push(best);
+    });
+    var q = buildQuote(menu, guests, tid);
+    if (!q) return "<div class='card'><h3>" + esc(t.name) + "</h3></div>";
+    function row(l,v,strong){
+      return "<div class='qrow " + (strong ? "tot" : "") + "'><span>" + l +
+        "</span><span class='tnum'>" + v + "</span></div>";
+    }
+    return "<div class='card'><h3>" + esc(t.name) + "</h3>" +
+      "<p class='mono' style='font-size:11px;color:var(--ink-3);margin:4px 0 0'>min " + t.minGuests + " guests</p>" +
+      "<p class='mono tnum' style='font-size:1.9rem;font-weight:600;margin:14px 0 0'>" +
+        soles(q.netPerGuest) + "</p>" +
+      "<p class='mono' style='font-size:11px;color:var(--ink-3);margin:0'>per guest, net of IGV</p>" +
+      (q.warnings.length ? "<p class='warn'>" + esc(q.warnings[0]) + "</p>" : "") +
+      "<div style='margin-top:14px'>" +
+        row("Food", soles(q.foodCostPerGuest)) +
+        row("Service", soles(q.serviceCostPerGuest)) +
+        row("Total &middot; " + guests, soles(q.netTotal), true) +
+        row("Client pays inc. IGV", soles(q.grossTotal), true) +
+      "</div>" +
+      "<div style='margin-top:16px;border-top:1px solid var(--line);padding-top:13px'>" +
+        "<p class='mono grouphead'>What lands on the table</p>" +
+        "<ul style='margin:0;padding-left:1.1em;font-size:12.5px;color:var(--ink-2)'>" +
+        menu.map(function(d){ return "<li>" + esc(d.name) + "</li>"; }).join("") + "</ul>" +
+        "<p class='muted' style='font-size:12.5px;margin:11px 0 0'>" +
+        (t.menajePerGuest > 0 ? "Hired china and glassware. " : "Boxed, no china. ") +
+        (t.guestsPerWaiter > 0 ? "Waiting staff, 1 per " + t.guestsPerWaiter + "." : "No staff on site.") +
+        "</p></div>" +
+      "<p class='mono tnum' style='color:var(--good);font-size:12.5px;margin:16px 0 0'>You keep " +
+        soles(q.contributionTotal) + " (" + Math.round(q.contributionRatio*100) + "%)</p>" +
+      "</div>";
+  }).join("");
+}
+renderCompare();
+
+// --- ingredient graph -----------------------------------------------------
+function splitIngredients(raw){
+  return raw.split(/[,;]/).map(function(x){
+    return x.trim().toLowerCase().replace(/\\s*\\([^)]*\\)/g, "").trim();
+  }).filter(function(x){ return x.length > 2; });
+}
+
+function buildGraph(){
+  var map = {};
+  DISHES.forEach(function(d){
+    var seen = {};
+    splitIngredients(d.keyIngredients).forEach(function(n){
+      if (seen[n]) return; seen[n] = 1;
+      var node = map[n] || { name:n, dishes:[], value:0 };
+      node.dishes.push(d.id); node.value += d.price; map[n] = node;
+    });
+  });
+  return Object.keys(map).map(function(k){ return map[k]; })
+    .sort(function(a,b){ return b.dishes.length - a.dishes.length || b.value - a.value; });
+}
+
+function renderGraph(){
+  var graph = buildGraph();
+  var top = graph.slice(0, 24);
+  var size = 620, cx = size/2, cy = size/2, radius = 205;
+  var maxReach = Math.max.apply(null, top.map(function(n){ return n.dishes.length; }).concat([1]));
+
+  var svg = "<svg viewBox='0 0 " + size + " " + size + "' width='" + size + "' height='" + size +
+    "' role='img' aria-label='Ingredients sized by how many dishes each unlocks' style='max-width:100%'>";
+  var nodes = top.map(function(n, i){
+    var a = (i / top.length) * Math.PI * 2 - Math.PI/2;
+    return { n:n, x: cx + Math.cos(a)*radius, y: cy + Math.sin(a)*radius,
+      r: 6 + Math.sqrt(n.dishes.length/maxReach)*16,
+      lx: cx + Math.cos(a)*(radius+34), ly: cy + Math.sin(a)*(radius+34),
+      anchor: Math.cos(a) > 0.25 ? "start" : (Math.cos(a) < -0.25 ? "end" : "middle") };
+  });
+  nodes.forEach(function(p){
+    svg += "<line x1='" + cx + "' y1='" + cy + "' x2='" + p.x.toFixed(1) + "' y2='" + p.y.toFixed(1) +
+      "' stroke='var(--line)' stroke-width='0.6'/>";
+  });
+  svg += "<circle cx='" + cx + "' cy='" + cy + "' r='26' fill='var(--raised)' stroke='var(--line)'/>";
+  svg += "<text x='" + cx + "' y='" + (cy+4) + "' text-anchor='middle' font-size='10' fill='var(--ink-3)'>" +
+    DISHES.length + "</text>";
+  nodes.forEach(function(p){
+    svg += "<circle cx='" + p.x.toFixed(1) + "' cy='" + p.y.toFixed(1) + "' r='" + p.r.toFixed(1) +
+      "' fill='var(--surface)' stroke='var(--ink-3)' stroke-width='1.2'/>" +
+      "<text x='" + p.lx.toFixed(1) + "' y='" + (p.ly+3).toFixed(1) + "' text-anchor='" + p.anchor +
+      "' font-size='9.5' fill='var(--ink-2)'>" +
+      esc(p.n.name.length > 16 ? p.n.name.slice(0,15) + "…" : p.n.name) + "</text>";
+  });
+  svg += "</svg>";
+  document.getElementById("graphSvg").innerHTML = svg;
+
+  document.getElementById("graphList").innerHTML =
+    "<h2>Buy these first</h2>" +
+    "<p class='lede' style='margin-top:7px'>Ranked by how much of the menu each one unlocks. " +
+      "The top is your standing order; the bottom is what you buy for a specific booking.</p>" +
+    "<div class='tscroll' style='margin-top:16px'><table><thead><tr>" +
+      "<th>Ingredient</th><th style='text-align:right'>Dishes</th><th style='text-align:right'>Menu unlocked</th>" +
+    "</tr></thead><tbody>" + top.map(function(n){
+      return "<tr><td class='cap'>" + esc(n.name) + "</td>" +
+        "<td class='money tnum'>" + n.dishes.length + "</td>" +
+        "<td class='money tnum muted'>" + soles(n.value) + "</td></tr>";
+    }).join("") + "</tbody></table></div>";
+
+  var sole = {};
+  graph.forEach(function(n){
+    if (n.dishes.length !== 1) return;
+    var id = n.dishes[0]; (sole[id] = sole[id] || []).push(n.name);
+  });
+  var orphanIds = Object.keys(sole).map(Number);
+  document.getElementById("graphOrphans").innerHTML =
+    "<h2>Wastage liabilities &middot; " + orphanIds.length + "</h2>" +
+    "<p class='lede' style='margin-top:7px'>Each is the only dish using at least one ingredient. " +
+      "Cook it and you buy something nothing else will use up. Fine for a signature; a poor reason " +
+      "to keep a dish nobody orders.</p>" +
+    "<div class='grid g3' style='margin-top:18px'>" + orphanIds.slice(0,18).map(function(id){
+      var d = null;
+      for (var i = 0; i < DISHES.length; i++) if (DISHES[i].id === id) d = DISHES[i];
+      if (!d) return "";
+      return "<div class='card' style='padding:13px'>" +
+        "<span style='font-weight:700;font-size:.875rem'>" + esc(d.name) + "</span>" +
+        "<span class='mono' style='display:block;font-size:11px;color:var(--warn);margin-top:4px'>sole use of " +
+        sole[id].map(esc).join(", ") + "</span></div>";
+    }).join("") + "</div>";
+}
+renderGraph();
+
 // --- builder -------------------------------------------------------------
-var tier = "plated", picked = [1, 2, 26, 77];
+var tier = "plated", picked = [1, 2, 26, 77], serviceTime = "19:30";
 var guestsEl = document.getElementById("guests");
 
 document.getElementById("tierChips").innerHTML = Object.keys(TIERS).map(function(k){
@@ -785,9 +1142,24 @@ function render(){
   }
   function row(l,v,cls){ return "<div class='qrow " + (cls||"") + "'><span>" + l +
     "</span><span class='tnum'>" + v + "</span></div>"; }
+  var conflicts = findConflicts(selected, tier);
+  var blocked = {};
+  conflicts.forEach(function(c){ if (c.severity === "blocker") blocked[c.title] = 1; });
+  var sheet = buildRunSheet(selected, serviceTime);
+
   box.innerHTML = "<h3>Your quote</h3>" +
     "<p class='src' style='margin:4px 0 12px'>" + esc(q.tier.name) + " · " + q.guests +
       " guests · " + selected.length + " dishes</p>" +
+    conflicts.map(function(c){
+      var col = c.severity === "blocker" ? "var(--bad)" : "var(--warn)";
+      return "<div style='border-left:2px solid " + col + ";background:var(--raised);" +
+        "border-radius:0 6px 6px 0;padding:9px 11px;margin-top:10px'>" +
+        "<p class='mono grouphead' style='margin:0;color:" + col + "'>" +
+        (c.severity === "blocker" ? "Blocker" : "Warning") + " &middot; " + c.kind + "</p>" +
+        "<p style='margin:2px 0 0;font-size:12px;font-weight:700'>" + esc(c.title) + "</p>" +
+        "<p style='margin:2px 0 0;font-size:11px;line-height:1.5;color:var(--ink-2)'>" +
+        esc(c.detail) + "</p></div>";
+    }).join("") +
     q.warnings.map(function(w){ return "<p class='warn'>" + esc(w) + "</p>"; }).join("") +
     "<div style='margin-top:14px'>" +
       row("Menu, per guest", soles(q.menuValuePerGuest)) +
@@ -804,7 +1176,25 @@ function render(){
       " per guest · " + Math.round(q.contributionRatio*100) +
       "% of net. Food and service costs are already out.</p></div>" +
     "<p class='note'>Kitchen rent, insurance and your own wage come out of this figure. " +
-      "Estimates only — not a binding quote.</p>";
+      "Estimates only — not a binding quote.</p>" +
+    "<div style='margin-top:17px;border-top:1px solid var(--line);padding-top:13px'>" +
+      "<div style='display:flex;justify-content:space-between;align-items:baseline;gap:8px'>" +
+        "<span class='mono grouphead' style='margin:0'>Run sheet</span>" +
+        "<label class='mono' style='font-size:10px;color:var(--ink-3);display:flex;gap:5px;align-items:center'>service" +
+        "<input type='time' id='svcTime' value='" + serviceTime + "' aria-label='Service time' " +
+        "class='mono tnum' style='background:var(--bg);color:var(--ink);border:1px solid var(--line);" +
+        "border-radius:4px;padding:2px 5px;font-size:11px'></label></div>" +
+      "<ol style='margin:10px 0 0;padding:0;list-style:none'>" + sheet.map(function(st){
+        return "<li style='display:flex;gap:9px;margin-bottom:8px'>" +
+          "<span class='mono tnum' style='font-size:11px;font-weight:600;color:var(--aji);flex-shrink:0'>" +
+          st.clock + "</span><span style='min-width:0'>" +
+          "<span class='mono grouphead' style='display:block;margin:0'>" + esc(st.station) +
+          (st.offset >= 1440 ? " &middot; day before" : "") + "</span>" +
+          "<span style='display:block;font-size:11px;color:var(--ink-2)'>" + esc(st.label) + "</span>" +
+          (st.dishes.length ? "<span style='display:block;font-size:11px;color:var(--ink-3)'>" +
+            st.dishes.map(esc).join(", ") + "</span>" : "") +
+          "</span></li>";
+      }).join("") + "</ol></div>";
 }
 
 render();
