@@ -13,6 +13,19 @@ export type Tag =
   | "breakfast"
   | "signature";
 
+/** The axes of the Flavour Compass. */
+export type Flavour = "sweet" | "savoury" | "rich" | "tart" | "smoky" | "spiced" | "fresh";
+
+export const FLAVOUR_AXES: Flavour[] = [
+  "sweet",
+  "savoury",
+  "rich",
+  "tart",
+  "smoky",
+  "spiced",
+  "fresh"
+];
+
 export interface Dish {
   id: number;
   name: string;
@@ -32,6 +45,25 @@ export interface Dish {
   tiers: ServiceTier[];
 }
 
+/** A dish with its flavour axes attached. */
+export interface DishWithFlavour extends Dish {
+  flavours: Flavour[];
+}
+
+export interface EventFilter {
+  tier?: ServiceTier;
+  categories?: Category[];
+  anyTags?: Tag[];
+  excludeTags?: Tag[];
+}
+
+export interface EventType {
+  id: string;
+  name: string;
+  blurb: string;
+  filter: EventFilter;
+}
+
 export const CATEGORY_LABEL: Record<Category, string> = {
   canape: "Canapés & bites",
   main: "Mains",
@@ -40,4 +72,18 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   drink: "Signature drinks"
 };
 
+/**
+ * A dish matches an event when it satisfies every clause the filter sets.
+ * Absent clauses are not constraints.
+ */
+export function matchesEvent(dish: Dish, filter: EventFilter): boolean {
+  if (filter.tier && !dish.tiers.includes(filter.tier)) return false;
+  if (filter.categories && !filter.categories.includes(dish.category)) return false;
+  if (filter.anyTags && !filter.anyTags.some((t) => dish.tags.includes(t))) return false;
+  if (filter.excludeTags && filter.excludeTags.some((t) => dish.tags.includes(t))) return false;
+  return true;
+}
+
 export { DISHES } from "@/data/dishes";
+export { FLAVOURS } from "@/data/flavours";
+export { EVENTS } from "@/data/events";

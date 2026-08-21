@@ -73,6 +73,53 @@ const warned = await page.locator("#quote .warn").count();
 console.log(`\nbelow-minimum warning shown: ${warned > 0 ? "yes ✓" : "no ✗"}`);
 if (warned === 0) failures++;
 
+// --- Find dishes: the standalone must filter identically to lib/dishes.ts ---
+const { DISHES } = await import("../.verify-dishes.mjs");
+const { FLAVOURS } = await import("../.verify-flavours.mjs");
+const { EVENTS } = await import("../.verify-events.mjs");
+
+function matchesEvent(d, f) {
+  if (f.tier && !d.tiers.includes(f.tier)) return false;
+  if (f.categories && !f.categories.includes(d.category)) return false;
+  if (f.anyTags && !f.anyTags.some((t) => d.tags.includes(t))) return false;
+  if (f.excludeTags && f.excludeTags.some((t) => d.tags.includes(t))) return false;
+  return true;
+}
+
+await page.getByRole("tab", { name: "Find dishes" }).click();
+console.log("\nEvent filters");
+
+for (const ev of EVENTS) {
+  const expected = DISHES.filter((d) => matchesEvent(d, ev.filter)).length;
+  await page.locator(`[data-evt="${ev.id}"]`).click();
+  await page.waitForTimeout(80);
+  const shown = Number((await page.locator("#findCount b").innerText()).trim());
+  const ok = shown === expected;
+  if (!ok) failures++;
+  console.log(`  ${ev.id.padEnd(15)} ${String(shown).padStart(3)} ${ok ? "✓" : "✗ expected " + expected}`);
+  await page.locator(`[data-evt="${ev.id}"]`).click(); // toggle back off
+  await page.waitForTimeout(60);
+}
+
+// A flavour narrows the set, and "all" is never wider than "any".
+await page.locator('[data-flav="sweet"]').click();
+await page.waitForTimeout(80);
+const sweetShown = Number((await page.locator("#findCount b").innerText()).trim());
+const sweetExpected = DISHES.filter((d) => (FLAVOURS[d.id] || []).includes("sweet")).length;
+const sweetOk = sweetShown === sweetExpected;
+if (!sweetOk) failures++;
+console.log(`\nflavour "sweet"   ${sweetShown} ${sweetOk ? "✓" : "✗ expected " + sweetExpected}`);
+
+await page.locator('[data-flav="rich"]').click();
+await page.waitForTimeout(80);
+const anyCount = Number((await page.locator("#findCount b").innerText()).trim());
+await page.locator('[data-flav="__mode"]').click();
+await page.waitForTimeout(80);
+const allCount = Number((await page.locator("#findCount b").innerText()).trim());
+const modeOk = allCount <= anyCount;
+if (!modeOk) failures++;
+console.log(`sweet+rich  any=${anyCount} all=${allCount} ${modeOk ? "✓" : "✗ all must not exceed any"}`);
+
 await browser.close();
 
 console.log(failures === 0 ? "\nALL CHECKS PASSED" : `\n${failures} CHECK(S) FAILED`);

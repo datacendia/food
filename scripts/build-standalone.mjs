@@ -15,18 +15,39 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const require = createRequire(import.meta.url);
 
-// --- pull the real data out of the TypeScript source -----------------------
-const tsSrc = fs.readFileSync(path.join(ROOT, "data", "dishes.ts"), "utf8");
-const js = tsSrc
-  .replace(/^import type .*$/m, "")
-  .replace("export const DISHES: Dish[] =", "module.exports.DISHES =");
-const tmp = path.join(ROOT, ".dishes.tmp.cjs");
-fs.writeFileSync(tmp, js);
-const { DISHES } = require(tmp);
-fs.unlinkSync(tmp);
+// --- pull the real data out of the TypeScript sources ----------------------
+/** Strip the type annotations off a data module and require it for its value. */
+function loadData(file, exportName) {
+  const src = fs.readFileSync(path.join(ROOT, "data", file), "utf8");
+  const js = src
+    .replace(/^import type .*$/gm, "")
+    .replace(
+      new RegExp(`export const ${exportName}\\s*:[^=]+=`),
+      `module.exports.${exportName} =`
+    );
+  const tmp = path.join(ROOT, `.${exportName}.tmp.cjs`);
+  fs.writeFileSync(tmp, js);
+  try {
+    const mod = require(tmp);
+    if (mod[exportName] === undefined) {
+      throw new Error(`${file} did not export ${exportName} after type stripping`);
+    }
+    return mod[exportName];
+  } finally {
+    fs.unlinkSync(tmp);
+  }
+}
+
+const DISHES = loadData("dishes.ts", "DISHES");
+const FLAVOURS = loadData("flavours.ts", "FLAVOURS");
+const EVENTS = loadData("events.ts", "EVENTS");
 
 if (DISHES.length !== 100) {
   throw new Error(`Expected 100 dishes, extracted ${DISHES.length}`);
+}
+const unflavoured = DISHES.filter((d) => !FLAVOURS[d.id]).map((d) => d.id);
+if (unflavoured.length) {
+  throw new Error(`Dishes missing a flavour entry: ${unflavoured.join(", ")}`);
 }
 
 // --- tier rules, mirrored from lib/pricing.ts ------------------------------
@@ -55,7 +76,10 @@ const CATEGORY_LABEL = {
   drink: "Signature drinks"
 };
 
-const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL });
+const FLAVOUR_AXES = ["sweet","savoury","rich","tart","smoky","spiced","fresh"];
+
+const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL,
+  flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES });
 
 const html = `<title>Aye Si Cena</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,6 +107,14 @@ body{margin:0;background:var(--bg);color:var(--ink);
   -webkit-font-smoothing:antialiased}
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
 .tnum{font-variant-numeric:tabular-nums}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.flavtag{border:1px solid var(--line);border-radius:4px;padding:1px 6px;
+  font-size:10px;color:var(--ink-3);text-transform:capitalize}
+.linkbtn{background:none;border:0;color:var(--ink-3);cursor:pointer;
+  font-size:11px;text-decoration:underline;padding:0}
+.grouphead{letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px;
+  font-size:11px;color:var(--ink-3);font-weight:500}
+.cap{text-transform:capitalize}
 :focus-visible{outline:2px solid var(--aji);outline-offset:2px}
 
 header.bar{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:30}
@@ -197,6 +229,7 @@ footer p{margin:0 0 7px;max-width:70ch}
     <span class="brand">Aye <em>Si</em> Cena</span>
     <nav role="tablist" aria-label="Sections">
       <button class="tab" role="tab" data-pane="home" aria-selected="true">Home</button>
+      <button class="tab" role="tab" data-pane="find" aria-selected="false">Find dishes</button>
       <button class="tab" role="tab" data-pane="menu" aria-selected="false">The hundred</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
@@ -229,6 +262,23 @@ footer p{margin:0 0 7px;max-width:70ch}
     <h2>The signatures</h2>
     <p class="lede" style="margin-top:8px">The dishes that explain the whole idea in one bite.</p>
     <div class="grid g3" id="homeSigs" style="margin-top:24px"></div>
+  </section>
+
+  <section class="pane" id="pane-find" hidden>
+    <h1>Find dishes</h1>
+    <p class="lede">Start from the event or start from the palate. Pick what you are planning and
+      the matrix narrows to what actually works for it — then filter by flavour to land on a
+      shortlist.</p>
+    <fieldset style="margin-top:30px">
+      <legend>What are you planning?</legend>
+      <div class="grid g3" id="evtGrid"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Flavour compass</legend>
+      <div class="chips" id="flavChips"></div>
+    </fieldset>
+    <div id="findCount" style="border-top:1px solid var(--line);padding-top:18px;margin-bottom:20px"></div>
+    <div id="findResults"></div>
   </section>
 
   <section class="pane" id="pane-menu" hidden>
@@ -290,6 +340,7 @@ footer p{margin:0 0 7px;max-width:70ch}
 "use strict";
 var D = JSON.parse(document.getElementById("data").textContent);
 var DISHES = D.dishes, TIERS = D.tiers, K = D.k, LABELS = D.labels;
+var FLAV = D.flavours, EVENTS = D.events, AXES = D.axes;
 var ORDER = ["canape","main","side","sweet","drink"];
 
 function soles(n){ return "S/ " + n.toFixed(2); }
@@ -347,7 +398,7 @@ function buildQuote(dishes, guests, tierId){
 var tabs = [].slice.call(document.querySelectorAll(".tab"));
 function show(name){
   tabs.forEach(function(t){ t.setAttribute("aria-selected", String(t.dataset.pane === name)); });
-  ["home","menu","packages","builder"].forEach(function(p){
+  ["home","find","menu","packages","builder"].forEach(function(p){
     document.getElementById("pane-" + p).hidden = (p !== name);
   });
   window.scrollTo(0,0);
@@ -432,6 +483,111 @@ document.getElementById("pkgRates").innerHTML =
       "<p class='tnum' style=\\"font-family:'IBM Plex Mono',monospace;font-size:1.3rem;" +
       "font-weight:600;margin:5px 0 0\\">" + r[1] + "</p></div>";
   }).join("");
+
+// --- find dishes ---------------------------------------------------------
+// Mirrors matchesEvent() in lib/dishes.ts: every clause present must hold.
+function matchesEvent(d, f){
+  if (f.tier && d.tiers.indexOf(f.tier) === -1) return false;
+  if (f.categories && f.categories.indexOf(d.category) === -1) return false;
+  if (f.anyTags && !f.anyTags.some(function(t){ return d.tags.indexOf(t) > -1; })) return false;
+  if (f.excludeTags && f.excludeTags.some(function(t){ return d.tags.indexOf(t) > -1; })) return false;
+  return true;
+}
+
+var evtId = null, flav = [], flavMode = "any";
+
+document.getElementById("evtGrid").innerHTML = EVENTS.map(function(e){
+  return "<button class='pick' data-evt='" + e.id + "' aria-pressed='false'>" +
+    "<span class='pick-name'>" + esc(e.name) + "</span>" +
+    "<span class='dish-b'>" + esc(e.blurb) + "</span></button>";
+}).join("");
+
+document.getElementById("evtGrid").addEventListener("click", function(e){
+  var b = e.target.closest("[data-evt]"); if (!b) return;
+  evtId = (evtId === b.dataset.evt) ? null : b.dataset.evt;
+  renderFind();
+});
+
+document.getElementById("flavChips").addEventListener("click", function(e){
+  var b = e.target.closest("[data-flav]"); if (!b) return;
+  if (b.dataset.flav === "__mode"){
+    flavMode = (flavMode === "any") ? "all" : "any";
+  } else {
+    var i = flav.indexOf(b.dataset.flav);
+    if (i > -1) flav.splice(i,1); else flav.push(b.dataset.flav);
+  }
+  renderFind();
+});
+
+document.addEventListener("click", function(e){
+  if (e.target && e.target.id === "clearFind"){ evtId = null; flav = []; renderFind(); }
+});
+
+function renderFind(){
+  var ev = null;
+  for (var i = 0; i < EVENTS.length; i++) if (EVENTS[i].id === evtId) ev = EVENTS[i];
+
+  var base = ev ? DISHES.filter(function(d){ return matchesEvent(d, ev.filter); }) : DISHES;
+  var out = base;
+  if (flav.length){
+    out = out.filter(function(d){
+      var f = FLAV[d.id] || [];
+      return flavMode === "all"
+        ? flav.every(function(x){ return f.indexOf(x) > -1; })
+        : flav.some(function(x){ return f.indexOf(x) > -1; });
+    });
+  }
+
+  [].forEach.call(document.querySelectorAll("[data-evt]"), function(b){
+    b.setAttribute("aria-pressed", String(b.dataset.evt === evtId));
+  });
+
+  document.getElementById("flavChips").innerHTML = AXES.map(function(a){
+    var n = base.filter(function(d){ return (FLAV[d.id] || []).indexOf(a) > -1; }).length;
+    var on = flav.indexOf(a) > -1;
+    var dis = (n === 0 && !on) ? " disabled" : "";
+    return "<button class='chip' data-flav='" + a + "' aria-pressed='" + on + "'" + dis + ">" +
+      "<span class='cap'>" + a + "</span> " +
+      "<span class='mono tnum' style='font-size:11px;opacity:.65'>" + n + "</span></button>";
+  }).join("") + (flav.length > 1
+    ? "<button class='chip mono' data-flav='__mode' style='font-size:11px'>match: " + flavMode + "</button>"
+    : "");
+
+  document.getElementById("findCount").innerHTML =
+    "<span class='mono' style='font-size:14px'><b class='tnum'>" + out.length +
+    "</b> <span class='muted'>of " + DISHES.length + " dishes</span></span>" +
+    ((ev || flav.length)
+      ? " <button id='clearFind' class='linkbtn mono'>clear filters</button>"
+      : "");
+
+  if (!out.length){
+    document.getElementById("findResults").innerHTML =
+      "<p class='card'>Nothing matches that combination. Switch the match mode to " +
+      "<strong>any</strong>, or drop a flavour.</p>";
+    return;
+  }
+
+  document.getElementById("findResults").innerHTML = ORDER.map(function(cat){
+    var rows = out.filter(function(d){ return d.category === cat; });
+    if (!rows.length) return "";
+    return "<section style='margin-bottom:26px'>" +
+      "<h3 class='mono grouphead'>" + LABELS[cat] + " &middot; " + rows.length + "</h3>" +
+      "<div class='grid g3'>" + rows.map(function(d){
+        return "<div class='card' style='padding:15px'>" +
+          "<div class='pick-top'><span class='pick-name'>" + esc(d.name) + "</span>" +
+          "<span class='pick-price tnum'>" + soles(d.price) + "</span></div>" +
+          "<span class='dna'><span class='u'>" + esc(d.uk) +
+          "</span> <span style='color:var(--ink-3)'>&rarr;</span> <span class='p'>" + esc(d.pe) +
+          "</span></span>" +
+          "<div style='margin-top:9px;display:flex;flex-wrap:wrap;gap:4px'>" +
+          (FLAV[d.id] || []).map(function(f){
+            return "<span class='mono flavtag'>" + f + "</span>";
+          }).join("") + "</div></div>";
+      }).join("") + "</div></section>";
+  }).join("");
+}
+
+renderFind();
 
 // --- builder -------------------------------------------------------------
 var tier = "plated", picked = [51, 6, 71, 16];
