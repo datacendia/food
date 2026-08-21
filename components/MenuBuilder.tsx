@@ -5,6 +5,7 @@ import type { Dish, ServiceTier } from "@/lib/dishes";
 import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 import { buildQuote, TIERS, soles, marginFlag } from "@/lib/pricing";
 import { findConflicts } from "@/lib/conflicts";
+import { buildRunSheet } from "@/lib/runsheet";
 
 
 
@@ -12,6 +13,7 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
   const [tier, setTier] = useState<ServiceTier>("plated");
   const [guests, setGuests] = useState(20);
   const [picked, setPicked] = useState<number[]>([1, 2, 20, 76]);
+  const [serviceTime, setServiceTime] = useState("19:30");
 
   // A dish only appears if it is offered at the chosen tier.
   const available = useMemo(
@@ -43,6 +45,14 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
     for (const c of conflicts) if (c.severity === "blocker") c.dishes.forEach((i) => s.add(i));
     return s;
   }, [conflicts]);
+
+  const runSheet = useMemo(() => {
+    try {
+      return buildRunSheet(selected, serviceTime);
+    } catch {
+      return [];
+    }
+  }, [selected, serviceTime]);
 
   const toggle = (id: number) =>
     setPicked((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -228,6 +238,45 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
                 Kitchen rent, insurance and your own wage come out of this figure. Estimates only —
                 not a binding quote.
               </p>
+
+              <div className="mt-5 border-t border-line pt-4">
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-ink-3">
+                    Run sheet
+                  </p>
+                  <label className="flex items-center gap-1.5 font-mono text-[10px] text-ink-3">
+                    service
+                    <input
+                      type="time"
+                      value={serviceTime}
+                      onChange={(e) => setServiceTime(e.target.value || "19:30")}
+                      className="tnum rounded border border-line bg-bg px-1.5 py-0.5 font-mono text-[11px] text-ink"
+                      aria-label="Service time"
+                    />
+                  </label>
+                </div>
+                <ol className="mt-2.5 space-y-2">
+                  {runSheet.map((step) => (
+                    <li key={`${step.station}-${step.offset}`} className="flex gap-2.5">
+                      <span className="tnum shrink-0 font-mono text-[11px] font-semibold text-aji">
+                        {step.clock}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-mono text-[10px] uppercase tracking-wider text-ink-3">
+                          {step.station}
+                          {step.offset >= 1440 && " · day before"}
+                        </span>
+                        <span className="block text-[11px] text-ink-2">{step.label}</span>
+                        {step.dishes.length > 0 && (
+                          <span className="block text-[11px] text-ink-3">
+                            {step.dishes.join(", ")}
+                          </span>
+                        )}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </>
           )}
         </div>

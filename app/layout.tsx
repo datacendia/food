@@ -23,6 +23,8 @@ const NAV = [
   { href: "/find", label: "Find dishes" },
   { href: "/menu", label: "The matrix" },
   { href: "/seasonal", label: "Season" },
+  { href: "/compare", label: "Compare" },
+  { href: "/graph", label: "Ingredients" },
   { href: "/packages", label: "Packages" },
   { href: "/builder", label: "Build a menu" }
 ];
