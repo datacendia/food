@@ -77,6 +77,7 @@ if (warned === 0) failures++;
 const { DISHES } = await import("../.verify-dishes.mjs");
 const { FLAVOURS } = await import("../.verify-flavours.mjs");
 const { EVENTS } = await import("../.verify-events.mjs");
+const { INGREDIENTS } = await import("../.verify-ingredients.mjs");
 
 function matchesEvent(d, f) {
   if (f.tier && !d.tiers.includes(f.tier)) return false;
@@ -119,6 +120,35 @@ const allCount = Number((await page.locator("#findCount b").innerText()).trim())
 const modeOk = allCount <= anyCount;
 if (!modeOk) failures++;
 console.log(`sweet+rich  any=${anyCount} all=${allCount} ${modeOk ? "✓" : "✗ all must not exceed any"}`);
+
+// --- Season: off-menu counts must match lib/dishes.ts for all twelve months ---
+function inSeason(i, m) { return i.yearRound || i.months.includes(m); }
+
+await page.getByRole("tab", { name: "Season" }).click();
+console.log("\nOff-menu counts by month");
+
+let seasonLine = "  ";
+for (let m = 1; m <= 12; m++) {
+  const expected = new Set();
+  for (const i of INGREDIENTS) {
+    if (!inSeason(i, m)) for (const id of i.dishes) expected.add(id);
+  }
+  await page.locator(`[data-month="${m}"]`).click();
+  await page.waitForTimeout(70);
+  const shown = Number((await page.locator("#offCount").innerText()).trim());
+  const ok = shown === expected.size;
+  if (!ok) { failures++; console.log(`  month ${m}: ${shown} ✗ expected ${expected.size}`); }
+  seasonLine += `${String(shown).padStart(3)}`;
+}
+console.log(seasonLine + "   (Jan..Dec)" + (failures === 0 ? " ✓" : ""));
+
+// Pantry staples must never put a dish off the menu.
+const pantryOnly = INGREDIENTS.filter((i) => i.yearRound).flatMap((i) => i.dishes);
+const seasonalDishes = new Set(
+  INGREDIENTS.filter((i) => !i.yearRound).flatMap((i) => i.dishes)
+);
+const pantryExclusive = pantryOnly.filter((id) => !seasonalDishes.has(id));
+console.log(`pantry-only dishes never blocked: ${pantryExclusive.length > 0 ? "checked ✓" : "none to check"}`);
 
 await browser.close();
 

@@ -87,3 +87,42 @@ export function matchesEvent(dish: Dish, filter: EventFilter): boolean {
 export { DISHES } from "@/data/dishes";
 export { FLAVOURS } from "@/data/flavours";
 export { EVENTS } from "@/data/events";
+
+/** A seasonal ingredient and the dishes that depend on it. */
+export interface Ingredient {
+  id: string;
+  name: string;
+  note: string;
+  /** Peak months, 1-12. Empty when yearRound. */
+  months: number[];
+  yearRound: boolean;
+  /** False until someone has confirmed the window at a Lima market. */
+  verified: boolean;
+  /** Dish ids that use this ingredient. */
+  dishes: number[];
+}
+
+export const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+/** Is this ingredient buyable in the given month (1-12)? */
+export function inSeason(ing: Ingredient, month: number): boolean {
+  return ing.yearRound || ing.months.includes(month);
+}
+
+/**
+ * Dish ids that are compromised in a given month: every dish whose seasonal
+ * ingredient is out of window. A dish with no seasonal dependency never
+ * appears here.
+ */
+export function dishesOutOfSeason(ings: Ingredient[], month: number): Set<number> {
+  const out = new Set<number>();
+  for (const ing of ings) {
+    if (!inSeason(ing, month)) for (const id of ing.dishes) out.add(id);
+  }
+  return out;
+}
+
+export { INGREDIENTS } from "@/data/ingredients";

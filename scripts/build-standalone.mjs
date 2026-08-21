@@ -41,6 +41,7 @@ function loadData(file, exportName) {
 const DISHES = loadData("dishes.ts", "DISHES");
 const FLAVOURS = loadData("flavours.ts", "FLAVOURS");
 const EVENTS = loadData("events.ts", "EVENTS");
+const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
 
 if (DISHES.length !== 100) {
   throw new Error(`Expected 100 dishes, extracted ${DISHES.length}`);
@@ -48,6 +49,11 @@ if (DISHES.length !== 100) {
 const unflavoured = DISHES.filter((d) => !FLAVOURS[d.id]).map((d) => d.id);
 if (unflavoured.length) {
   throw new Error(`Dishes missing a flavour entry: ${unflavoured.join(", ")}`);
+}
+const dishIds = new Set(DISHES.map((d) => d.id));
+for (const ing of INGREDIENTS) {
+  const ghosts = ing.dishes.filter((id) => !dishIds.has(id));
+  if (ghosts.length) throw new Error(`${ing.id} references missing dishes: ${ghosts.join(", ")}`);
 }
 
 // --- tier rules, mirrored from lib/pricing.ts ------------------------------
@@ -79,7 +85,9 @@ const CATEGORY_LABEL = {
 const FLAVOUR_AXES = ["sweet","savoury","rich","tart","smoky","spiced","fresh"];
 
 const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL,
-  flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES });
+  flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
+  ingredients: INGREDIENTS,
+  months: ["January","February","March","April","May","June","July","August","September","October","November","December"] });
 
 const html = `<title>Aye Si Cena</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -231,6 +239,7 @@ footer p{margin:0 0 7px;max-width:70ch}
       <button class="tab" role="tab" data-pane="home" aria-selected="true">Home</button>
       <button class="tab" role="tab" data-pane="find" aria-selected="false">Find dishes</button>
       <button class="tab" role="tab" data-pane="menu" aria-selected="false">The hundred</button>
+      <button class="tab" role="tab" data-pane="seasonal" aria-selected="false">Season</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
     </nav>
@@ -291,6 +300,22 @@ footer p{margin:0 0 7px;max-width:70ch}
     <div id="menuBody"></div>
   </section>
 
+  <section class="pane" id="pane-seasonal" hidden>
+    <h1>What the market has</h1>
+    <p class="lede">You buy all year, so the menu moves with the market. Pick a month to see what is
+      worth buying, what is out of window, and which dishes you cannot properly build until it
+      comes back.</p>
+    <div id="seasonWarn"></div>
+    <fieldset style="margin-top:28px">
+      <legend>Month</legend>
+      <div class="chips" id="monthChips"></div>
+      <p id="monthName" class="brand" style="margin:14px 0 0"></p>
+    </fieldset>
+    <div id="seasonPanels" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))"></div>
+    <div id="seasonOff" style="margin-top:34px"></div>
+    <div id="seasonPantry" style="margin-top:38px;border-top:1px solid var(--line);padding-top:24px"></div>
+  </section>
+
   <section class="pane" id="pane-packages" hidden>
     <h1>Packages</h1>
     <p class="lede">Three tiers, and exactly what each carries in per-event cost. These figures drive
@@ -341,6 +366,7 @@ footer p{margin:0 0 7px;max-width:70ch}
 var D = JSON.parse(document.getElementById("data").textContent);
 var DISHES = D.dishes, TIERS = D.tiers, K = D.k, LABELS = D.labels;
 var FLAV = D.flavours, EVENTS = D.events, AXES = D.axes;
+var INGS = D.ingredients, MONTHS = D.months;
 var ORDER = ["canape","main","side","sweet","drink"];
 
 function soles(n){ return "S/ " + n.toFixed(2); }
@@ -398,7 +424,7 @@ function buildQuote(dishes, guests, tierId){
 var tabs = [].slice.call(document.querySelectorAll(".tab"));
 function show(name){
   tabs.forEach(function(t){ t.setAttribute("aria-selected", String(t.dataset.pane === name)); });
-  ["home","find","menu","packages","builder"].forEach(function(p){
+  ["home","find","menu","seasonal","packages","builder"].forEach(function(p){
     document.getElementById("pane-" + p).hidden = (p !== name);
   });
   window.scrollTo(0,0);
@@ -588,6 +614,99 @@ function renderFind(){
 }
 
 renderFind();
+
+// --- season --------------------------------------------------------------
+// Mirrors inSeason() / dishesOutOfSeason() in lib/dishes.ts.
+function inSeason(ing, m){ return ing.yearRound || ing.months.indexOf(m) > -1; }
+
+var SHORT = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+var month = new Date().getMonth() + 1;
+
+var unverified = INGS.filter(function(i){ return !i.verified; }).length;
+document.getElementById("seasonWarn").innerHTML = unverified
+  ? "<p class='card' style='border-color:var(--bad);margin-top:22px'>" +
+    "<strong style='color:var(--bad)'>" + unverified + " of " + INGS.length +
+    " seasons are unconfirmed.</strong> <span class='muted'>The dish links are reliable — they " +
+    "come from the matrix. The month windows are estimates and nobody has checked them at a " +
+    "market yet. Confirm before promising a client anything.</span></p>"
+  : "";
+
+document.getElementById("monthChips").addEventListener("click", function(e){
+  var b = e.target.closest("[data-month]"); if (!b) return;
+  month = Number(b.dataset.month);
+  renderSeason();
+});
+
+function renderSeason(){
+  document.getElementById("monthChips").innerHTML = MONTHS.map(function(m, i){
+    var n = i + 1;
+    return "<button class='chip mono' data-month='" + n + "' aria-pressed='" + (n === month) +
+      "' aria-label='" + m + "' style='width:44px;padding:9px 0;text-align:center'>" +
+      SHORT[i] + "</button>";
+  }).join("");
+  document.getElementById("monthName").textContent = MONTHS[month - 1];
+
+  var seasonal = INGS.filter(function(i){ return !i.yearRound; });
+  var pantry   = INGS.filter(function(i){ return i.yearRound; });
+  var inNow    = seasonal.filter(function(i){ return inSeason(i, month); });
+  var outNow   = seasonal.filter(function(i){ return !inSeason(i, month); });
+
+  document.getElementById("seasonPanels").innerHTML =
+    "<div class='card'><h3 class='mono grouphead' style='color:var(--good)'>Buying now &middot; " +
+      inNow.length + "</h3>" +
+      (inNow.length ? inNow.map(function(i){
+        return "<div style='margin-bottom:14px'><span style='font-weight:700;font-size:.9rem'>" +
+          esc(i.name) + "</span>" +
+          (i.verified ? "" : " <span class='mono flavtag'>unconfirmed</span>") +
+          "<span class='dish-b'>" + esc(i.note) + "</span>" +
+          "<span class='mono' style='display:block;font-size:11px;color:var(--ink-3);margin-top:3px'>" +
+          i.dishes.length + " dish" + (i.dishes.length === 1 ? "" : "es") + "</span></div>";
+      }).join("") : "<p class='muted' style='font-size:.9rem'>Nothing seasonal peaks this month.</p>") +
+    "</div>" +
+    "<div class='card'><h3 class='mono grouphead' style='color:var(--warn)'>Out of window &middot; " +
+      outNow.length + "</h3>" +
+      (outNow.length ? outNow.map(function(i){
+        return "<div style='margin-bottom:11px'><span class='muted' style='font-weight:700;font-size:.9rem'>" +
+          esc(i.name) + "</span>" +
+          "<span class='mono' style='display:block;font-size:11px;color:var(--ink-3)'>back in " +
+          (i.months.length ? i.months.map(function(m){ return MONTHS[m-1].slice(0,3); }).join(", ") : "—") +
+          "</span></div>";
+      }).join("") : "<p class='muted' style='font-size:.9rem'>Everything seasonal is available.</p>") +
+    "</div>";
+
+  var off = {};
+  seasonal.forEach(function(i){
+    if (!inSeason(i, month)) i.dishes.forEach(function(id){ (off[id] = off[id] || []).push(i.name); });
+  });
+  var offIds = Object.keys(off).map(Number).sort(function(a,b){ return a-b; });
+
+  document.getElementById("seasonOff").innerHTML =
+    "<h2>Off the menu in " + MONTHS[month - 1] + "</h2>" +
+    "<p class='lede' style='margin-top:8px'>" +
+      (offIds.length
+        ? "<b id='offCount' class='tnum'>" + offIds.length + "</b> of " + DISHES.length +
+          " dishes depend on something out of window. Quote around them, or swap the ingredient."
+        : "<b id='offCount' class='tnum'>0</b> — every dish in the matrix is buildable this month.") +
+    "</p>" +
+    (offIds.length ? "<div class='grid g3' style='margin-top:18px'>" + offIds.map(function(id){
+      var d = null;
+      for (var j = 0; j < DISHES.length; j++) if (DISHES[j].id === id) d = DISHES[j];
+      if (!d) return "";
+      return "<div class='card' style='padding:13px'>" +
+        "<span style='font-weight:700;font-size:.875rem;line-height:1.25'>" + esc(d.name) + "</span>" +
+        "<span class='mono' style='display:block;font-size:11px;color:var(--warn);margin-top:4px'>" +
+        off[id].map(esc).join(", ") + "</span></div>";
+    }).join("") + "</div>" : "");
+
+  document.getElementById("seasonPantry").innerHTML =
+    "<h3 class='mono grouphead'>Available all year &middot; " + pantry.length + "</h3>" +
+    "<div style='display:flex;flex-wrap:wrap;gap:8px'>" + pantry.map(function(i){
+      return "<span class='chip' style='cursor:default' title='" + esc(i.note) + "'>" +
+        esc(i.name) + "</span>";
+    }).join("") + "</div>";
+}
+
+renderSeason();
 
 // --- builder -------------------------------------------------------------
 var tier = "plated", picked = [51, 6, 71, 16];
