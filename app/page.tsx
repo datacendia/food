@@ -19,7 +19,7 @@ export default function HomePage() {
           Scottish-Peruvian catering · Lima
         </p>
         <h1 className="font-display text-5xl font-semibold leading-none tracking-tight sm:text-7xl">
-          Yes, yes, dinner.
+          Aye, Si, Cena.
         </h1>
         <p className="mt-6 max-w-xl text-lg text-ink-2">
           <span className="text-ink">Aye</span> is Scottish for yes.{" "}

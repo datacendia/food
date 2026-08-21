@@ -208,7 +208,7 @@ footer p{margin:0 0 7px;max-width:70ch}
 
   <section class="pane" id="pane-home">
     <p class="eyebrow">Scottish-Peruvian catering · Lima</p>
-    <h1>Yes, yes, dinner.</h1>
+    <h1>Aye, Si, Cena.</h1>
     <p class="lede"><span style="color:var(--ink)">Aye</span> is Scottish for yes.
       <span style="color:var(--ink)">Sí</span> is Spanish for yes. Say it aloud and it means
       something else again. A hundred dishes that take Glasgow technique and run it through the
