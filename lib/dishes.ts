@@ -43,6 +43,10 @@ export interface Dish {
   price: number;
   /** False until a real supplier price replaces the estimate. */
   costVerified: boolean;
+  /** Derived from the dish text — a starting point for an audit, not an audit. */
+  allergens: string[];
+  /** What the dish occupies during service: oven, fryer, griddle, hob, cold. */
+  equipment: string[];
   tiers: ServiceTier[];
 }
 

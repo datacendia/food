@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { Dish, ServiceTier } from "@/lib/dishes";
 import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 import { buildQuote, TIERS, soles, marginFlag } from "@/lib/pricing";
+import { findConflicts } from "@/lib/conflicts";
 
 
 
@@ -33,6 +34,15 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
       return null;
     }
   }, [selected, guests, tier]);
+
+  const conflicts = useMemo(() => findConflicts(selected, tier), [selected, tier]);
+  // Dishes named by a blocker get outlined in the picker, so the warning points
+  // at something rather than just describing a problem.
+  const flagged = useMemo(() => {
+    const s = new Set<number>();
+    for (const c of conflicts) if (c.severity === "blocker") c.dishes.forEach((i) => s.add(i));
+    return s;
+  }, [conflicts]);
 
   const toggle = (id: number) =>
     setPicked((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -109,7 +119,11 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
                       onClick={() => toggle(d.id)}
                       aria-pressed={on}
                       className={`rounded-lg border p-3 text-left transition-colors ${
-                        on ? "border-aji bg-surface" : "border-line hover:border-ink-3"
+                        on && flagged.has(d.id)
+                          ? "border-bad bg-surface"
+                          : on
+                            ? "border-aji bg-surface"
+                            : "border-line hover:border-ink-3"
                       }`}
                     >
                       <span className="flex items-baseline justify-between gap-2">
@@ -149,6 +163,29 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
               <p className="mt-1 font-mono text-[11px] text-ink-3">
                 {quote.tier.name} · {quote.guests} guests · {selected.length} dishes
               </p>
+
+              {conflicts.length > 0 && (
+                <ul className="mt-3 space-y-2">
+                  {conflicts.map((c) => (
+                    <li
+                      key={`${c.kind}-${c.title}`}
+                      className={`rounded-lg border-l-2 bg-raised p-2.5 ${
+                        c.severity === "blocker" ? "border-bad" : "border-warn"
+                      }`}
+                    >
+                      <p
+                        className={`font-mono text-[10px] uppercase tracking-wider ${
+                          c.severity === "blocker" ? "text-bad" : "text-warn"
+                        }`}
+                      >
+                        {c.severity === "blocker" ? "Blocker" : "Warning"} · {c.kind}
+                      </p>
+                      <p className="mt-0.5 text-xs font-bold">{c.title}</p>
+                      <p className="mt-0.5 text-[11px] leading-relaxed text-ink-2">{c.detail}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
               {quote.warnings.map((w) => (
                 <p

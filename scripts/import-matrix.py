@@ -68,6 +68,30 @@ SWEET_CATEGORIES = {"bakery", "dessert"}
 # Hand-corrected axes. Add real tasting notes here; they beat the rules above.
 FLAVOUR_OVERRIDES: dict[int, list[str]] = {}
 
+# --- allergens --------------------------------------------------------------
+# Derived from the dish text, so they are a starting point for a real allergen
+# audit, never a substitute for one. Catering law does not accept a guess.
+ALLERGEN_RULES = {
+    "gluten":    r"flour|pastry|bread|oat|shortbread|biscuit|cake|filo|breadcrumb|crumb|roll|scone|batter|dough|sponge|bannock|pasta|barley|bun|tart\b|pie\b|puff",
+    "dairy":     r"butter|cream|cheese|milk|manjar|custard|yoghurt|crowdie|ganache|chocolate",
+    "egg":       r"\begg|mayo|meringue|custard|aioli|batter|brioche",
+    "fish":      r"trout|paiche|corvina|chita|haddock|anchov|\bfish|bacalao|smokie|kipper",
+    "shellfish": r"langostino|prawn|shrimp|oyster|scallop|octopus|pulpo|crab|mussel",
+    "nuts":      r"almond|walnut|hazelnut|pecan|marzipan|frangipane|\bnut\b|pistachio",
+    "pork":      r"\bpork|bacon|morcilla|chorizo|\bham\b|chicharr[oó]n|black pudding|lardo|panceta",
+    "alcohol":   r"whisky|whiskey|pisco|\bwine|beer|stout|\bale\b|sherry|liqueur|cusque[nñ]a|chicha de jora",
+}
+
+# --- equipment --------------------------------------------------------------
+# What the dish occupies during service. Drives the kitchen-collision check.
+EQUIPMENT_RULES = {
+    "oven":    r"bake|baked|roast|oven|tart|\bpie\b|pastry|gratin|sponge|cake|scone|bread|puff|empanada|dough|bridie|sausage roll|pasty|loaf|bun\b|biscuit|shortbread",
+    "fryer":   r"fried|fry|deep-fr|crumbed|bonbon|croqueta|tequen|tequeñ|tempura|chips|fritter|churro|doughnut",
+    "griddle": r"griddle|plancha|tattie scone|pancake|crumpet|sear|toast",
+    "hob":     r"brais|stew|simmer|soup|chowder|sauce|poach|boil|reduc|chupe|skink",
+    "cold":    r"cured|chilled|no-bake|fridge|\bcold\b|causa|ceviche|carpaccio|salad|trifle|posset|mousse|cranachan|whipped",
+}
+
 # --- seasonal ingredient keywords ------------------------------------------
 # Matched against the "Key local ingredients" column to rebuild the dish links.
 INGREDIENT_KEYWORDS = {
@@ -160,6 +184,14 @@ def main():
 
         flavours[did] = derive_flavours(did, name, fusion, key_ings, cat)
 
+        text = f"{name} {fusion} {key_ings}".lower()
+        allergens = sorted(a for a, pat in ALLERGEN_RULES.items() if re.search(pat, text))
+        equipment = sorted(e for e, pat in EQUIPMENT_RULES.items() if re.search(pat, text))
+        if raw_fmt == "Live station" and "griddle" not in equipment:
+            equipment.append("griddle")
+        if not equipment:
+            equipment = ["cold"]
+
         hay = f"{name} {fusion} {key_ings}".lower()
         for ing_id, pattern in INGREDIENT_KEYWORDS.items():
             if re.search(pattern, hay):
@@ -181,6 +213,8 @@ def main():
             "cost": round(cost, 2),
             "price": round(price, 2),
             "costVerified": not str(r[idx["Cost verified?"]]).lower().startswith("no"),
+            "allergens": allergens,
+            "equipment": sorted(equipment),
             "tiers": TIERS_FOR_FORMAT[raw_fmt],
         })
 
@@ -212,6 +246,8 @@ def main():
             f'keyIngredients: {ts_string(d["keyIngredients"])}, source: {ts_string(d["source"])}, '
             f'cost: {d["cost"]}, price: {d["price"]}, '
             f'costVerified: {str(d["costVerified"]).lower()}, '
+            f'allergens: {json.dumps(d["allergens"])}, '
+            f'equipment: {json.dumps(d["equipment"])}, '
             f'tiers: {json.dumps(d["tiers"])} }},'
         )
     lines += ["];", ""]
