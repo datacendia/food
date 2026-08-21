@@ -22,6 +22,7 @@ const NAV = [
   { href: "/moments", label: "The evening" },
   { href: "/find", label: "Find dishes" },
   { href: "/menu", label: "The matrix" },
+  { href: "/recipes", label: "Recipes" },
   { href: "/seasonal", label: "Season" },
   { href: "/compare", label: "Compare" },
   { href: "/graph", label: "Ingredients" },

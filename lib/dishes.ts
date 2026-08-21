@@ -147,3 +147,35 @@ export { FLAVOURS } from "@/data/flavours";
 export { EVENTS } from "@/data/events";
 export { INGREDIENTS } from "@/data/ingredients";
 export { SOURCING } from "@/data/sourcing";
+export { RECIPES } from "@/data/recipes";
+
+/** One line on an ingredient list. Quantities are metric, batch-scaled. */
+export interface RecipeIngredient {
+  qty: string;
+  item: string;
+  /** Sourcing or substitution note where it matters. */
+  note?: string;
+}
+
+/**
+ * A recipe written for a catering kitchen rather than a home one: batch yield,
+ * active vs oven time, and — the parts a home recipe omits and a caterer lives
+ * by — how far ahead it can be made and how it behaves once it leaves the pass.
+ */
+export interface Recipe {
+  dishId: number;
+  /** Batch this quantity produces, e.g. "50 pieces" or "20 portions". */
+  yields: string;
+  /** Hands-on minutes for the whole batch. */
+  prepMin: number;
+  /** Oven, fryer or stove minutes. */
+  cookMin: number;
+  ingredients: RecipeIngredient[];
+  method: string[];
+  /** How far ahead, and how to hold it. */
+  makeAhead: string;
+  /** Behaviour on the pass and in a van. The catering-specific bit. */
+  holds: string;
+  /** What breaks when the batch gets bigger. Present only where it does. */
+  scaling?: string;
+}
