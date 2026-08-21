@@ -5,12 +5,34 @@ import { CATEGORY_ORDER, FLAVOUR_AXES, FORMAT_LABEL } from "@/lib/dishes";
 import { marginFlag, foodCostRatio } from "@/lib/pricing";
 
 describe("the matrix", () => {
-  it("holds 130 dishes with contiguous ids", () => {
-    expect(DISHES).toHaveLength(130);
+  it("holds a contiguous run of ids with no gaps and no duplicates", () => {
+    // The count is not fixed - the spreadsheet is the master and grows. What
+    // must hold is that ids run 1..n unbroken, or the importer dropped a row.
     const ids = DISHES.map((d) => d.id).sort((a, b) => a - b);
+    expect(new Set(ids).size).toBe(DISHES.length);
     expect(ids[0]).toBe(1);
-    expect(ids[129]).toBe(130);
-    expect(new Set(ids).size).toBe(130);
+    expect(ids[ids.length - 1]).toBe(DISHES.length);
+    for (let i = 0; i < ids.length; i++) expect(ids[i]).toBe(i + 1);
+  });
+
+  it("fuses in both directions, not just British dish to Peruvian ingredient", () => {
+    // The matrix started one-way: a UK or European dish rebuilt with Peruvian
+    // produce. A Peruvian-base block is what makes it a fusion rather than a
+    // substitution exercise, so it has to stay a real share of the menu.
+    const peruvianBase = DISHES.filter((d) => d.subOrigin === "Peruvian");
+    expect(peruvianBase.length).toBeGreaterThanOrEqual(20);
+
+    // A Peruvian-base dish that names no European move is just a Peruvian dish.
+    const noMove = peruvianBase
+      .filter((d) => !/scottish|nordic|basque|english|greek|european/i.test(d.fusion))
+      .map((d) => `${d.id} ${d.name}`);
+    expect(noMove).toEqual([]);
+
+    // And it has to be a real menu, not twenty canapes: at least four
+    // categories and both a cooked-to-order and a boxed format.
+    expect(new Set(peruvianBase.map((d) => d.category)).size).toBeGreaterThanOrEqual(4);
+    expect(peruvianBase.some((d) => d.format === "drop-off")).toBe(true);
+    expect(peruvianBase.some((d) => d.format === "live-station")).toBe(true);
   });
 
   it("uses only known categories and formats", () => {

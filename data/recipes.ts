@@ -3352,5 +3352,508 @@ export const RECIPES: Recipe[] = [
     makeAhead: "Bake the day before and leave it out overnight. It is a better cake on day two.",
     holds: "All day at room temperature and it cuts to any headcount, which is what makes it good value.",
     scaling: "One oven takes three tins. Above 100 guests, bake across two days rather than crowding the shelves."
+  },
+  {
+    dishId: 131,
+    yields: "60 pieces",
+    prepMin: 60,
+    cookMin: 30,
+    ingredients: [
+      { qty: "5 kg", item: "papa amarilla" },
+      { qty: "6 tbsp", item: "aji amarillo paste" },
+      { qty: "8", item: "limes, juice only" },
+      { qty: "200 ml", item: "vegetable oil" },
+      { qty: "1.5 kg", item: "hot-smoked trout" },
+      { qty: "400 ml", item: "soured cream" },
+      { qty: "3 bunches", item: "dill" }
+    ],
+    method: [
+      "Boil the papa amarilla whole in salted water, then peel and pass it through a ricer while still hot.",
+      "Work in the aji amarillo, lime juice, oil and salt while the potato is warm — cold potato will not take it up.",
+      "Cool the mass completely before shaping, or the layers slump and the terrine loses its edges.",
+      "Flake the smoked trout and bind it with the soured cream and most of the dill, keeping the flakes visible.",
+      "Layer potato, trout, potato in a lined tray, pressing each layer flat with an offset palette knife.",
+      "Chill 3 hours, cut into squares with a hot wet knife, and finish each with a dill frond at the venue."
+    ],
+    makeAhead: "Build the terrine the day before and cut on the morning of service for the cleanest edges.",
+    holds: "Two hours out of the fridge. Set the tray over ice on a warm Lima afternoon."
+  },
+  {
+    dishId: 132,
+    yields: "60 pieces",
+    prepMin: 70,
+    cookMin: 60,
+    ingredients: [
+      { qty: "5 kg", item: "papa amarilla" },
+      { qty: "6 tbsp", item: "aji amarillo paste" },
+      { qty: "8", item: "limes, juice only" },
+      { qty: "2 kg", item: "haggis mix, cooked" },
+      { qty: "200 ml", item: "vegetable oil" },
+      { qty: "3 tbsp", item: "wholegrain mustard" },
+      { qty: "100 ml", item: "whisky" }
+    ],
+    method: [
+      "Make the causa base exactly as for the trout version — riced hot potato, aji, lime, oil, seasoned hard.",
+      "Cook the haggis mix through, then loosen it with the whisky and mustard until it is spreadable, not crumbly.",
+      "Let the haggis cool to room temperature; spread it hot and it melts the causa layer beneath it.",
+      "Layer causa, haggis, causa, pressing firmly so the finished slab holds together under the knife.",
+      "Chill at least 3 hours, then cut into squares with a hot wet knife wiped between every cut.",
+      "Serve at cool room temperature — fridge-cold, the aji amarillo goes flat and reads as nothing."
+    ],
+    makeAhead: "Build the day before. The whisky settles into the haggis and stops shouting overnight.",
+    holds: "Two hours out of the fridge. This is the dish that explains the whole business in one bite."
+  },
+  {
+    dishId: 133,
+    yields: "40 portions",
+    prepMin: 60,
+    cookMin: 25,
+    ingredients: [
+      { qty: "6 kg", item: "lamb leg, in 3 cm cubes" },
+      { qty: "6 tbsp", item: "aji panca paste" },
+      { qty: "60 g", item: "muna, dried" },
+      { qty: "300 ml", item: "red wine vinegar" },
+      { qty: "10", item: "garlic cloves" },
+      { qty: "3 kg", item: "papa nativa" },
+      { qty: "80", item: "wooden skewers, soaked" }
+    ],
+    method: [
+      "Blitz the aji panca, muna, garlic, vinegar, cumin and oil into a marinade thick enough to cling.",
+      "Marinate the lamb at least 8 hours — muna is a slower aromatic than rosemary and needs the time.",
+      "Thread three cubes per skewer with the grain running the same way, so they cook at the same rate.",
+      "Boil the papa nativa whole, then halve them and hold them warm to go alongside off the plancha.",
+      "Grill hard on a very hot plancha, 3 minutes a side, basting with the leftover marinade as you turn.",
+      "Rest the skewers 2 minutes on a warm tray before they go out, or the juice ends up on the guest."
+    ],
+    makeAhead: "Marinate and skewer the day before. The potatoes can be boiled in the morning and reheated.",
+    holds: "Grill to order. Skewers held more than 10 minutes go dry and there is no recovering them.",
+    scaling: "A 1 m plancha turns out about 70 skewers an hour. Beyond that, add a grill, not a cook."
+  },
+  {
+    dishId: 134,
+    yields: "20 portions",
+    prepMin: 45,
+    cookMin: 0,
+    ingredients: [
+      { qty: "3 kg", item: "corvina fillet, skinned" },
+      { qty: "30", item: "limes" },
+      { qty: "4", item: "aji limo" },
+      { qty: "1.5 kg", item: "cucumber" },
+      { qty: "3 bunches", item: "dill" },
+      { qty: "800 g", item: "red onion" },
+      { qty: "40 g", item: "salt" }
+    ],
+    method: [
+      "Check the veda calendar before you buy — a closed season on corvina is law, and this dish has no substitute plan.",
+      "Cut the fish into 2 cm cubes and keep it on ice; warm fish cures unevenly and goes chalky at the edges.",
+      "Squeeze the limes by hand and stop before the pith — a machine juicer makes the leche de tigre bitter.",
+      "Blitz a handful of the fish with lime, aji limo, cucumber, dill stalks and salt to build the leche de tigre.",
+      "Pass it through a sieve, taste for salt and acid, and keep it ice-cold until the moment of service.",
+      "Dress the fish 4 minutes before it leaves the kitchen, add the sliced onion and dill fronds, and plate."
+    ],
+    makeAhead: "Cut the fish and make the leche de tigre the morning of. The two meet minutes before service.",
+    holds: "Four minutes. This is a plated dish for a reason and it cannot be put on a buffet."
+  },
+  {
+    dishId: 135,
+    yields: "50 pieces",
+    prepMin: 40,
+    cookMin: 0,
+    ingredients: [
+      { qty: "2 kg", item: "trout fillet, skinned" },
+      { qty: "150 ml", item: "whisky" },
+      { qty: "4 tbsp", item: "aji amarillo paste" },
+      { qty: "300 ml", item: "double cream" },
+      { qty: "10", item: "limes" },
+      { qty: "20 g", item: "flaked salt" },
+      { qty: "1 bunch", item: "chives" }
+    ],
+    method: [
+      "Freeze the fillets for 40 minutes before slicing — firm fish gives you thin slices, soft fish gives you shreds.",
+      "Slice on the bias at about 3 mm and lay the slices flat and overlapping on chilled plates.",
+      "Warm the whisky briefly to take the raw spirit edge off, then cool it before it goes near the cream.",
+      "Whisk the aji amarillo into the cream with the whisky and lime juice until it just coats a spoon.",
+      "Spoon the sauce in a line across the fish rather than over it, so the guest sees both.",
+      "Finish with flaked salt and chives and send it out immediately — the lime keeps curing the fish on the plate."
+    ],
+    makeAhead: "Make the sauce a day ahead. Slice the fish no more than an hour before service, kept on ice.",
+    holds: "Ten minutes plated. Slice and dress in rounds as the plates go out."
+  },
+  {
+    dishId: 136,
+    yields: "40 portions",
+    prepMin: 50,
+    cookMin: 40,
+    ingredients: [
+      { qty: "6 kg", item: "beef sirloin, in thick strips" },
+      { qty: "6 kg", item: "papa nativa, cut into thick chips" },
+      { qty: "1.5 kg", item: "beef dripping" },
+      { qty: "2 kg", item: "red onion, in wedges" },
+      { qty: "1.5 kg", item: "tomato, in wedges" },
+      { qty: "300 ml", item: "sillao (soy sauce)" },
+      { qty: "200 ml", item: "red wine vinegar" }
+    ],
+    method: [
+      "Blanch the chips in dripping at 140 °C until soft but pale, then drain and cool them completely on racks.",
+      "Season the beef and get the wok or plancha ferociously hot — a lukewarm pan stews the meat and floods it.",
+      "Sear the beef in small batches for barely a minute and pull it out while it is still rare in the middle.",
+      "Fry the onion hard for 30 seconds, add tomato, then deglaze with sillao and vinegar so it flames up.",
+      "Fry the chips a second time at 185 °C until crisp and deep gold — the dripping is what makes them taste Scottish.",
+      "Return the beef to the pan, toss with the chips off the heat, and serve within a minute of the toss."
+    ],
+    makeAhead: "First-fry the chips and cut everything the day before. The wok work happens only at the venue.",
+    holds: "Serve straight from the pan. Held ten minutes, the chips go soft and the dish is pointless.",
+    scaling: "One wok station does about 60 portions an hour. Two smaller pans beat one large one every time."
+  },
+  {
+    dishId: 137,
+    yields: "20 portions",
+    prepMin: 45,
+    cookMin: 55,
+    ingredients: [
+      { qty: "3", item: "whole chickens, poached and shredded" },
+      { qty: "8 tbsp", item: "aji amarillo paste" },
+      { qty: "600 g", item: "stale white bread" },
+      { qty: "1.5 L", item: "evaporated milk" },
+      { qty: "300 g", item: "pecans" },
+      { qty: "400 g", item: "rolled oats" },
+      { qty: "400 g", item: "mature cheddar, grated" }
+    ],
+    method: [
+      "Poach the chickens with onion and bay, then shred the meat and keep 1.5 litres of the stock.",
+      "Soak the bread in the evaporated milk for 15 minutes and blend it smooth with the pecans.",
+      "Fry the aji amarillo paste in oil for a good 5 minutes until it darkens and loses its raw edge.",
+      "Combine the paste, the bread cream and the stock, and cook it out until it holds a line on the spoon.",
+      "Fold the chicken through, season hard, and spread it into gastronorm trays no deeper than 5 cm.",
+      "Rub the oats and cheddar into a crumb, scatter it over and bake at 190 °C for 25 minutes until dark gold."
+    ],
+    makeAhead: "Make the sauce and shred the meat 2 days ahead. Crumb and bake on the day of the event.",
+    holds: "Three hours in a chafing dish, which is the whole reason for the crumb — it stops a skin forming."
+  },
+  {
+    dishId: 138,
+    yields: "20 portions",
+    prepMin: 30,
+    cookMin: 30,
+    ingredients: [
+      { qty: "4 kg", item: "papa amarilla" },
+      { qty: "1.2 kg", item: "queso paria, smoked" },
+      { qty: "6 tbsp", item: "aji amarillo paste" },
+      { qty: "500 ml", item: "evaporated milk" },
+      { qty: "200 g", item: "soda crackers" },
+      { qty: "20 g", item: "black pepper, cracked" },
+      { qty: "200 g", item: "Tacna olives" }
+    ],
+    method: [
+      "Boil the potatoes whole and unpeeled, then peel and slice them into thick rounds while warm.",
+      "Fry the aji amarillo in oil until it darkens, and let it cool before it goes into the blender.",
+      "Blend the smoked paria, crackers, evaporated milk and cooled aji into a sauce that pours slowly.",
+      "Crack the black pepper coarsely and stir it in at the end so the heat sits alongside the aji rather than under it.",
+      "Nap the potato rounds with the sauce rather than drowning them; the potato has to still read as potato.",
+      "Finish with olives and serve at cool room temperature, not fridge-cold."
+    ],
+    makeAhead: "Make the sauce 2 days ahead — it thickens, so slacken it with a little milk before serving.",
+    holds: "Three hours at room temperature. The sauce forms a skin, so cover it until the moment it goes out."
+  },
+  {
+    dishId: 139,
+    yields: "20 portions",
+    prepMin: 60,
+    cookMin: 70,
+    ingredients: [
+      { qty: "20", item: "large rocoto" },
+      { qty: "1.5 kg", item: "minced beef" },
+      { qty: "1 kg", item: "morcilla, crumbled" },
+      { qty: "300 g", item: "rolled oats" },
+      { qty: "800 g", item: "onion, finely diced" },
+      { qty: "600 g", item: "queso paria" },
+      { qty: "500 ml", item: "evaporated milk" }
+    ],
+    method: [
+      "Cut the tops off the rocoto, hollow them out and keep the lids — they go back on for the bake.",
+      "Boil the shells three times in fresh water with sugar and vinegar, discarding the water each time.",
+      "Taste a scrap of shell after the third boil; if it still takes your breath away, boil them once more.",
+      "Brown the beef, add the onion and aji panca, then fold the crumbled morcilla and the oats through off the heat.",
+      "Fill the shells, cap each with a slice of paria and its own lid, and sit them upright in a deep tray.",
+      "Pour the evaporated milk around the base and bake at 180 °C for 40 minutes until the cheese is blistered."
+    ],
+    makeAhead: "Boil and stuff the shells the day before. Bake on site so they arrive at the table hot.",
+    holds: "Two hours in a chafing dish. The shells soften but the filling holds, which is the right trade."
+  },
+  {
+    dishId: 140,
+    yields: "20 portions",
+    prepMin: 30,
+    cookMin: 30,
+    ingredients: [
+      { qty: "4 kg", item: "papa nativa" },
+      { qty: "2 bunches", item: "huacatay" },
+      { qty: "300 g", item: "wild garlic leaf, or extra huacatay out of season" },
+      { qty: "400 g", item: "pecans" },
+      { qty: "800 g", item: "queso fresco" },
+      { qty: "400 ml", item: "evaporated milk" },
+      { qty: "200 g", item: "soda crackers" }
+    ],
+    method: [
+      "Boil the potatoes whole in well-salted water, then peel and slice them thick while they are still warm.",
+      "Toast the pecans in a dry pan until they smell nutty — untoasted, they make the sauce taste of nothing.",
+      "Blanch the wild garlic leaf for 10 seconds and refresh it in ice water so the sauce stays green.",
+      "Blend the huacatay, wild garlic, pecans, queso fresco, crackers and milk until completely smooth.",
+      "Season with salt and a squeeze of lime and check the consistency — it should coat, not flood.",
+      "Nap the potatoes and serve at room temperature, dressing the trays only just before they go out."
+    ],
+    makeAhead: "The sauce keeps 3 days but loses colour after one. Blend fresh on the morning of the event.",
+    holds: "Three hours at room temperature. Cover it, or the surface darkens within twenty minutes."
+  },
+  {
+    dishId: 141,
+    yields: "20 portions",
+    prepMin: 55,
+    cookMin: 60,
+    ingredients: [
+      { qty: "3 kg", item: "minced lamb" },
+      { qty: "1.5 kg", item: "onion, finely diced" },
+      { qty: "400 g", item: "rolled oats" },
+      { qty: "12", item: "choclo cobs, kernels stripped" },
+      { qty: "500 ml", item: "evaporated milk" },
+      { qty: "300 g", item: "Tacna olives" },
+      { qty: "6", item: "eggs, hard-boiled and sliced" }
+    ],
+    method: [
+      "Brown the lamb hard in batches so it colours rather than steams, and drain off the excess fat.",
+      "Sweat the onion with cumin and aji panca until sweet, then return the meat and stir the oats through.",
+      "Add stock a ladle at a time until the oats swell and the mixture holds its shape on a spoon.",
+      "Blitz the choclo kernels coarsely with the evaporated milk and a little butter into a rough, sweet paste.",
+      "Layer the meat into trays, lay the olives and egg over it, and spread the choclo paste right to the edges.",
+      "Dust with sugar and bake at 190 °C for 35 minutes until the top blisters and browns in patches."
+    ],
+    makeAhead: "Build the trays the day before and bake on site. It reheats better than almost anything here.",
+    holds: "Three hours in a chafing dish. The choclo lid stops it drying out the way mashed potato would."
+  },
+  {
+    dishId: 142,
+    yields: "60 empanadas",
+    prepMin: 90,
+    cookMin: 25,
+    ingredients: [
+      { qty: "2 kg", item: "plain flour" },
+      { qty: "700 g", item: "lard or butter" },
+      { qty: "1.5 kg", item: "chicken thigh, poached and shredded" },
+      { qty: "1.5 kg", item: "leek, finely sliced" },
+      { qty: "6 tbsp", item: "aji amarillo paste" },
+      { qty: "400 g", item: "stale bread, soaked in milk" },
+      { qty: "3", item: "eggs, for glazing" }
+    ],
+    method: [
+      "Make the dough, rest it an hour in the fridge, and roll it to 3 mm — thicker and the filling ratio goes wrong.",
+      "Sweat the leek in butter over a low heat for 20 minutes until it collapses and sweetens completely.",
+      "Fry the aji amarillo paste out properly, then add the soaked bread and cook to a thick, glossy base.",
+      "Fold the chicken and leek through and chill the filling hard — warm filling tears wet dough every time.",
+      "Fill, fold and crimp with a repulgue, then chill the trays 20 minutes before they go in the oven.",
+      "Egg-wash and bake at 200 °C for 22 minutes until deep gold, turning the trays once halfway."
+    ],
+    makeAhead: "Freeze filled and crimped, then bake from frozen at 190 °C for 28 minutes. Better than fresh-chilled.",
+    holds: "Two hours warm, four at room temperature. They are designed to be eaten off a napkin."
+  },
+  {
+    dishId: 143,
+    yields: "20 portions",
+    prepMin: 40,
+    cookMin: 50,
+    ingredients: [
+      { qty: "3 kg", item: "smoked corvina" },
+      { qty: "3 kg", item: "papa nativa" },
+      { qty: "8", item: "choclo cobs, in rounds" },
+      { qty: "2 L", item: "whole milk" },
+      { qty: "1.5 L", item: "fish stock" },
+      { qty: "4 tbsp", item: "aji panca paste" },
+      { qty: "1 bunch", item: "huacatay" }
+    ],
+    method: [
+      "Smoke or buy the corvina smoked, then flake it and pick it over carefully for pin bones.",
+      "Build the base by frying onion, garlic and aji panca until dark, which is the aderezo everything sits on.",
+      "Add the stock and the potatoes and simmer until the potatoes are done and starting to break at the edges.",
+      "Add the choclo rounds for the last 8 minutes only, or they go tough and stringy in the bowl.",
+      "Pour in the milk and bring it to a bare simmer — boiled milk splits and there is no fixing it in the pot.",
+      "Fold the smoked fish and the huacatay in off the heat and let it sit five minutes before serving."
+    ],
+    makeAhead: "Make the base and cook the potatoes a day ahead. Milk and fish go in during the last ten minutes.",
+    holds: "Ninety minutes held below a simmer. Prawns have a legal closed season; this version does not."
+  },
+  {
+    dishId: 144,
+    yields: "20 portions",
+    prepMin: 50,
+    cookMin: 90,
+    ingredients: [
+      { qty: "4", item: "whole ducks, jointed" },
+      { qty: "2.5 kg", item: "long-grain rice" },
+      { qty: "1 L", item: "stout" },
+      { qty: "4 bunches", item: "culantro" },
+      { qty: "1 kg", item: "onion" },
+      { qty: "8", item: "choclo cobs, kernels stripped" },
+      { qty: "4 tbsp", item: "aji amarillo paste" }
+    ],
+    method: [
+      "Render the duck skin down in a dry pan and brown the joints hard in their own fat, then set them aside.",
+      "Build the aderezo in the duck fat with onion, garlic and aji amarillo, cooking it until it is almost jammy.",
+      "Blitz the culantro with a little stock to a bright green liquor and hold it back until the very end.",
+      "Braise the duck in the stout and stock for an hour until the meat pulls easily from the bone.",
+      "Lift the duck out, measure the liquor, and cook the rice in it with the choclo, covered and undisturbed.",
+      "Fork the culantro liquor through the finished rice off the heat so it stays green, and sit the duck back on top."
+    ],
+    makeAhead: "Braise the duck the day before. The rice must be cooked within an hour of service, not reheated.",
+    holds: "One hour in a covered tray. Rice held longer goes claggy and the culantro browns off."
+  },
+  {
+    dishId: 145,
+    yields: "60 rolls",
+    prepMin: 45,
+    cookMin: 180,
+    ingredients: [
+      { qty: "4 kg", item: "pork leg, for jamon del pais" },
+      { qty: "6 tbsp", item: "aji panca paste" },
+      { qty: "60", item: "morning rolls" },
+      { qty: "2 kg", item: "red onion" },
+      { qty: "8", item: "limes" },
+      { qty: "3", item: "aji limo" },
+      { qty: "200 g", item: "wholegrain mustard" }
+    ],
+    method: [
+      "Rub the pork leg with aji panca, garlic, cumin and salt and leave it overnight in the fridge.",
+      "Roast at 150 °C for three hours until a skewer meets no resistance, then cool it completely before slicing.",
+      "Slice it thin on a machine — hand-cut jamon del pais is too thick and the roll will not close.",
+      "Cut the salsa criolla no more than an hour before service and dress it with lime and salt only.",
+      "Split the morning rolls, scrape a little mustard on the base, and lay the pork in loose folds.",
+      "Top with drained salsa criolla and close; wet criolla will turn the roll to paste within twenty minutes."
+    ],
+    makeAhead: "Roast and slice the pork the day before. Build the rolls no more than an hour before service.",
+    holds: "One hour built. Beyond that the roll goes soggy, so build in rounds as trays go out."
+  },
+  {
+    dishId: 146,
+    yields: "40 glasses",
+    prepMin: 30,
+    cookMin: 45,
+    ingredients: [
+      { qty: "3 L", item: "evaporated milk" },
+      { qty: "2 L", item: "condensed milk" },
+      { qty: "12", item: "egg yolks" },
+      { qty: "8", item: "egg whites" },
+      { qty: "600 g", item: "caster sugar" },
+      { qty: "150 ml", item: "whisky" },
+      { qty: "2 tsp", item: "ground cinnamon" }
+    ],
+    method: [
+      "Cook the two milks together over a low heat, stirring constantly, until the manjar blanco pulls from the pan.",
+      "Take it off the heat and beat the yolks in one at a time so they thicken it without scrambling.",
+      "Cool the manjar completely and spoon it into glasses to just under half full.",
+      "Boil the sugar with a little water to 118 °C, then pour it onto the whipping whites in a thin steady thread.",
+      "Beat the meringue to stiff and glossy, then fold the whisky in at the very end — heat would cook it off.",
+      "Pipe the meringue over the manjar, dust with cinnamon, and keep the glasses cool until service."
+    ],
+    makeAhead: "Make the manjar 3 days ahead. Whip the meringue on the day; it weeps by the second morning.",
+    holds: "Four hours at cool room temperature. Direct sun on a Lima terrace collapses the meringue fast."
+  },
+  {
+    dishId: 147,
+    yields: "40 portions",
+    prepMin: 60,
+    cookMin: 40,
+    ingredients: [
+      { qty: "3 kg", item: "camote" },
+      { qty: "2 kg", item: "zapallo macre" },
+      { qty: "1.5 kg", item: "plain flour" },
+      { qty: "30 g", item: "dried yeast" },
+      { qty: "1.2 kg", item: "chancaca" },
+      { qty: "600 g", item: "bitter orange marmalade" },
+      { qty: "3 L", item: "frying oil" }
+    ],
+    method: [
+      "Boil the camote and zapallo separately until soft, then pass both and weigh the puree before mixing.",
+      "Mix the puree with the flour and activated yeast to a wet, sticky batter and prove it 90 minutes.",
+      "Melt the chancaca with the marmalade, orange peel, fig leaf and anise into a syrup and pass it through a sieve.",
+      "Get the oil to 180 °C and check it with a scrap of batter before the first real ring goes in.",
+      "Shape each ring with a wet hand and a thumb through the middle, dropping it straight into the oil.",
+      "Fry 90 seconds a side, drain briefly, and pour the warm syrup over as it goes to the guest."
+    ],
+    makeAhead: "The syrup keeps for weeks. The batter must be proved on the day and used within four hours.",
+    holds: "Fry to order. A picaron that has sat five minutes is a doughnut, and not a good one.",
+    scaling: "One fryer does about 90 rings an hour. This is a queue-forming station, so staff it accordingly."
+  },
+  {
+    dishId: 148,
+    yields: "80 alfajores",
+    prepMin: 60,
+    cookMin: 15,
+    ingredients: [
+      { qty: "1.2 kg", item: "plain flour" },
+      { qty: "600 g", item: "cornflour" },
+      { qty: "1.1 kg", item: "butter" },
+      { qty: "500 g", item: "icing sugar" },
+      { qty: "1.5 kg", item: "manjar blanco" },
+      { qty: "500 g", item: "lucuma pulp" },
+      { qty: "200 g", item: "icing sugar, to finish" }
+    ],
+    method: [
+      "Beat the butter and icing sugar only until smooth — creaming air in gives you a biscuit that spreads.",
+      "Work in both flours by hand to shortbread proportions, which is what makes this version hold its snap.",
+      "Roll to 5 mm between parchment, cut discs, and chill them a full 30 minutes before baking.",
+      "Bake at 160 °C for 13 to 15 minutes until barely coloured; browning kills the texture you are after.",
+      "Beat the lucuma pulp into the manjar blanco, which cuts the sweetness and stiffens it for piping.",
+      "Sandwich the cooled discs, roll the edges in more lucuma manjar if you like, and dust with icing sugar."
+    ],
+    makeAhead: "Bake the discs up to a week ahead and sandwich within 24 hours of service.",
+    holds: "Two days sandwiched before the biscuit softens. Undipped discs keep a week in a sealed tin."
+  },
+  {
+    dishId: 149,
+    yields: "60 pieces",
+    prepMin: 70,
+    cookMin: 40,
+    ingredients: [
+      { qty: "1.5 kg", item: "plain flour" },
+      { qty: "500 g", item: "medium oatmeal" },
+      { qty: "700 g", item: "butter" },
+      { qty: "8", item: "egg yolks" },
+      { qty: "1.5 kg", item: "chancaca" },
+      { qty: "40 g", item: "ground ginger" },
+      { qty: "20 g", item: "anise seed" }
+    ],
+    method: [
+      "Rub the butter into the flour and oatmeal, then bring it together with the yolks and a little anise water.",
+      "Roll the dough into finger-thick sticks and lay them in tight rows so they bake into a slab.",
+      "Bake at 170 °C for 25 minutes until dry and firm all the way through, then cool completely.",
+      "Simmer the chancaca with ginger, cloves, orange peel, quince and fig leaf to a syrup that threads off a spoon.",
+      "Layer the sticks in a tray, pouring syrup over each layer and crossing the direction as you build.",
+      "Leave overnight for the syrup to soak in, then cut into squares with a heavy oiled knife."
+    ],
+    makeAhead: "Bake the sticks a week ahead. Assemble and syrup two days before service so it sets properly.",
+    holds: "A week at room temperature, wrapped. This is an October product and it keeps like one."
+  },
+  {
+    dishId: 150,
+    yields: "20 portions",
+    prepMin: 50,
+    cookMin: 45,
+    ingredients: [
+      { qty: "2 kg", item: "maiz morado" },
+      { qty: "1", item: "pineapple, with skin" },
+      { qty: "3", item: "quinces" },
+      { qty: "24", item: "gelatine leaves" },
+      { qty: "1", item: "plain sponge, cut into fingers" },
+      { qty: "2 L", item: "double cream" },
+      { qty: "300 g", item: "oatmeal, toasted" }
+    ],
+    method: [
+      "Boil the maiz morado with pineapple skin, quince, cinnamon and clove for 40 minutes to make the chicha.",
+      "Strain it, sweeten to taste and sharpen it with lime — under-acidic chicha sets into a bland jelly.",
+      "Soften the gelatine, dissolve it into a portion of the warm chicha, then combine and cool to room temperature.",
+      "Line the trifle bowls with sponge fingers and pour the cooled chicha over, filling to two-thirds.",
+      "Set for at least 4 hours before the cream goes on; a warm jelly and whipped cream make a pink mess.",
+      "Whip the cream to soft peaks, spoon it over the set jelly and top with toasted oatmeal at the venue."
+    ],
+    makeAhead: "Make the chicha and set the jellies 2 days ahead. Cream and oatmeal go on at the venue.",
+    holds: "Two hours out of the fridge before the jelly softens. The oatmeal goes on last or it goes soft."
   }
 ];
