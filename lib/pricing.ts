@@ -1,0 +1,278 @@
+/**
+ * Quote maths for Aye Si Cena.
+ *
+ * Three rules this module exists to enforce, because getting any of them wrong
+ * silently loses money on every event quoted:
+ *
+ *  1. IGV (18%) is stated explicitly. A quote is either NET (client pays
+ *     price + IGV) or GROSS (the headline already contains IGV). Never assume.
+ *  2. Canapes are sold per guest as a bite count, never per piece. The
+ *     per-piece menu value is a costing device only.
+ *  3. Per-event costs (menaje, staff, transport, packaging) come off before
+ *     anything is called profit. Food cost alone overstates margin badly on
+ *     plated service.
+ */
+
+import type { Dish, ServiceTier } from "./dishes";
+
+export const IGV_RATE = 0.18;
+
+/** Food-cost band we price to. Outside this, a dish needs repricing or re-speccing. */
+export const FOOD_COST_TARGET = { min: 0.25, max: 0.3 } as const;
+
+export type QuoteBasis = "net" | "gross";
+
+export interface TierRules {
+  id: ServiceTier;
+  name: string;
+  /** Below this head count the tier is not offered. */
+  minGuests: number;
+  /** Menaje (tableware) hire per guest. Zero where food ships in boxes. */
+  menajePerGuest: number;
+  /** Disposable packaging per guest. Zero where we plate onto hired china. */
+  packagingPerGuest: number;
+  /** One waiter per this many guests. Zero means no floor staff. */
+  guestsPerWaiter: number;
+  /** On-site chefs required regardless of head count. */
+  chefs: number;
+  /** Flat transport + load-in for the event. */
+  transport: number;
+  /** Canape bites included per guest. */
+  bitesPerGuest: number;
+}
+
+export const STAFF_SHIFT_COST = 100; // freelance waiter or prep chef, 6-8h shift
+export const CHEF_SHIFT_COST = 180; // on-site chef, plating service
+
+export const TIERS: Record<ServiceTier, TierRules> = {
+  scran: {
+    id: "scran",
+    name: "Scran Boxes",
+    minGuests: 8,
+    menajePerGuest: 0,
+    packagingPerGuest: 7,
+    guestsPerWaiter: 0,
+    chefs: 0,
+    transport: 60,
+    bitesPerGuest: 8
+  },
+  buffet: {
+    id: "buffet",
+    name: "Two Shores Buffet",
+    minGuests: 20,
+    menajePerGuest: 18,
+    packagingPerGuest: 2,
+    guestsPerWaiter: 25,
+    chefs: 1,
+    transport: 220,
+    bitesPerGuest: 6
+  },
+  plated: {
+    id: "plated",
+    name: "The Aye Si Plated Experience",
+    minGuests: 20,
+    menajePerGuest: 27.5,
+    packagingPerGuest: 0,
+    guestsPerWaiter: 12,
+    chefs: 1,
+    transport: 300,
+    bitesPerGuest: 6
+  }
+};
+
+/** Food cost as a fraction of menu value. */
+export function foodCostRatio(dish: Pick<Dish, "cost" | "price">): number {
+  if (dish.price <= 0) throw new Error(`Dish price must be positive, got ${dish.price}`);
+  return dish.cost / dish.price;
+}
+
+export type MarginFlag = "under" | "on-target" | "over";
+
+/**
+ * Under-target is not an error - it is headroom. Over-target is a real problem:
+ * the dish is eating margin and needs repricing or a cheaper spec.
+ */
+export function marginFlag(dish: Pick<Dish, "cost" | "price">): MarginFlag {
+  const r = foodCostRatio(dish);
+  if (r > FOOD_COST_TARGET.max) return "over";
+  if (r < FOOD_COST_TARGET.min) return "under";
+  return "on-target";
+}
+
+/** Add IGV to a net figure. */
+export function addIgv(net: number): number {
+  return net * (1 + IGV_RATE);
+}
+
+/** Strip IGV out of a gross figure. */
+export function removeIgv(gross: number): number {
+  return gross / (1 + IGV_RATE);
+}
+
+export interface QuoteInput {
+  dishes: Dish[];
+  guests: number;
+  tier: ServiceTier;
+  /** Whether the headline figure includes IGV. Defaults to net (+ IGV). */
+  basis?: QuoteBasis;
+}
+
+export interface QuoteLine {
+  label: string;
+  perGuest: number;
+  total: number;
+}
+
+export interface Quote {
+  tier: TierRules;
+  guests: number;
+  basis: QuoteBasis;
+
+  /** Menu value of the selected dishes, per guest, before any service costs. */
+  menuValuePerGuest: number;
+  foodCostPerGuest: number;
+
+  /** Everything that is not food, itemised. */
+  serviceLines: QuoteLine[];
+  serviceCostPerGuest: number;
+
+  /** What the client is quoted, excluding IGV. */
+  netPerGuest: number;
+  netTotal: number;
+  igvTotal: number;
+  /** What the client actually pays. */
+  grossTotal: number;
+
+  /**
+   * Revenue less food AND service costs. This is the number to run the
+   * business on - not revenue less food cost.
+   */
+  contributionPerGuest: number;
+  contributionTotal: number;
+  contributionRatio: number;
+
+  warnings: string[];
+}
+
+/**
+ * Canapes are counted as bites per guest; everything else is one portion per
+ * guest. Returns [menuValue, foodCost] per guest.
+ */
+function menuTotals(dishes: Dish[], bitesPerGuest: number): [number, number] {
+  const canapes = dishes.filter((d) => d.category === "canape");
+  const plates = dishes.filter((d) => d.category !== "canape");
+
+  let value = 0;
+  let cost = 0;
+
+  // Bites are distributed evenly across whichever canapes were chosen, so the
+  // guest gets `bitesPerGuest` pieces in total, not that many of each.
+  if (canapes.length > 0) {
+    const avgValue = canapes.reduce((s, d) => s + d.price, 0) / canapes.length;
+    const avgCost = canapes.reduce((s, d) => s + d.cost, 0) / canapes.length;
+    value += avgValue * bitesPerGuest;
+    cost += avgCost * bitesPerGuest;
+  }
+
+  for (const d of plates) {
+    value += d.price;
+    cost += d.cost;
+  }
+
+  return [value, cost];
+}
+
+export function buildQuote(input: QuoteInput): Quote {
+  const { dishes, guests, tier: tierId } = input;
+  const basis: QuoteBasis = input.basis ?? "net";
+  const tier = TIERS[tierId];
+  const warnings: string[] = [];
+
+  if (!tier) throw new Error(`Unknown service tier: ${tierId}`);
+  if (!Number.isFinite(guests) || guests <= 0) {
+    throw new Error(`Guest count must be a positive number, got ${guests}`);
+  }
+  if (dishes.length === 0) {
+    throw new Error("A quote needs at least one dish");
+  }
+  if (guests < tier.minGuests) {
+    warnings.push(
+      `${tier.name} has a ${tier.minGuests}-guest minimum; this quote is for ${guests}.`
+    );
+  }
+
+  const [menuValuePerGuest, foodCostPerGuest] = menuTotals(dishes, tier.bitesPerGuest);
+
+  // Per-event costs, spread across the head count.
+  const waiters = tier.guestsPerWaiter > 0 ? Math.ceil(guests / tier.guestsPerWaiter) : 0;
+  const staffTotal = waiters * STAFF_SHIFT_COST + tier.chefs * CHEF_SHIFT_COST;
+
+  const serviceLines: QuoteLine[] = [
+    {
+      label: "Menaje hire",
+      perGuest: tier.menajePerGuest,
+      total: tier.menajePerGuest * guests
+    },
+    {
+      label: "Packaging",
+      perGuest: tier.packagingPerGuest,
+      total: tier.packagingPerGuest * guests
+    },
+    {
+      label:
+        waiters > 0
+          ? `Staff — ${waiters} waiter${waiters === 1 ? "" : "s"}, ${tier.chefs} chef`
+          : `Staff — ${tier.chefs} chef`,
+      perGuest: staffTotal / guests,
+      total: staffTotal
+    },
+    {
+      label: "Transport & load-in",
+      perGuest: tier.transport / guests,
+      total: tier.transport
+    }
+  ].filter((l) => l.total > 0);
+
+  const serviceCostPerGuest = serviceLines.reduce((s, l) => s + l.perGuest, 0);
+
+  // The client-facing figure. Menu value already carries the margin on food;
+  // service costs are recovered on top at cost.
+  const netPerGuest = menuValuePerGuest + serviceCostPerGuest;
+  const netTotal = netPerGuest * guests;
+  const igvTotal = netTotal * IGV_RATE;
+  const grossTotal = netTotal + igvTotal;
+
+  const contributionPerGuest = netPerGuest - foodCostPerGuest - serviceCostPerGuest;
+  const contributionTotal = contributionPerGuest * guests;
+
+  const overspec = dishes.filter((d) => marginFlag(d) === "over");
+  if (overspec.length > 0) {
+    warnings.push(
+      `${overspec.length} dish${overspec.length === 1 ? "" : "es"} above the 30% food-cost ceiling: ` +
+        overspec.map((d) => d.name).join(", ")
+    );
+  }
+
+  return {
+    tier,
+    guests,
+    basis,
+    menuValuePerGuest,
+    foodCostPerGuest,
+    serviceLines,
+    serviceCostPerGuest,
+    netPerGuest,
+    netTotal,
+    igvTotal,
+    grossTotal,
+    contributionPerGuest,
+    contributionTotal,
+    contributionRatio: netPerGuest > 0 ? contributionPerGuest / netPerGuest : 0,
+    warnings
+  };
+}
+
+/** Format soles for display. */
+export function soles(n: number): string {
+  return `S/ ${n.toFixed(2)}`;
+}

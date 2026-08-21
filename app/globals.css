@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Light is the default set; dark is redefined at token level only, so no colour
+  is ever declared solely inside a media query.
+*/
+:root {
+  --bg: 232 233 230;
+  --surface: 245 245 242;
+  --raised: 222 224 219;
+  --ink: 30 35 38;
+  --ink-2: 86 94 98;
+  --ink-3: 124 133 137;
+  --line: 203 207 201;
+  --aji: 169 106 15;
+  --thistle: 99 72 138;
+  --good: 44 99 73;
+  --warn: 138 90 17;
+  --bad: 150 56 43;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: 20 24 26;
+    --surface: 28 33 36;
+    --raised: 37 43 47;
+    --ink: 228 227 220;
+    --ink-2: 154 162 165;
+    --ink-3: 111 120 124;
+    --line: 44 51 55;
+    --aji: 229 166 60;
+    --thistle: 171 147 209;
+    --good: 111 191 149;
+    --warn: 224 164 88;
+    --bad: 224 119 106;
+  }
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  /* Explicit, or the page borrows the host's ground. */
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--aji));
+  outline-offset: 2px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
