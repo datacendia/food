@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { DISHES } from "@/data/dishes";
-import { CATEGORY_LABEL, type Category } from "@/lib/dishes";
+import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 import { foodCostRatio, marginFlag, soles } from "@/lib/pricing";
 
-export const metadata: Metadata = { title: "The hundred" };
+export const metadata: Metadata = { title: "The matrix" };
 
-const ORDER: Category[] = ["canape", "main", "side", "sweet", "drink"];
+
 
 const FLAG_STYLE = {
   "on-target": "text-good",
@@ -18,7 +18,7 @@ export default function MenuPage() {
     <>
       <section className="border-b border-line py-12">
         <h1 className="font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-          The hundred
+          The matrix
         </h1>
         <p className="mt-4 max-w-2xl text-ink-2">
           Every dish with its lineage, its food cost and its menu value. The{" "}
@@ -32,7 +32,7 @@ export default function MenuPage() {
         </p>
       </section>
 
-      {ORDER.map((cat) => {
+      {CATEGORY_ORDER.map((cat) => {
         const rows = DISHES.filter((d) => d.category === cat);
         return (
           <section key={cat} className="py-10">
@@ -77,11 +77,11 @@ export default function MenuPage() {
                         <td className="px-3 py-3 font-mono text-xs text-ink-3">{d.id}</td>
                         <td className="px-3 py-3">
                           <span className="block font-bold leading-tight">{d.name}</span>
-                          <span className="mt-1 block text-sm text-ink-2">{d.blurb}</span>
+                          <span className="mt-1 block text-sm text-ink-2">{d.fusion}</span>
                           <span className="mt-1.5 block text-xs">
-                            <span className="font-bold text-thistle">{d.uk}</span>
+                            <span className="font-bold text-thistle">{d.origin}</span>
                             <span className="text-ink-3"> → </span>
-                            <span className="font-bold text-aji">{d.pe}</span>
+                            <span className="font-bold text-aji">{d.subOrigin}</span>
                           </span>
                         </td>
                         <td className="tnum whitespace-nowrap px-3 py-3 text-right font-mono text-sm text-ink-2">

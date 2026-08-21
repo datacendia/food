@@ -29,7 +29,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [3, 4, 5, 6],
     yearRound: false,
     verified: false,
-    dishes: [17, 37, 90]
+    dishes: [60, 62, 65, 77, 80, 89, 94, 99, 104, 130]
   },
   {
     id: "chirimoya",
@@ -38,7 +38,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [4, 5, 6, 7, 8, 9],
     yearRound: false,
     verified: false,
-    dishes: [18, 50]
+    dishes: [92]
   },
   {
     id: "aguaymanto",
@@ -47,7 +47,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [3, 4, 5, 6, 7, 8],
     yearRound: false,
     verified: false,
-    dishes: [34, 69, 82, 86, 93]
+    dishes: [11, 12, 61, 71, 83, 102, 106, 119, 122, 129]
   },
   {
     id: "maracuya",
@@ -56,7 +56,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [1, 2, 3, 11, 12],
     yearRound: false,
     verified: false,
-    dishes: [22, 81]
+    dishes: [82]
   },
   {
     id: "fresa",
@@ -65,7 +65,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [8, 9, 10, 11],
     yearRound: false,
     verified: false,
-    dishes: [16]
+    dishes: [96]
   },
   {
     id: "asparagus",
@@ -74,7 +74,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [2, 3, 4, 8, 9, 10, 11],
     yearRound: false,
     verified: false,
-    dishes: [14]
+    dishes: [57]
   },
   {
     id: "papa-nativa",
@@ -83,7 +83,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [4, 5, 6, 7],
     yearRound: false,
     verified: false,
-    dishes: [9, 11, 12, 30, 31, 68, 71]
+    dishes: [7, 9, 20, 28, 31, 32, 46, 48, 50, 51, 55, 64, 67, 68, 79, 121, 124, 127]
   },
   {
     id: "choclo",
@@ -92,7 +92,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [1, 2, 3, 4, 5],
     yearRound: false,
     verified: false,
-    dishes: [36, 67, 79]
+    dishes: [15, 35, 54, 97, 113]
   },
   {
     id: "rocoto",
@@ -101,7 +101,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [1, 2, 3, 4, 11, 12],
     yearRound: false,
     verified: false,
-    dishes: [1, 55, 73]
+    dishes: [2, 23, 73, 109, 117]
   },
   {
     id: "muna",
@@ -110,7 +110,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [5, 6, 7, 8],
     yearRound: false,
     verified: false,
-    dishes: [80, 98]
+    dishes: [123]
   },
   {
     id: "berros",
@@ -119,7 +119,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [5, 6, 7, 8, 9],
     yearRound: false,
     verified: false,
-    dishes: [31, 74]
+    dishes: [68]
   },
   {
     id: "langostinos",
@@ -128,7 +128,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [],
     yearRound: true,
     verified: false,
-    dishes: [43, 58]
+    dishes: [18]
   },
   {
     id: "trucha-paiche",
@@ -137,7 +137,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [],
     yearRound: true,
     verified: false,
-    dishes: [2, 8, 9, 31, 53, 60, 62]
+    dishes: [3, 7, 11, 13, 24, 28, 38, 43, 44, 68, 72, 74, 118, 125]
   },
   {
     id: "aji-amarillo",
@@ -146,7 +146,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [],
     yearRound: true,
     verified: false,
-    dishes: [3, 6, 51, 62, 76, 85]
+    dishes: [1, 4, 5, 10, 16, 21, 26, 29, 32, 36, 43, 45, 64, 68, 75, 111, 126, 128]
   },
   {
     id: "huacatay",
@@ -155,7 +155,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [],
     yearRound: true,
     verified: false,
-    dishes: [60, 70, 72]
+    dishes: [1, 14, 23, 39, 42, 75]
   },
   {
     id: "camote",
@@ -164,7 +164,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [],
     yearRound: true,
     verified: false,
-    dishes: [12, 40, 42, 92]
+    dishes: [17, 55, 66]
   },
   {
     id: "cacao",
@@ -173,7 +173,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [],
     yearRound: true,
     verified: false,
-    dishes: [16, 48, 84, 91, 99]
+    dishes: [76, 77, 79, 81, 91, 96, 100, 102, 105, 108]
   },
   {
     id: "chancaca",
@@ -182,7 +182,7 @@ export const INGREDIENTS: Ingredient[] = [
     months: [],
     yearRound: true,
     verified: false,
-    dishes: [19, 88, 95, 99]
+    dishes: [6, 16, 40, 58, 84, 91, 95, 105]
   },
   {
     id: "quinoa-kiwicha",
@@ -191,15 +191,6 @@ export const INGREDIENTS: Ingredient[] = [
     months: [],
     yearRound: true,
     verified: false,
-    dishes: [13, 27, 33, 38, 81]
+    dishes: [34, 49, 61, 70, 91, 98, 110, 120]
   },
-  {
-    id: "cochayuyo",
-    name: "Cochayuyo",
-    note: "Dried Andean seaweed. Shelf-stable, buy once a year.",
-    months: [],
-    yearRound: true,
-    verified: false,
-    dishes: [57]
-  }
 ];

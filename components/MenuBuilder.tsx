@@ -1,16 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Dish, Category, ServiceTier } from "@/lib/dishes";
-import { CATEGORY_LABEL } from "@/lib/dishes";
+import type { Dish, ServiceTier } from "@/lib/dishes";
+import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 import { buildQuote, TIERS, soles, marginFlag } from "@/lib/pricing";
 
-const ORDER: Category[] = ["canape", "main", "side", "sweet", "drink"];
+
 
 export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
   const [tier, setTier] = useState<ServiceTier>("plated");
   const [guests, setGuests] = useState(20);
-  const [picked, setPicked] = useState<number[]>([51, 6, 71, 16]);
+  const [picked, setPicked] = useState<number[]>([1, 2, 20, 76]);
 
   // A dish only appears if it is offered at the chosen tier.
   const available = useMemo(
@@ -91,7 +91,7 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
           </p>
         )}
 
-        {ORDER.map((cat) => {
+        {CATEGORY_ORDER.map((cat) => {
           const rows = available.filter((d) => d.category === cat);
           if (rows.length === 0) return null;
           return (
@@ -119,9 +119,9 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
                         </span>
                       </span>
                       <span className="mt-1 block text-xs">
-                        <span className="text-thistle">{d.uk}</span>
+                        <span className="text-thistle">{d.origin}</span>
                         <span className="text-ink-3"> → </span>
-                        <span className="text-aji">{d.pe}</span>
+                        <span className="text-aji">{d.subOrigin}</span>
                       </span>
                       {marginFlag(d) === "over" && (
                         <span className="mt-1 block font-mono text-[10px] text-bad">

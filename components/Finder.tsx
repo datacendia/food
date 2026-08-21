@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Dish, EventType, Flavour } from "@/lib/dishes";
-import { CATEGORY_LABEL, FLAVOUR_AXES, matchesEvent } from "@/lib/dishes";
+import { CATEGORY_LABEL, CATEGORY_ORDER, FLAVOUR_AXES, matchesEvent } from "@/lib/dishes";
 import { soles } from "@/lib/pricing";
 
 interface Props {
@@ -149,7 +149,7 @@ export default function Finder({ dishes, events, flavours }: Props) {
           <strong>any</strong>, or drop a flavour.
         </p>
       ) : (
-        Object.keys(CATEGORY_LABEL)
+        CATEGORY_ORDER
           .filter((c) => grouped[c]?.length)
           .map((cat) => (
             <section key={cat} className="mb-8">
@@ -166,9 +166,9 @@ export default function Finder({ dishes, events, flavours }: Props) {
                       </span>
                     </div>
                     <p className="mt-1.5 text-xs">
-                      <span className="font-bold text-thistle">{d.uk}</span>
+                      <span className="font-bold text-thistle">{d.origin}</span>
                       <span className="text-ink-3"> → </span>
-                      <span className="font-bold text-aji">{d.pe}</span>
+                      <span className="font-bold text-aji">{d.subOrigin}</span>
                     </p>
                     <p className="mt-2 flex flex-wrap gap-1">
                       {(flavours[d.id] ?? []).map((f) => (

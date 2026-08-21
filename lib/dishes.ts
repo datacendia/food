@@ -1,60 +1,66 @@
-/** Types for the Aye Si Cena dish matrix. */
+/** Types for the Aye Si Cena matrix. Schema follows the spreadsheet. */
 
-export type Category = "canape" | "main" | "side" | "sweet" | "drink";
+export type Category =
+  | "canape"
+  | "main"
+  | "side"
+  | "bowl"
+  | "breakfast"
+  | "bakery"
+  | "dessert";
 
 export type ServiceTier = "scran" | "buffet" | "plated";
 
-export type Tag =
-  | "vegetarian"
-  | "vegan"
-  | "seafood"
-  | "alcohol"
-  | "make-ahead"
-  | "breakfast"
-  | "signature";
+/** How the dish reaches the guest. Constrains which tiers can carry it. */
+export type ServiceFormat = "drop-off" | "buffet" | "plated" | "live-station";
 
-/** The axes of the Flavour Compass. */
 export type Flavour = "sweet" | "savoury" | "rich" | "tart" | "smoky" | "spiced" | "fresh";
 
 export const FLAVOUR_AXES: Flavour[] = [
-  "sweet",
-  "savoury",
-  "rich",
-  "tart",
-  "smoky",
-  "spiced",
-  "fresh"
+  "sweet", "savoury", "rich", "tart", "smoky", "spiced", "fresh"
 ];
 
 export interface Dish {
   id: number;
   name: string;
-  /** The British or Scottish original the dish descends from. */
-  uk: string;
-  /** The Peruvian ingredient or technique swapped in. */
-  pe: string;
-  blurb: string;
-  /** Food cost per unit or portion, in soles. */
-  cost: number;
-  /** Menu value per unit or portion, in soles, excluding IGV. */
-  price: number;
+  /** The dish this descends from. */
+  origin: string;
+  /** Which tradition: Scottish, English, Greek, Nordic, Basque, Peruvian. */
+  subOrigin: string;
+  /** True where the provenance is genuinely disputed, so cards don't overclaim. */
+  contested: boolean;
+  /** What Peru does to it, and why that works. */
+  fusion: string;
   category: Category;
-  /** Primary supplier for the defining ingredient. */
+  format: ServiceFormat;
+  /** Selling this needs the giro especial. Cooking with alcohol does not. */
+  needsLicence: boolean;
+  veg: boolean;
+  keyIngredients: string;
   source: string;
-  tags: Tag[];
+  /** Soles, ex-IGV. */
+  cost: number;
+  price: number;
+  /** False until a real supplier price replaces the estimate. */
+  costVerified: boolean;
   tiers: ServiceTier[];
 }
 
-/** A dish with its flavour axes attached. */
-export interface DishWithFlavour extends Dish {
-  flavours: Flavour[];
+export interface SupplyLine {
+  name: string;
+  buy: string;
+  why: string;
+  verify: string;
 }
 
 export interface EventFilter {
   tier?: ServiceTier;
   categories?: Category[];
-  anyTags?: Tag[];
-  excludeTags?: Tag[];
+  formats?: ServiceFormat[];
+  /** true = only dishes needing a licence; false = only those that don't. */
+  needsLicence?: boolean;
+  veg?: boolean;
+  subOrigins?: string[];
 }
 
 export interface EventType {
@@ -67,26 +73,36 @@ export interface EventType {
 export const CATEGORY_LABEL: Record<Category, string> = {
   canape: "Canapés & bites",
   main: "Mains",
-  side: "Sides, salads & breads",
-  sweet: "Bakery & desserts",
-  drink: "Signature drinks"
+  side: "Sides & breads",
+  bowl: "Bowls",
+  breakfast: "Breakfast",
+  bakery: "Bakery",
+  dessert: "Desserts"
 };
 
-/**
- * A dish matches an event when it satisfies every clause the filter sets.
- * Absent clauses are not constraints.
- */
+export const CATEGORY_ORDER: Category[] = [
+  "canape", "main", "bowl", "side", "breakfast", "bakery", "dessert"
+];
+
+export const FORMAT_LABEL: Record<ServiceFormat, string> = {
+  "drop-off": "Drop-off",
+  buffet: "Buffet",
+  plated: "Plated",
+  "live-station": "Live station"
+};
+
+/** A dish matches when it satisfies every clause the filter sets. */
 export function matchesEvent(dish: Dish, filter: EventFilter): boolean {
   if (filter.tier && !dish.tiers.includes(filter.tier)) return false;
   if (filter.categories && !filter.categories.includes(dish.category)) return false;
-  if (filter.anyTags && !filter.anyTags.some((t) => dish.tags.includes(t))) return false;
-  if (filter.excludeTags && filter.excludeTags.some((t) => dish.tags.includes(t))) return false;
+  if (filter.formats && !filter.formats.includes(dish.format)) return false;
+  if (filter.needsLicence !== undefined && dish.needsLicence !== filter.needsLicence) return false;
+  if (filter.veg !== undefined && dish.veg !== filter.veg) return false;
+  if (filter.subOrigins && !filter.subOrigins.some((o) => dish.subOrigin.startsWith(o))) {
+    return false;
+  }
   return true;
 }
-
-export { DISHES } from "@/data/dishes";
-export { FLAVOURS } from "@/data/flavours";
-export { EVENTS } from "@/data/events";
 
 /** A seasonal ingredient and the dishes that depend on it. */
 export interface Ingredient {
@@ -98,7 +114,6 @@ export interface Ingredient {
   yearRound: boolean;
   /** False until someone has confirmed the window at a Lima market. */
   verified: boolean;
-  /** Dish ids that use this ingredient. */
   dishes: number[];
 }
 
@@ -107,15 +122,13 @@ export const MONTH_NAMES = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-/** Is this ingredient buyable in the given month (1-12)? */
 export function inSeason(ing: Ingredient, month: number): boolean {
   return ing.yearRound || ing.months.includes(month);
 }
 
 /**
- * Dish ids that are compromised in a given month: every dish whose seasonal
- * ingredient is out of window. A dish with no seasonal dependency never
- * appears here.
+ * Dish ids compromised in a given month: every dish whose seasonal ingredient
+ * is out of window. A dish with no seasonal dependency never appears here.
  */
 export function dishesOutOfSeason(ings: Ingredient[], month: number): Set<number> {
   const out = new Set<number>();
@@ -125,4 +138,8 @@ export function dishesOutOfSeason(ings: Ingredient[], month: number): Set<number
   return out;
 }
 
+export { DISHES } from "@/data/dishes";
+export { FLAVOURS } from "@/data/flavours";
+export { EVENTS } from "@/data/events";
 export { INGREDIENTS } from "@/data/ingredients";
+export { SOURCING } from "@/data/sourcing";

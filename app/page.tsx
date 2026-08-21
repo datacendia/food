@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { DISHES } from "@/data/dishes";
 import { TIERS } from "@/lib/pricing";
-import { CATEGORY_LABEL, type Category } from "@/lib/dishes";
+import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 
-const ORDER: Category[] = ["canape", "main", "side", "sweet", "drink"];
+
 
 export default function HomePage() {
-  const signatures = DISHES.filter((d) => d.tags.includes("signature")).slice(0, 6);
-  const counts = ORDER.map((c) => ({
+  // Cheapest food cost with the widest tier reach reads as the strongest sellers.
+  const signatures = [...DISHES]
+    .filter((d) => d.tiers.length === 3)
+    .sort((a, b) => a.cost / a.price - b.cost / b.price)
+    .slice(0, 6);
+  const counts = CATEGORY_ORDER.map((c) => ({
     label: CATEGORY_LABEL[c],
     n: DISHES.filter((d) => d.category === c).length
   }));
@@ -24,7 +28,7 @@ export default function HomePage() {
         <p className="mt-6 max-w-xl text-lg text-ink-2">
           <span className="text-ink">Aye</span> is Scottish for yes.{" "}
           <span className="text-ink">Sí</span> is Spanish for yes. Say it aloud and it means
-          something else again. A hundred dishes that take Glasgow technique and run it through the
+          something else again. {DISHES.length} dishes that take Glasgow technique and run it through the
           Lima pantry.
         </p>
 
@@ -39,7 +43,7 @@ export default function HomePage() {
             href="/menu"
             className="rounded-lg border border-line px-5 py-3 text-sm font-bold hover:border-ink-3"
           >
-            Browse all 100 dishes
+            Browse all {DISHES.length} dishes
           </Link>
         </div>
 
@@ -98,11 +102,11 @@ export default function HomePage() {
             <article key={d.id} className="rounded-xl border border-line bg-surface p-5">
               <p className="font-mono text-[11px] text-ink-3">{String(d.id).padStart(3, "0")}</p>
               <h3 className="mt-1 font-display text-lg font-semibold leading-tight">{d.name}</h3>
-              <p className="mt-2 text-sm text-ink-2">{d.blurb}</p>
+              <p className="mt-2 text-sm text-ink-2">{d.fusion}</p>
               <p className="mt-3 text-xs">
-                <span className="font-bold text-thistle">{d.uk}</span>
+                <span className="font-bold text-thistle">{d.origin}</span>
                 <span className="text-ink-3"> → </span>
-                <span className="font-bold text-aji">{d.pe}</span>
+                <span className="font-bold text-aji">{d.subOrigin}</span>
               </p>
             </article>
           ))}

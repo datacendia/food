@@ -43,8 +43,8 @@ const FLAVOURS = loadData("flavours.ts", "FLAVOURS");
 const EVENTS = loadData("events.ts", "EVENTS");
 const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
 
-if (DISHES.length !== 100) {
-  throw new Error(`Expected 100 dishes, extracted ${DISHES.length}`);
+if (DISHES.length < 100) {
+  throw new Error(`Expected the full matrix, extracted only ${DISHES.length}`);
 }
 const unflavoured = DISHES.filter((d) => !FLAVOURS[d.id]).map((d) => d.id);
 if (unflavoured.length) {
@@ -77,16 +77,19 @@ const CONST = { IGV: 0.18, STAFF: 100, CHEF: 180, FC_MIN: 0.25, FC_MAX: 0.3 };
 const CATEGORY_LABEL = {
   canape: "Canapés &amp; bites",
   main: "Mains",
-  side: "Sides, salads &amp; breads",
-  sweet: "Bakery &amp; desserts",
-  drink: "Signature drinks"
+  bowl: "Bowls",
+  side: "Sides &amp; breads",
+  breakfast: "Breakfast",
+  bakery: "Bakery",
+  dessert: "Desserts"
 };
+const CATEGORY_ORDER = ["canape","main","bowl","side","breakfast","bakery","dessert"];
 
 const FLAVOUR_AXES = ["sweet","savoury","rich","tart","smoky","spiced","fresh"];
 
 const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL,
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
-  ingredients: INGREDIENTS,
+  ingredients: INGREDIENTS, order: CATEGORY_ORDER,
   months: ["January","February","March","April","May","June","July","August","September","October","November","December"] });
 
 const html = `<title>Aye Si Cena</title>
@@ -238,7 +241,7 @@ footer p{margin:0 0 7px;max-width:70ch}
     <nav role="tablist" aria-label="Sections">
       <button class="tab" role="tab" data-pane="home" aria-selected="true">Home</button>
       <button class="tab" role="tab" data-pane="find" aria-selected="false">Find dishes</button>
-      <button class="tab" role="tab" data-pane="menu" aria-selected="false">The hundred</button>
+      <button class="tab" role="tab" data-pane="menu" aria-selected="false">The matrix</button>
       <button class="tab" role="tab" data-pane="seasonal" aria-selected="false">Season</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
@@ -253,11 +256,10 @@ footer p{margin:0 0 7px;max-width:70ch}
     <h1>Aye, Si, Cena.</h1>
     <p class="lede"><span style="color:var(--ink)">Aye</span> is Scottish for yes.
       <span style="color:var(--ink)">Sí</span> is Spanish for yes. Say it aloud and it means
-      something else again. A hundred dishes that take Glasgow technique and run it through the
-      Lima pantry.</p>
+      something else again. The full matrix, taking Glasgow technique through the Lima pantry.</p>
     <div class="btns">
       <button class="btn" data-goto="builder">Build a menu &amp; see the price</button>
-      <button class="btn ghost" data-goto="menu">Browse all 100 dishes</button>
+      <button class="btn ghost" data-goto="menu">Browse the whole matrix</button>
     </div>
     <div class="stats" id="homeStats"></div>
 
@@ -291,7 +293,7 @@ footer p{margin:0 0 7px;max-width:70ch}
   </section>
 
   <section class="pane" id="pane-menu" hidden>
-    <h1>The hundred</h1>
+    <h1>The matrix</h1>
     <p class="lede">Every dish with its lineage, its food cost and its menu value. The
       <span class="dna"><span class="u">purple</span></span> half is the British original; the
       <span class="dna"><span class="p">gold</span></span> half is what Peru does to it.</p>
@@ -367,7 +369,7 @@ var D = JSON.parse(document.getElementById("data").textContent);
 var DISHES = D.dishes, TIERS = D.tiers, K = D.k, LABELS = D.labels;
 var FLAV = D.flavours, EVENTS = D.events, AXES = D.axes;
 var INGS = D.ingredients, MONTHS = D.months;
-var ORDER = ["canape","main","side","sweet","drink"];
+var ORDER = D.order;
 
 function soles(n){ return "S/ " + n.toFixed(2); }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
@@ -454,14 +456,16 @@ document.getElementById("homeTiers").innerHTML = Object.keys(TIERS).map(function
     "</dl></div>";
 }).join("");
 
-document.getElementById("homeSigs").innerHTML = DISHES
-  .filter(function(d){ return d.tags.indexOf("signature") > -1; }).slice(0,6)
+document.getElementById("homeSigs").innerHTML = DISHES.slice()
+  .filter(function(d){ return d.tiers.length === 3; })
+  .sort(function(a,b){ return a.cost/a.price - b.cost/b.price; })
+  .slice(0,6)
   .map(function(d){
     return "<div class='card'><p class='dish-n'>" + String(d.id).padStart(3,"0") + "</p>" +
       "<h3 style='margin:3px 0 8px'>" + esc(d.name) + "</h3>" +
-      "<p class='muted' style='font-size:.9rem;margin:0 0 10px'>" + esc(d.blurb) + "</p>" +
-      "<p class='dna' style='margin:0'><span class='u'>" + esc(d.uk) +
-      "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.pe) +
+      "<p class='muted' style='font-size:.9rem;margin:0 0 10px'>" + esc(d.fusion) + "</p>" +
+      "<p class='dna' style='margin:0'><span class='u'>" + esc(d.origin) +
+      "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.subOrigin) +
       "</span></p></div>";
   }).join("");
 
@@ -476,9 +480,9 @@ document.getElementById("menuBody").innerHTML = ORDER.map(function(cat){
     "</tr></thead><tbody>" + rows.map(function(d){
       return "<tr><td class='dish-n tnum'>" + d.id + "</td><td>" +
         "<span class='dish-t'>" + esc(d.name) + "</span>" +
-        "<span class='dish-b'>" + esc(d.blurb) + "</span>" +
-        "<span class='dna'><span class='u'>" + esc(d.uk) +
-          "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.pe) + "</span></span>" +
+        "<span class='dish-b'>" + esc(d.fusion) + "</span>" +
+        "<span class='dna'><span class='u'>" + esc(d.origin) +
+          "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.subOrigin) + "</span></span>" +
         "</td>" +
         "<td class='money tnum muted'>" + soles(d.cost) + "</td>" +
         "<td class='money tnum' style='font-weight:600'>" + soles(d.price) + "</td>" +
@@ -515,8 +519,10 @@ document.getElementById("pkgRates").innerHTML =
 function matchesEvent(d, f){
   if (f.tier && d.tiers.indexOf(f.tier) === -1) return false;
   if (f.categories && f.categories.indexOf(d.category) === -1) return false;
-  if (f.anyTags && !f.anyTags.some(function(t){ return d.tags.indexOf(t) > -1; })) return false;
-  if (f.excludeTags && f.excludeTags.some(function(t){ return d.tags.indexOf(t) > -1; })) return false;
+  if (f.formats && f.formats.indexOf(d.format) === -1) return false;
+  if (f.needsLicence !== undefined && d.needsLicence !== f.needsLicence) return false;
+  if (f.veg !== undefined && d.veg !== f.veg) return false;
+  if (f.subOrigins && !f.subOrigins.some(function(o){ return d.subOrigin.indexOf(o) === 0; })) return false;
   return true;
 }
 
@@ -602,8 +608,8 @@ function renderFind(){
         return "<div class='card' style='padding:15px'>" +
           "<div class='pick-top'><span class='pick-name'>" + esc(d.name) + "</span>" +
           "<span class='pick-price tnum'>" + soles(d.price) + "</span></div>" +
-          "<span class='dna'><span class='u'>" + esc(d.uk) +
-          "</span> <span style='color:var(--ink-3)'>&rarr;</span> <span class='p'>" + esc(d.pe) +
+          "<span class='dna'><span class='u'>" + esc(d.origin) +
+          "</span> <span style='color:var(--ink-3)'>&rarr;</span> <span class='p'>" + esc(d.subOrigin) +
           "</span></span>" +
           "<div style='margin-top:9px;display:flex;flex-wrap:wrap;gap:4px'>" +
           (FLAV[d.id] || []).map(function(f){
@@ -709,7 +715,7 @@ function renderSeason(){
 renderSeason();
 
 // --- builder -------------------------------------------------------------
-var tier = "plated", picked = [51, 6, 71, 16];
+var tier = "plated", picked = [1, 2, 26, 77];
 var guestsEl = document.getElementById("guests");
 
 document.getElementById("tierChips").innerHTML = Object.keys(TIERS).map(function(k){
@@ -764,8 +770,8 @@ function render(){
           (picked.indexOf(d.id) > -1) + "'>" +
           "<span class='pick-top'><span class='pick-name'>" + esc(d.name) + "</span>" +
           "<span class='pick-price tnum'>" + soles(d.price) + "</span></span>" +
-          "<span class='dna'><span class='u'>" + esc(d.uk) +
-          "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.pe) +
+          "<span class='dna'><span class='u'>" + esc(d.origin) +
+          "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.subOrigin) +
           "</span></span></button>";
       }).join("") + "</div></section>";
   }).join("");

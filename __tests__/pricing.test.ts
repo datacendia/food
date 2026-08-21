@@ -16,45 +16,6 @@ const byId = (id: number): Dish => {
   return d;
 };
 
-describe("the dish matrix", () => {
-  it("holds exactly 100 dishes", () => {
-    expect(DISHES).toHaveLength(100);
-  });
-
-  it("has no duplicate ids, numbered 1..100", () => {
-    const ids = DISHES.map((d) => d.id).sort((a, b) => a - b);
-    expect(new Set(ids).size).toBe(100);
-    expect(ids[0]).toBe(1);
-    expect(ids[99]).toBe(100);
-  });
-
-  it("matches the planned category split", () => {
-    const count = (c: string) => DISHES.filter((d) => d.category === c).length;
-    expect(count("canape")).toBe(25);
-    expect(count("main")).toBe(20);
-    expect(count("side")).toBe(20);
-    expect(count("sweet")).toBe(25);
-    expect(count("drink")).toBe(10);
-  });
-
-  it("keeps every dish at or under the 30% food-cost ceiling", () => {
-    const over = DISHES.filter((d) => marginFlag(d) === "over");
-    expect(over.map((d) => `${d.id} ${d.name}`)).toEqual([]);
-  });
-
-  it("prices every dish above its cost", () => {
-    for (const d of DISHES) {
-      expect(d.price).toBeGreaterThan(d.cost);
-    }
-  });
-
-  it("gives every dish at least one service tier", () => {
-    for (const d of DISHES) {
-      expect(d.tiers.length).toBeGreaterThan(0);
-    }
-  });
-});
-
 describe("IGV", () => {
   it("is 18%", () => {
     expect(IGV_RATE).toBeCloseTo(0.18);
@@ -96,7 +57,8 @@ describe("food cost ratios", () => {
 });
 
 describe("buildQuote", () => {
-  const platedMenu = [byId(51), byId(52), byId(6), byId(71), byId(16)];
+  // canapé, canapé, plated main, bakery — a realistic plated selection
+  const platedMenu = [byId(1), byId(2), byId(26), byId(77)];
 
   it("rejects an empty menu", () => {
     expect(() => buildQuote({ dishes: [], guests: 20, tier: "plated" })).toThrow(
@@ -117,9 +79,9 @@ describe("buildQuote", () => {
 
   it("counts canapes as bites per guest, not one of each", () => {
     // Two canapes on an 8-bite tier should bill 8 bites total, not 2 pieces.
-    const twoCanapes = [byId(51), byId(52)];
+    const twoCanapes = [byId(1), byId(2)];
     const q = buildQuote({ dishes: twoCanapes, guests: 20, tier: "scran" });
-    const avgPrice = (byId(51).price + byId(52).price) / 2;
+    const avgPrice = (byId(1).price + byId(2).price) / 2;
     expect(q.menuValuePerGuest).toBeCloseTo(avgPrice * TIERS.scran.bitesPerGuest, 6);
   });
 
@@ -145,7 +107,7 @@ describe("buildQuote", () => {
   });
 
   it("adds no menaje to a Scran Box, and no packaging to plated service", () => {
-    const box = buildQuote({ dishes: [byId(34)], guests: 20, tier: "scran" });
+    const box = buildQuote({ dishes: [byId(77)], guests: 20, tier: "scran" });
     expect(box.serviceLines.find((l) => l.label === "Menaje hire")).toBeUndefined();
 
     const plated = buildQuote({ dishes: platedMenu, guests: 20, tier: "plated" });

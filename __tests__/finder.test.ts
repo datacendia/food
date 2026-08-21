@@ -1,45 +1,11 @@
 import { DISHES } from "@/data/dishes";
-import { FLAVOURS } from "@/data/flavours";
 import { EVENTS } from "@/data/events";
-import { FLAVOUR_AXES, matchesEvent, type Flavour } from "@/lib/dishes";
+import { matchesEvent } from "@/lib/dishes";
 
-describe("flavour map", () => {
-  it("covers every dish", () => {
-    const missing = DISHES.filter((d) => !FLAVOURS[d.id]).map((d) => `${d.id} ${d.name}`);
-    expect(missing).toEqual([]);
-  });
-
-  it("has no entries for dishes that do not exist", () => {
-    const ids = new Set(DISHES.map((d) => d.id));
-    const orphans = Object.keys(FLAVOURS).filter((k) => !ids.has(Number(k)));
-    expect(orphans).toEqual([]);
-  });
-
-  it("uses only known axes", () => {
-    const bad: string[] = [];
-    for (const [id, fs] of Object.entries(FLAVOURS)) {
-      for (const f of fs) {
-        if (!FLAVOUR_AXES.includes(f)) bad.push(`${id}: ${f}`);
-      }
-    }
-    expect(bad).toEqual([]);
-  });
-
-  it("gives every dish at least one axis and no duplicates", () => {
-    for (const d of DISHES) {
-      const f = FLAVOURS[d.id];
-      expect(f.length).toBeGreaterThan(0);
-      expect(new Set(f).size).toBe(f.length);
-    }
-  });
-
-  it("uses every axis at least once, or the compass has a dead button", () => {
-    const unused = FLAVOUR_AXES.filter(
-      (f) => !Object.values(FLAVOURS).some((list: Flavour[]) => list.includes(f))
-    );
-    expect(unused).toEqual([]);
-  });
-});
+const hits = (id: string) => {
+  const ev = EVENTS.find((e) => e.id === id)!;
+  return DISHES.filter((d) => matchesEvent(d, ev.filter));
+};
 
 describe("events", () => {
   it("has unique ids", () => {
@@ -61,30 +27,38 @@ describe("events", () => {
     expect(useless).toEqual([]);
   });
 
-  it("excludes alcohol from the no-licence event", () => {
-    const ev = EVENTS.find((e) => e.id === "no-licence")!;
-    const hits = DISHES.filter((d) => matchesEvent(d, ev.filter));
-    expect(hits.every((d) => !d.tags.includes("alcohol"))).toBe(true);
-    // And it must leave a usable menu behind, not three biscuits.
-    expect(hits.length).toBeGreaterThan(50);
+  it("excludes every licensed dish from the no-licence event", () => {
+    const out = hits("no-licence");
+    expect(out.every((d) => !d.needsLicence)).toBe(true);
+    expect(out.length).toBeGreaterThan(100);
   });
 
-  it("keeps the corporate event inside the Scran tier", () => {
-    const ev = EVENTS.find((e) => e.id === "corporate")!;
-    const hits = DISHES.filter((d) => matchesEvent(d, ev.filter));
-    expect(hits.every((d) => d.tiers.includes("scran"))).toBe(true);
+  it("keeps the corporate event to unstaffed drop-off only", () => {
+    for (const d of hits("corporate")) {
+      expect(d.format).toBe("drop-off");
+      expect(d.tiers).toContain("scran");
+    }
   });
 
-  it("offers a drink at the cocktail event", () => {
-    const ev = EVENTS.find((e) => e.id === "cocktail")!;
-    const hits = DISHES.filter((d) => matchesEvent(d, ev.filter));
-    expect(hits.some((d) => d.category === "drink")).toBe(true);
-    expect(hits.some((d) => d.category === "canape")).toBe(true);
+  it("returns only vegetarian dishes for the vegetarian menu", () => {
+    expect(hits("vegetarian").every((d) => d.veg)).toBe(true);
+  });
+
+  it("returns only live-station dishes for the live event", () => {
+    const out = hits("live-station");
+    expect(out.every((d) => d.format === "live-station")).toBe(true);
+    expect(out.length).toBeGreaterThan(5);
+  });
+
+  it("splits heritage cleanly — no dish in both Scottish and Beyond Britain", () => {
+    const scottish = new Set(hits("heritage-scottish").map((d) => d.id));
+    const beyond = hits("beyond-britain").map((d) => d.id);
+    expect(beyond.filter((id) => scottish.has(id))).toEqual([]);
   });
 });
 
 describe("matchesEvent", () => {
-  const dish = DISHES.find((d) => d.id === 51)!;
+  const dish = DISHES.find((d) => d.id === 1)!;
 
   it("treats an empty filter as no constraint", () => {
     expect(matchesEvent(dish, {})).toBe(true);
@@ -93,5 +67,11 @@ describe("matchesEvent", () => {
   it("applies clauses together, not as alternatives", () => {
     expect(matchesEvent(dish, { categories: ["canape"], tier: "plated" })).toBe(true);
     expect(matchesEvent(dish, { categories: ["main"], tier: "plated" })).toBe(false);
+  });
+
+  it("distinguishes false from undefined on boolean clauses", () => {
+    expect(matchesEvent({ ...dish, veg: false }, { veg: false })).toBe(true);
+    expect(matchesEvent({ ...dish, veg: false }, { veg: true })).toBe(false);
+    expect(matchesEvent({ ...dish, veg: false }, {})).toBe(true);
   });
 });
