@@ -23,7 +23,12 @@ function loadData(file, exportName) {
   // any `export` left behind breaks the CJS require below - so convert them all.
   const js = src
     .replace(/^import type .*$/gm, "")
-    .replace(/export const (\w+)\s*:[^=]+=/g, "module.exports.$1 =");
+    // Both annotated (`export const X: T =`) and bare (`export const X =`)
+    // declarations have to become CJS, or the require below trips on the one
+    // it missed.
+    .replace(/export const (\w+)\s*:[^=]+=/g, "module.exports.$1 =")
+    .replace(/export const (\w+)\s*=/g, "module.exports.$1 =")
+    .replace(/\bas const\b/g, "");
   const tmp = path.join(ROOT, `.${exportName}.tmp.cjs`);
   fs.writeFileSync(tmp, js);
   try {
@@ -43,6 +48,12 @@ const EVENTS = loadData("events.ts", "EVENTS");
 const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
 const MOMENTS = loadData("moments.ts", "MOMENTS");
 const RECIPES = loadData("recipes.ts", "RECIPES");
+const PRICES = loadData("prices.ts", "PRICES");
+const SUB_RECIPE_OF = loadData("prices.ts", "SUB_RECIPE_OF");
+const SUB_PREP_PRICES = loadData("prices.ts", "SUB_PREP_PRICES");
+const NON_FOOD_PRICES = loadData("prices.ts", "NON_FOOD_PRICES");
+const COMPOUND_ALIAS = loadData("prices.ts", "COMPOUND_ALIAS");
+const NON_FOOD = loadData("prices.ts", "NON_FOOD");
 const DISTRICTS = loadData("venues.ts", "DISTRICTS");
 const VENUE_TYPES = loadData("venues.ts", "VENUE_TYPES");
 
@@ -98,6 +109,8 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
   ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: RECIPES,
   districts: DISTRICTS, venues: VENUE_TYPES,
+  prices: PRICES, subOf: SUB_RECIPE_OF, subPrices: SUB_PREP_PRICES,
+  sundryPrices: NON_FOOD_PRICES, alias: COMPOUND_ALIAS, sundries: NON_FOOD,
   trip: { vanHourly: 45, perKm: 1.8, crewHourly: 18, generator: 280,
           vanTrips: { scran:1, buffet:2, plated:2 }, loadCrew: { scran:1, buffet:2, plated:3 } },
   formats: { "drop-off": "Drop-off", buffet: "Buffet", plated: "Plated", "live-station": "Live station" },
@@ -132,6 +145,9 @@ const html = `<title>Aye Si Cena</title>
   --c-smoky:#8AA0B0;--c-spiced:#E07B6C;--c-fresh:#A8C665;
 }
 *{box-sizing:border-box}
+.rc.over{color:var(--bad);font-weight:600}
+.rc.under{color:var(--warn)}
+.rc.muted{color:var(--ink-3)}
 .graphstage{position:relative;margin-top:18px;border:1px solid var(--line);border-radius:14px;
   background:var(--surface);overflow:hidden;touch-action:none}
 #graphSvg{display:block;width:100%;height:min(70vh,620px);cursor:grab}
@@ -406,6 +422,11 @@ footer p{margin:0 0 7px;max-width:70ch}
       <span class="dna"><span class="p">gold</span></span> half is what Peru does to it.</p>
     <p class="lede" style="font-size:.92rem;color:var(--ink-3);margin-top:10px">FC% is food cost as a
       share of menu value. Above 30% is flagged — it is eating margin.</p>
+    <p class="lede" style="font-size:.92rem;margin-top:8px"><strong>From recipe</strong> is what the
+      dish prices out at when every ingredient line is costed and divided by the yield. Where that
+      disagrees with the estimate by more than 40% the cell is flagged. The bakery is where it
+      disagrees most: sugar and flour are cheap and the estimates assumed otherwise. Both figures
+      are unverified until a market run.</p>
     <div id="menuBody"></div>
   </section>
 
@@ -498,6 +519,7 @@ footer p{margin:0 0 7px;max-width:70ch}
         </fieldset>
         <div id="dropNote"></div>
         <div id="pickBody"></div>
+        <div id="shopBody" style="margin-top:34px;border-top:1px solid var(--line);padding-top:24px"></div>
       </div>
       <aside><div class="quote" id="quote"></div></aside>
     </div>
@@ -522,12 +544,266 @@ var MOMENTS = D.moments, FORMATS = D.formats, CAP = D.cap, LEAD = D.lead;
 var ORDER = D.order;
 var RECIPES = D.recipes;
 var DISTRICTS = D.districts, VENUES = D.venues, TRIP = D.trip;
+var PRICES = D.prices, SUB_OF = D.subOf, SUB_PRICES = D.subPrices;
+var SUNDRY_PRICES = D.sundryPrices, ALIAS = D.alias, SUNDRIES = D.sundries;
 
 function soles(n){ return "S/ " + n.toFixed(2); }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 function ratio(d){ return d.cost / d.price; }
 function flag(d){ var r = ratio(d); return r > K.FC_MAX ? "over" : (r < K.FC_MIN ? "under" : "ok"); }
+
+function renderShop(menu, guests, tierId){
+  var el = document.getElementById("shopBody");
+  if (!menu.length || !(guests > 0)){ el.innerHTML = ""; return; }
+  var s = buildShoppingList(menu, guests, tierId);
+  var overs = s.scaled.filter(function(x){ return x.produced > x.needed; });
+
+  el.innerHTML =
+    "<div class='sec-head'><h2>The shop</h2><span class='pill-count tnum'>" +
+      s.list.length + "</span></div>" +
+    "<p class='lede' style='margin-top:6px;font-size:.94rem'>Every recipe scaled to this head " +
+      "count and added up. Whole batches only \u2014 half a batch of shortbread is a different " +
+      "biscuit \u2014 so some dishes make more than the event needs.</p>" +
+    "<div class='tscroll' style='margin-top:16px'><table><thead><tr>" +
+      "<th>Ingredient</th><th style='text-align:right'>Buy</th>" +
+      "<th style='text-align:right'>Cost</th><th>For</th>" +
+    "</tr></thead><tbody>" + s.list.map(function(r){
+      return "<tr><td class='cap'>" + esc(r.key) + "</td>" +
+        "<td class='money tnum' style='font-weight:600'>" + esc(r.display) + "</td>" +
+        "<td class='money tnum muted'>" + soles(r.soles) + "</td>" +
+        "<td class='src'>" + esc(r.dishes.join(", ")) + "</td></tr>";
+    }).join("") +
+    "<tr><td colspan='2' style='font-weight:700'>Total ingredients</td>" +
+      "<td class='money tnum' style='font-weight:700'>" + soles(s.total) + "</td>" +
+      "<td class='src'>" + soles(Math.round((s.total/guests)*100)/100) + " per guest</td></tr>" +
+    "</tbody></table></div>" +
+    "<div class='sec-head' style='margin-top:28px'><h2>Batches to cook</h2></div>" +
+    "<div class='tscroll'><table><thead><tr><th>Dish</th>" +
+      "<th style='text-align:right'>Needed</th><th style='text-align:right'>Batches</th>" +
+      "<th style='text-align:right'>Makes</th><th style='text-align:right'>Ingredients</th>" +
+    "</tr></thead><tbody>" + s.scaled.map(function(x){
+      var spare = x.produced - x.needed;
+      return "<tr><td>" + esc(x.name) + "</td>" +
+        "<td class='money tnum'>" + x.needed + "</td>" +
+        "<td class='money tnum' style='font-weight:600'>" + x.batches + "</td>" +
+        "<td class='money tnum'>" + x.produced +
+          (spare > 0 ? " <span class='mono muted' style='font-size:10px'>+" + spare + "</span>" : "") + "</td>" +
+        "<td class='money tnum muted'>" + soles(x.foodCost) + "</td></tr>";
+    }).join("") + "</tbody></table></div>" +
+    (overs.length
+      ? "<p class='muted' style='font-size:.88rem;margin-top:12px'>" + overs.length +
+        " dish" + (overs.length === 1 ? "" : "es") + " overproduce because a batch cannot be " +
+        "split. Sell the surplus, or put it in the tasting boxes.</p>"
+      : "");
+}
+
+// --- costing, mirroring lib/costing.ts + lib/scaling.ts -------------------
+// A hand-port, like the quote maths. verify-standalone recomputes the same
+// figures from the TypeScript and fails if the two drift.
+var PREP_WORDS = ("chopped finely coarsely sliced diced grated softened melted cubed minced " +
+  "crushed shredded peeled trimmed beaten whisked sifted soaked rinsed drained warmed cooled " +
+  "room temperature roughly thinly thickly picked stripped halved quartered scored cleaned " +
+  "boned skinned jointed filleted deseeded hulled zested juiced").split(" ");
+var IRREGULAR = { leaves:"leaf", loaves:"loaf", knives:"knife", haggis:"haggis",
+  asparagus:"asparagus", couscous:"couscous", tomatoes:"tomato", potatoes:"potato",
+  berries:"berry", cherries:"cherry", anchovies:"anchovy", chives:"chive", peas:"pea",
+  oats:"oat", greens:"green", molasses:"molasses" };
+
+function singular(w){
+  if (IRREGULAR[w]) return IRREGULAR[w];
+  if (w.length > 3 && w.charAt(w.length-1) === "s" && w.slice(-2) !== "ss") return w.slice(0,-1);
+  return w;
+}
+function canonIng(item){
+  var t = String(item == null ? "" : item).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+  t = t.split(",")[0].replace(/\\([^)]*\\)/g," ").split(/\\bor\\b/)[0].replace(/[^a-z0-9%\\s-]/g," ");
+  return t.split(/\\s+/).filter(Boolean)
+    .filter(function(w){ return PREP_WORDS.indexOf(w) === -1; })
+    .map(singular).join(" ").trim();
+}
+
+var MASS = { g:1, gram:1, grams:1, kg:1000, kilo:1000 };
+var VOL  = { ml:1, l:1000, litre:1000, litres:1000, liter:1000, liters:1000 };
+var EACH_W = ["","batch","quantity","pack","tin","loaf","sheet","sheets","clove","cloves",
+  "cob","cobs","stick","sticks","pod","pods","leaf","leaves"];
+var BUNCH_W = ["bunch","bunches","handful","handfuls"];
+
+function parseQty(q){
+  var m = /^\\s*([\\d./]+)\\s*(.*)$/.exec(q == null ? "" : q);
+  if (!m) return null;
+  var a;
+  if (/^\\d+\\s*\\/\\s*\\d+$/.test(m[1])){
+    var f = m[1].split("/"); a = Number(f[0]) / Number(f[1]);
+  } else a = Number(m[1]);
+  if (!isFinite(a) || a <= 0) return null;
+  var u = m[2].trim().toLowerCase().replace(/\\.$/,"");
+  if (MASS[u]) return { amount:a*MASS[u], base:"g" };
+  if (VOL[u])  return { amount:a*VOL[u],  base:"ml" };
+  if (u === "tbsp") return { amount:a*15, base:"ml" };
+  if (u === "tsp")  return { amount:a*5,  base:"ml" };
+  if (BUNCH_W.indexOf(u) > -1) return { amount:a, base:"bunch" };
+  if (EACH_W.indexOf(u) > -1)  return { amount:a, base:"each" };
+  return null;
+}
+function convertBase(m, target){
+  if (m.base === target) return m.amount;
+  var fluid = function(b){ return b === "g" || b === "ml"; };
+  return (fluid(m.base) && fluid(target)) ? m.amount : null;
+}
+var PER_BASE = { kg:{b:"g",size:1000}, L:{b:"ml",size:1000},
+                 each:{b:"each",size:1}, bunch:{b:"bunch",size:1} };
+
+function portionsOf(yields){
+  var ex = /(\\d+)\\s*(portions?|pieces?|servings?|slices?)/i.exec(yields);
+  if (ex) return Number(ex[1]);
+  var all = String(yields).match(/\\d+(?:\\.\\d+)?/g);
+  return all && all.length ? Math.max.apply(null, all.map(Number)) : null;
+}
+
+function costLine(qty, item, depth){
+  depth = depth || 0;
+  var raw = canonIng(item), key = ALIAS[raw] || raw;
+  var out = { qty:qty, item:item, key:key, status:"costed", soles:0, nonFood:false };
+
+  if (SUB_OF[raw] !== undefined){
+    var v = costSub(SUB_OF[raw], qty, depth);
+    if (v === null) return { qty:qty, item:item, key:key, status:"sub-preparation", soles:0, nonFood:false };
+    out.soles = v; return out;
+  }
+  out.nonFood = SUNDRIES.indexOf(key) > -1;
+  var price = out.nonFood ? SUNDRY_PRICES[key] : (PRICES[key] || SUB_PRICES[key]);
+  if (!price){ out.status = "unpriced"; return out; }
+
+  var m = parseQty(qty);
+  if (!m){ out.status = "unreadable"; return out; }
+  var spec = PER_BASE[price.per];
+  var amt = convertBase(m, spec.b);
+  if (amt === null && price.unitGrams){
+    var counted = m.base === "each" || m.base === "bunch";
+    var wanted  = spec.b === "each" || spec.b === "bunch";
+    if (counted && !wanted) amt = m.amount * price.unitGrams;
+    else if (!counted && wanted) amt = m.amount / price.unitGrams;
+  }
+  if (amt === null){ out.status = "unreadable"; return out; }
+  out.soles = (amt / spec.size) * price.soles;
+  return out;
+}
+
+function recipeFor(id){
+  for (var i = 0; i < RECIPES.length; i++) if (RECIPES[i].dishId === id) return RECIPES[i];
+  return null;
+}
+function costRecipe(r, depth){
+  depth = depth || 0;
+  var lines = r.ingredients.map(function(i){ return costLine(i.qty, i.item, depth); });
+  var food = 0, sundry = 0;
+  lines.forEach(function(l){
+    if (l.status !== "costed") return;
+    if (l.nonFood) sundry += l.soles; else food += l.soles;
+  });
+  var portions = portionsOf(r.yields);
+  return { dishId:r.dishId, portions:portions, lines:lines,
+    foodTotal:Math.round(food*100)/100, sundryTotal:Math.round(sundry*100)/100,
+    perPortion: portions > 0 ? Math.round((food/portions)*100)/100 : null };
+}
+function batchWeight(r){
+  var g = 0;
+  r.ingredients.forEach(function(i){
+    var m = parseQty(i.qty); if (!m) return;
+    var v = convertBase(m, "g"); if (v !== null) g += v;
+  });
+  return g > 0 ? g : null;
+}
+function costSub(dishId, qty, depth){
+  if (depth >= 3) return null;
+  var sub = recipeFor(dishId); if (!sub) return null;
+  var c = costRecipe(sub, depth + 1);
+  if (c.foodTotal <= 0) return null;
+  var m = parseQty(qty); if (!m) return null;
+  if (m.base === "each") return c.foodTotal * m.amount;
+  var bw = batchWeight(sub); if (bw === null) return null;
+  var g = convertBase(m, "g");
+  return g === null ? null : c.foodTotal * (g / bw);
+}
+
+// Real cost per portion for every dish, computed once.
+var REAL_COST = {};
+RECIPES.forEach(function(r){
+  var c = costRecipe(r);
+  if (c.perPortion !== null) REAL_COST[r.dishId] = c.perPortion;
+});
+
+function scaleQty(qty, factor){
+  var m = parseQty(qty); if (!m) return qty;
+  var parts = /^\\s*([\\d./]+)\\s*(.*)$/.exec(qty); if (!parts) return qty;
+  var unit = parts[2].trim(), written;
+  if (parts[1].indexOf("/") > -1){
+    var f = parts[1].split("/"); written = Number(f[0]) / Number(f[1]);
+  } else written = Number(parts[1]);
+  if (!isFinite(written) || written <= 0) return qty;
+  var scaled = written * factor;
+  if (m.base === "each" && !unit) return String(Math.ceil(scaled));
+  if (m.base === "bunch" || m.base === "each") return Math.ceil(scaled) + (unit ? " " + unit : "");
+  var r = scaled >= 100 ? Math.round(scaled) : Math.round(scaled*10)/10;
+  return unit ? r + " " + unit : String(r);
+}
+
+function portionsNeeded(dish, menu, guests, tierId){
+  if (dish.category !== "canape") return guests;
+  var n = menu.filter(function(d){ return d.category === "canape"; }).length || 1;
+  return Math.ceil((guests * TIERS[tierId].bitesPerGuest) / n);
+}
+
+function displayAmount(a, base){
+  function r(n){ return n >= 100 ? Math.round(n) : Math.round(n*10)/10; }
+  if (base === "g")  return a >= 1000 ? r(a/1000) + " kg" : r(a) + " g";
+  if (base === "ml") return a >= 1000 ? r(a/1000) + " L"  : r(a) + " ml";
+  if (base === "bunch") return Math.ceil(a) + " bunch";
+  return String(Math.ceil(a));
+}
+
+/** Scale a menu to a head count and add the lines up into one shop. */
+function buildShoppingList(menu, guests, tierId){
+  var scaled = [], rows = {};
+  menu.forEach(function(d){
+    var r = recipeFor(d.id); if (!r) return;
+    var need = portionsNeeded(d, menu, guests, tierId);
+    var yieldSize = portionsOf(r.yields) || 1;
+    var batches = Math.max(1, Math.ceil(need / yieldSize));
+    var lines = r.ingredients.map(function(i){
+      return { qty: scaleQty(i.qty, batches), item: i.item };
+    });
+    var food = 0;
+    lines.forEach(function(l){
+      var c = costLine(l.qty, l.item);
+      if (c.status === "costed" && !c.nonFood) food += c.soles;
+      var key = canonIng(l.item), m = parseQty(l.qty);
+      if (!m) return;
+      var row = rows[key];
+      if (!row){
+        rows[key] = { key:key, amount:m.amount, base:m.base,
+          soles: c.status === "costed" ? c.soles : 0, dishes:[d.name] };
+        return;
+      }
+      var v = convertBase(m, row.base);
+      if (v === null) return;
+      row.amount += v;
+      if (c.status === "costed") row.soles += c.soles;
+      if (row.dishes.indexOf(d.name) === -1) row.dishes.push(d.name);
+    });
+    scaled.push({ dishId:d.id, name:d.name, needed:need, batches:batches,
+      produced: batches * yieldSize, foodCost: Math.round(food*100)/100 });
+  });
+  var list = Object.keys(rows).map(function(k){
+    var r = rows[k];
+    r.display = displayAmount(r.amount, r.base);
+    r.soles = Math.round(r.soles*100)/100;
+    return r;
+  }).sort(function(a,b){ return b.soles - a.soles; });
+  return { scaled:scaled, list:list,
+    total: Math.round(list.reduce(function(s,r){ return s + r.soles; },0)*100)/100 };
+}
 
 // --- transport, mirroring lib/venues.ts ----------------------------------
 function transportCost(tierId, district, venue, peak, liveStation){
@@ -670,7 +946,8 @@ document.getElementById("menuBody").innerHTML = ORDER.map(function(cat){
   return "<div class='sec-head'><h2>" + LABELS[cat] + "</h2>" +
     "<span class='pill-count tnum'>" + rows.length + "</span></div>" +
     "<div class='tscroll'><table><thead><tr>" +
-      "<th>#</th><th>Dish</th><th style='text-align:right'>Cost</th>" +
+      "<th>#</th><th>Dish</th><th style='text-align:right'>Est. cost</th>" +
+      "<th style='text-align:right'>From recipe</th>" +
       "<th style='text-align:right'>Menu value</th><th style='text-align:right'>FC%</th><th>Source</th>" +
     "</tr></thead><tbody>" + rows.map(function(d){
       return "<tr><td class='dish-n tnum'>" + d.id + "</td><td>" +
@@ -680,6 +957,7 @@ document.getElementById("menuBody").innerHTML = ORDER.map(function(cat){
           "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.subOrigin) + "</span></span>" +
         "</td>" +
         "<td class='money tnum muted'>" + soles(d.cost) + "</td>" +
+        "<td class='money tnum'>" + realCostCell(d) + "</td>" +
         "<td class='money tnum' style='font-weight:600'>" + soles(d.price) + "</td>" +
         "<td class='fc tnum " + flag(d) + "'>" + Math.round(ratio(d)*100) + "%</td>" +
         "<td class='src'>" + esc(d.source) + "</td></tr>";
@@ -901,6 +1179,18 @@ function arcPath(cx, cy, rIn, rOut, a0, a1){
     "A" + rOut + " " + rOut + " 0 " + big + " 1 " + x1 + " " + y1 +
     "L" + x2 + " " + y2 +
     "A" + rIn + " " + rIn + " 0 " + big + " 0 " + x3 + " " + y3 + "Z";
+}
+
+/** What the recipe prices out at, against what the matrix claims. */
+function realCostCell(d){
+  var real = REAL_COST[d.id];
+  if (real === undefined) return "<span class='muted'>\u2014</span>";
+  var ratio = d.cost > 0 ? real / d.cost : null;
+  var cls = (ratio === null || (ratio >= 0.7 && ratio <= 1.4)) ? "muted"
+          : (ratio > 1.4 ? "over" : "under");
+  var tag = ratio === null ? "" :
+    " <span class='mono' style='font-size:10px'>\u00d7" + ratio.toFixed(2) + "</span>";
+  return "<span class='rc " + cls + "'>" + soles(real) + tag + "</span>";
 }
 
 function renderCompass(base, matchCount){
@@ -1841,6 +2131,7 @@ function render(){
 
   document.getElementById("venueNote").textContent = VENUES[venueIdx].note;
   var q = buildQuote(selected, guests, tier, venueCtx());
+  renderShop(selected, guests, tier);
   var box = document.getElementById("quote");
   if (!q){
     box.innerHTML = "<h3>Your quote</h3><p class='muted' style='font-size:.9rem;margin-top:8px'>" +
@@ -1908,6 +2199,23 @@ render();
 })();
 </script>
 `;
+
+// The page script is emitted from a template literal, which quietly eats one
+// level of backslash: /\\d+/ ships as /d+/, and /\\([^)]*\\)/ ships as
+// /([^)]*)/ - a regex that matches empty everywhere. That has silently blanked
+// the whole page once, broken the ingredient graph once, and zeroed the
+// seasonal colouring once. Parse what we are about to write, and refuse to
+// write it if it is not valid JavaScript.
+function assertScriptParses(pageHtml) {
+  const m = /<script>\n([\s\S]*?)<\/script>/.exec(pageHtml);
+  if (!m) throw new Error("no inline script found in the built page");
+  try {
+    new Function(m[1]);
+  } catch (err) {
+    throw new Error(`the emitted page script is not valid JavaScript: ${err.message}`);
+  }
+}
+assertScriptParses(html);
 
 const out = process.argv[2] || path.join(ROOT, "standalone.html");
 fs.writeFileSync(out, html);

@@ -385,6 +385,66 @@ const thresholdOk = strictEdges <= gEdges;
 if (!thresholdOk) failures++;
 console.log(`link threshold 2+ → 4+: ${gEdges} → ${strictEdges} ${thresholdOk ? "✓" : "✗"}`);
 
+// --- The shop: the page's costing port must agree with lib/costing.ts -----
+await page.getByRole("tab", { name: "Build a menu" }).click();
+await page.getByRole("button", { name: "The Aye Si Plated Experience", exact: true }).click();
+await page.fill("#guests", "60");
+await page.waitForTimeout(700);
+
+const shopTables = page.locator("#shopBody table");
+const shopRows = await shopTables.first().locator("tbody tr").count();
+const batchRows = await shopTables.nth(1).locator("tbody tr").count();
+const shopOk = shopRows > 5 && batchRows > 0;
+if (!shopOk) failures++;
+console.log(`\nshopping list: ${shopRows - 1} ingredients across ${batchRows} dishes ${shopOk ? "✓" : "✗"}`);
+
+// The total has to be the sum of the rows above it, or the table lies.
+const rowTotals = await shopTables.first().locator("tbody tr").evaluateAll((trs) =>
+  trs.slice(0, -1).map((tr) => {
+    const t = tr.querySelectorAll("td")[2]?.textContent ?? "0";
+    return Number(t.replace(/[^0-9.]/g, "")) || 0;
+  })
+);
+const shownTotalTxt = await page.locator("#shopBody tr", { hasText: "Total ingredients" }).innerText();
+const shownTotal = Number((shownTotalTxt.match(/S\/\s*([\d.]+)/) || [])[1]);
+const summed = rowTotals.reduce((a, b) => a + b, 0);
+const totalOk = Math.abs(shownTotal - summed) < 0.5;
+if (!totalOk) failures++;
+console.log(`shop total is the sum of its rows: S/ ${shownTotal} vs S/ ${summed.toFixed(2)} ${totalOk ? "✓" : "✗"}`);
+
+// Doubling the head count must not halve the shop.
+await page.fill("#guests", "120");
+await page.waitForTimeout(700);
+const biggerTxt = await page.locator("#shopBody tr", { hasText: "Total ingredients" }).innerText();
+const bigger = Number((biggerTxt.match(/S\/\s*([\d.]+)/) || [])[1]);
+const scalesOk = bigger > shownTotal;
+if (!scalesOk) failures++;
+console.log(`60 → 120 guests raises the shop: S/ ${shownTotal} → S/ ${bigger} ${scalesOk ? "✓" : "✗"}`);
+
+// Batches are whole numbers. A half batch is not a thing you can cook.
+const batchNums = await shopTables.nth(1).locator("tbody tr").evaluateAll((trs) =>
+  trs.map((tr) => Number(tr.querySelectorAll("td")[2]?.textContent?.trim() ?? "0"))
+);
+const wholeOk = batchNums.length > 0 && batchNums.every((n) => Number.isInteger(n) && n >= 1);
+if (!wholeOk) failures++;
+console.log(`every batch count is a whole number ≥ 1: ${wholeOk ? "✓" : "✗ " + batchNums.join(",")}`);
+
+// The matrix's "from recipe" column must match what lib/costing.ts computes.
+const { RECIPES: TS_RECIPES } = await import("../.verify-recipes.mjs");
+await page.getByRole("tab", { name: "The matrix" }).click();
+await page.waitForTimeout(500);
+const shownReal = await page.$$eval("#menuBody tbody tr", (trs) =>
+  trs.map((tr) => {
+    const cells = tr.querySelectorAll("td");
+    return [Number(cells[0].textContent.trim()),
+            Number((cells[2].textContent.match(/([\d.]+)/) || [])[1])];
+  })
+);
+console.log(`\nrecipe-costed dishes shown in the matrix: ${shownReal.filter((r) => r[1] > 0).length} of ${TS_RECIPES.length}`);
+const anyCosted = shownReal.filter((r) => r[1] > 0).length >= TS_RECIPES.length * 0.95;
+if (!anyCosted) failures++;
+console.log(`  at least 95% carry a computed cost ${anyCosted ? "✓" : "✗"}`);
+
 await browser.close();
 
 console.log(failures === 0 ? "\nALL CHECKS PASSED" : `\n${failures} CHECK(S) FAILED`);

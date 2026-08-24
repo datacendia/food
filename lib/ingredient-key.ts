@@ -38,6 +38,19 @@ function singular(word: string): string {
 }
 
 /**
+ * Phrases where taking the words before "or" loses the noun.
+ *
+ * "lamb or beef stock" is lamb STOCK, and reading it as "lamb" once put two
+ * litres of lamb on a shopping list. A general rule for this overreaches -
+ * it turned "lard or beef dripping" into "lard dripping" - so the handful of
+ * real cases are listed instead, where they can be read and checked.
+ */
+const OR_OVERRIDE: Record<string, string> = {
+  "lamb or beef stock": "lamb stock",
+  "fish or light chicken stock": "fish stock"
+};
+
+/**
  * The key an ingredient line prices against.
  *
  * Everything after the first comma is prep, not product. An "X or Y" line
@@ -47,6 +60,8 @@ function singular(word: string): string {
 export function canonicalIngredient(item: string): string {
   let s = stripAccents(String(item ?? "")).toLowerCase();
   s = s.split(",")[0];
+  const override = OR_OVERRIDE[s.trim().replace(/\s+/g, " ")];
+  if (override) return override;
   s = s.replace(/\([^)]*\)/g, " ");
   s = s.split(/\bor\b/)[0];
   s = s.replace(/[^a-z0-9%\s-]/g, " ");

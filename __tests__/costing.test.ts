@@ -151,3 +151,17 @@ describe("what the costing says about the matrix", () => {
     expect(variance.length).toBeGreaterThan(0);
   });
 });
+
+describe("the ingredient-key exceptions", () => {
+  it("keeps the noun on an either/or line that would otherwise lose it", () => {
+    // "lamb or beef stock" read as "lamb" once put 2 litres of lamb on a
+    // shopping list.
+    expect(canonicalIngredient("lamb or beef stock")).toBe("lamb stock");
+    expect(canonicalIngredient("fish or light chicken stock")).toBe("fish stock");
+  });
+
+  it("still takes the first option where that option is the whole ingredient", () => {
+    expect(canonicalIngredient("lard or beef dripping, melted")).toBe("lard");
+    expect(canonicalIngredient("chancaca or brown sugar")).toBe("chancaca");
+  });
+});
