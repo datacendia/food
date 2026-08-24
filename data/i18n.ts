@@ -587,6 +587,49 @@ export const ES: Record<string, string> = {
     "Ordenado por cuánta carta desbloquea cada uno. Lo de arriba es su pedido fijo; lo de abajo es lo que compra para un evento puntual.",
 
 
+  "Peruvian base, Scottish move: whisky in the three-milk soak and a burnt-sugar top. Assembles a day ahead and cuts to any headcount.":
+    "Base peruana, giro escocés: whisky en el remojo de tres leches y azúcar quemada encima. Se arma con un día de anticipación y se corta para cualquier número.",
+  "The English tea cake with lucuma curd and cream in the middle instead of raspberry jam.":
+    "El queque inglés del té de la tarde con crema de lúcuma en el medio en vez de mermelada de frambuesa.",
+  "Four layers of Peruvian 70% cacao sponge with chancaca buttercream. The birthday and wedding product.":
+    "Cuatro capas de bizcocho de cacao peruano al 70% con buttercream de chancaca. El producto para cumpleaños y bodas.",
+  "Kiwicha in the batter for texture, queso fresco frosting in place of the usual cream cheese.":
+    "Kiwicha en la masa para dar textura, y frosting de queso fresco en lugar del queso crema de siempre.",
+  "Chanchamayo coffee and pecans for walnuts. The cake that sells itself at an afternoon booking.":
+    "Café de Chanchamayo y pecanas en vez de nueces. El queque que se vende solo en un evento de tarde.",
+  "Peruvian base, Scottish move: the Lima jelly cake rebuilt on aguaymanto with an oat sponge under it.":
+    "Base peruana, giro escocés: la torta helada limeña rehecha con aguaymanto y un bizcocho de avena debajo.",
+  "No dairy, no egg, no compromise: olive oil, cacao and chicha morada make a darker cake than butter does.":
+    "Sin lácteos, sin huevo, sin concesiones: aceite de oliva, cacao y chicha morada dan un queque más oscuro que la mantequilla.",
+  "Quinoa flour and ground almond, no wheat at all. The coeliac answer that is not an apology.":
+    "Harina de quinua y almendra molida, nada de trigo. La respuesta para celíacos que no pide disculpas.",
+  "Meringue, cream and chirimoya. Naturally wheat-free, and the fruit does the work.":
+    "Merengue, crema y chirimoya. Sin trigo por naturaleza, y la fruta hace el trabajo.",
+  "Chancaca instead of brown sugar, and a chancaca glaze while warm.":
+    "Chancaca en vez de azúcar rubia, y un glaseado de chancaca en caliente.",
+  "Maracuya where a Scottish bakery would use lemon. Sharper, and it holds colour in the box.":
+    "Maracuyá donde una pastelería escocesa usaría limón. Más ácido, y mantiene el color en la caja.",
+  "The Yorkshire oat-and-treacle cake, chancaca for the treacle. Improves for a week in the tin.":
+    "El queque de avena y melaza de Yorkshire, con chancaca por la melaza. Mejora una semana entera en la lata.",
+  "Oil-based sponge, aguaymanto layer, oat crumble on top. Vegan and nobody has to be told.":
+    "Bizcocho a base de aceite, capa de aguaymanto, crumble de avena encima. Vegano y nadie tiene que enterarse.",
+  "Muna in the syrup alongside the lemon - the Andean mint reads as something between mint and thyme.":
+    "Muña en el almíbar junto al limón — la menta andina se lee entre menta y tomillo.",
+  "Yellow potato in the crumb, no wheat. The same trick as the Scottish macaroon, made into a cake.":
+    "Papa amarilla en la miga, sin trigo. El mismo truco del macaroon escocés, convertido en queque.",
+  "Chirimoya folded through set cream on a cacao base. Cold set, no oven on the day.":
+    "Chirimoya integrada en crema cuajada sobre base de cacao. Cuajado en frío, sin horno el día del evento.",
+  "Coconut oil and coconut milk carry the lucuma. Vegan, dairy-free and it travels better than butter does.":
+    "Aceite y leche de coco cargan la lúcuma. Vegano, sin lácteos, y viaja mejor que la mantequilla.",
+  "Flourless: Peruvian cacao, butter, egg and whisky. Coeliac-safe and the richest thing on the sheet.":
+    "Sin harina: cacao peruano, mantequilla, huevo y whisky. Apto para celíacos y lo más untuoso de la carta.",
+  "Lime curd with pisco and a torched meringue - the cocktail as a tart, and the licence covers both.":
+    "Crema de limón con pisco y merengue quemado — el cóctel hecho tarta, y la licencia cubre los dos.",
+  "Layers of kiwicha sponge with algarrobina cream. The Nordic honey cake, built on Andean grain.":
+    "Capas de bizcocho de kiwicha con crema de algarrobina. El queque de miel nórdico, sobre grano andino.",
+  "Steamed in a cloth like the original; chancaca for the treacle and aguaymanto for the currants. Keeps a fortnight and slices cold.":
+    "Al vapor en un paño como el original; chancaca por la melaza y aguaymanto por las pasas. Dura quince días y se corta frío.",
+
   // ---- flavour axes ----
   "sweet": "dulce", "savoury": "salado", "rich": "untuoso",
   "tart": "ácido", "smoky": "ahumado", "spiced": "picante", "fresh": "fresco"

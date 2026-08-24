@@ -66,6 +66,12 @@ export const PRICES: Record<string, Price> = {
   "radishe": { per: "kg", soles: 6, unitGrams: 15 },
   "vinegar": { per: "L", soles: 8 },
   "oil": { per: "L", soles: 9 },
+  "strong coffee": { per: "L", soles: 6 },
+  "cocoa powder": { per: "kg", soles: 38 },
+  "very ripe banana": { per: "kg", soles: 3.5, unitGrams: 120 },
+  "coconut oil": { per: "L", soles: 26 },
+  "coconut milk": { per: "L", soles: 14 },
+
   // ---- flour, grain, bakery dry goods ----
   "plain flour": { per: "kg", soles: 4.5 },
   "flour": { per: "kg", soles: 4.5 },

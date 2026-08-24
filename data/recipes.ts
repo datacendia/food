@@ -3941,5 +3941,535 @@ export const RECIPES: Recipe[] = [
     ],
     makeAhead: "Make the chicha and set the jellies 2 days ahead. Cream and oatmeal go on at the venue.",
     holds: "Two hours out of the fridge before the jelly softens. The oatmeal goes on last or it goes soft."
+  },
+  {
+    dishId: 151,
+    yields: "36 portions",
+    prepMin: 40,
+    cookMin: 40,
+    ingredients: [
+      { qty: "18", item: "eggs, separated" },
+      { qty: "600 g", item: "caster sugar" },
+      { qty: "600 g", item: "plain flour" },
+      { qty: "1.5 L", item: "evaporated milk" },
+      { qty: "1.2 L", item: "condensed milk" },
+      { qty: "900 ml", item: "double cream" },
+      { qty: "250 ml", item: "whisky" }
+    ],
+    method: [
+      "Whisk the yolks with half the sugar to a thick ribbon, then fold in the sifted flour by hand.",
+      "Beat the whites to soft peak with the rest of the sugar and fold them through in three additions.",
+      "Bake at 175 °C for 30 minutes; the sponge must be dry, because a wet one collapses when soaked.",
+      "Cool completely, then dock the whole surface with a skewer so the soak reaches the base.",
+      "Mix the three milks with the whisky and pour it over cold sponge in three passes, 20 minutes apart.",
+      "Chill overnight and finish with burnt sugar at the venue, not before, or the top goes to syrup."
+    ],
+    makeAhead: "Bake two days ahead, soak the day before. It is a better cake on day two than on day one.",
+    holds: "Needs refrigeration; two hours out at a Lima event. The soak makes it heavy, so cut small.",
+    scaling: "Soak in three passes at any size. Poured in one go it runs off the top and floods the tray."
+  },
+  {
+    dishId: 152,
+    yields: "2 cakes, 24 slices",
+    prepMin: 35,
+    cookMin: 30,
+    ingredients: [
+      { qty: "1 kg", item: "butter, softened" },
+      { qty: "1 kg", item: "caster sugar" },
+      { qty: "1 kg", item: "self-raising flour" },
+      { qty: "18", item: "eggs" },
+      { qty: "600 g", item: "lucuma pulp" },
+      { qty: "600 ml", item: "double cream" },
+      { qty: "100 g", item: "icing sugar" }
+    ],
+    method: [
+      "Cream the butter and sugar for a full 5 minutes until it is pale and noticeably lighter.",
+      "Add the eggs one at a time with a spoonful of the flour to stop the batter splitting.",
+      "Fold in the remaining flour in two additions and stop the moment no dry flour shows.",
+      "Divide between four lined tins and bake at 180 °C for 25 to 30 minutes until springy.",
+      "Beat the lucuma pulp with a third of the cream to a curd, then whip the rest to soft peak.",
+      "Sandwich cold sponge with lucuma curd first, cream on top of it, and dust with icing sugar."
+    ],
+    makeAhead: "Bake the day before and keep the sponges wrapped. Fill on the morning of the event.",
+    holds: "Four hours filled at room temperature. Filled the night before, the sponge goes damp."
+  },
+  {
+    dishId: 153,
+    yields: "2 cakes, 40 slices",
+    prepMin: 60,
+    cookMin: 45,
+    ingredients: [
+      { qty: "900 g", item: "70% Peruvian dark chocolate" },
+      { qty: "1.2 kg", item: "butter" },
+      { qty: "1.4 kg", item: "caster sugar" },
+      { qty: "20", item: "eggs" },
+      { qty: "1.1 kg", item: "plain flour" },
+      { qty: "300 g", item: "cacao nibs" },
+      { qty: "700 g", item: "chancaca" }
+    ],
+    method: [
+      "Melt 600 g of the chocolate with a third of the butter and let it cool to blood heat.",
+      "Cream the remaining butter with the caster sugar, then beat in the eggs two at a time.",
+      "Fold in the cooled chocolate, then the flour, and stop before the batter goes tight.",
+      "Bake in four lined tins at 170 °C for 40 to 45 minutes; a skewer should come out with crumbs, not clean.",
+      "Make the buttercream by beating soft butter with melted chancaca and the remaining chocolate.",
+      "Level the layers with a serrated knife, stack with buttercream, and press cacao nibs round the base."
+    ],
+    makeAhead: "Bake two days ahead. Fill and coat the day before; a coated cake travels far better.",
+    holds: "All day at room temperature. Above 26 °C the buttercream slips — transport it cold.",
+    scaling: "Four tins is one oven. Above 80 slices, bake across two days rather than crowding shelves."
+  },
+  {
+    dishId: 154,
+    yields: "2 cakes, 24 slices",
+    prepMin: 40,
+    cookMin: 40,
+    ingredients: [
+      { qty: "1.4 kg", item: "carrots, grated" },
+      { qty: "400 g", item: "kiwicha" },
+      { qty: "900 g", item: "plain flour" },
+      { qty: "800 g", item: "soft brown sugar" },
+      { qty: "700 ml", item: "sunflower oil" },
+      { qty: "12", item: "eggs" },
+      { qty: "800 g", item: "queso fresco" }
+    ],
+    method: [
+      "Toast the kiwicha dry until it pops, then cool it — untoasted it stays hard in the crumb.",
+      "Grate the carrot on the coarse side; fine grating turns to water and the cake sinks.",
+      "Whisk the oil, sugar and eggs, then fold in the flour, cinnamon, kiwicha and carrot.",
+      "Bake at 175 °C for 35 to 40 minutes until the top springs back and the edges pull away.",
+      "Beat the queso fresco smooth with icing sugar and a little lime zest for the frosting.",
+      "Frost only once the cake is stone cold, or the queso fresco slides off the top."
+    ],
+    makeAhead: "Bake 2 days ahead — an oil-based cake keeps far better than a butter one. Frost on the day.",
+    holds: "Frosted, keep it cool and serve within four hours. Unfrosted it holds for days."
+  },
+  {
+    dishId: 155,
+    yields: "2 cakes, 24 slices",
+    prepMin: 35,
+    cookMin: 30,
+    ingredients: [
+      { qty: "1 kg", item: "butter" },
+      { qty: "1 kg", item: "caster sugar" },
+      { qty: "1 kg", item: "self-raising flour" },
+      { qty: "18", item: "eggs" },
+      { qty: "400 ml", item: "strong coffee" },
+      { qty: "600 g", item: "pecans" },
+      { qty: "500 g", item: "icing sugar" }
+    ],
+    method: [
+      "Brew the coffee at double strength and cool it — hot coffee cooks the egg in the batter.",
+      "Toast the pecans and chop them, keeping a third back whole for the top.",
+      "Cream the butter and sugar, add the eggs one at a time, then half the coffee and the flour.",
+      "Fold the chopped pecans through and bake at 180 °C for 28 to 30 minutes.",
+      "Beat the remaining coffee into butter and icing sugar for the buttercream.",
+      "Sandwich and top the cold sponges, then set the whole pecans round the edge."
+    ],
+    makeAhead: "Bake the day before. The coffee flavour deepens overnight and the crumb settles.",
+    holds: "All day at room temperature. This is the most forgiving cake on the sheet."
+  },
+  {
+    dishId: 156,
+    yields: "40 portions",
+    prepMin: 45,
+    cookMin: 30,
+    ingredients: [
+      { qty: "2.5 kg", item: "aguaymanto" },
+      { qty: "700 g", item: "caster sugar" },
+      { qty: "24", item: "gelatine leaves" },
+      { qty: "1.2 L", item: "double cream" },
+      { qty: "500 g", item: "rolled oats" },
+      { qty: "400 g", item: "plain flour" },
+      { qty: "300 g", item: "butter" }
+    ],
+    method: [
+      "Rub the butter into the oats, flour and a little sugar and press it into lined trays.",
+      "Bake the oat base at 175 °C for 20 minutes until it smells nutty, then cool it flat.",
+      "Cook the aguaymanto with the sugar until it collapses, then pass half and keep half whole.",
+      "Soften the gelatine, dissolve it into the warm fruit, and cool the mixture to room temperature.",
+      "Whip the cream to soft peak and fold a third of the fruit through it for the middle layer.",
+      "Layer cream over base, then clear fruit jelly on top, and set 4 hours before cutting."
+    ],
+    makeAhead: "Build 2 days ahead. The layers set firmer overnight and cut far more cleanly.",
+    holds: "Needs refrigeration. Two hours out before the jelly softens at the edges."
+  },
+  {
+    dishId: 157,
+    yields: "2 cakes, 24 slices",
+    prepMin: 25,
+    cookMin: 35,
+    ingredients: [
+      { qty: "1.2 kg", item: "plain flour" },
+      { qty: "900 g", item: "caster sugar" },
+      { qty: "300 g", item: "cocoa powder" },
+      { qty: "600 ml", item: "olive oil" },
+      { qty: "1.2 L", item: "chicha morada" },
+      { qty: "60 ml", item: "cider vinegar" },
+      { qty: "20 g", item: "bicarbonate of soda" }
+    ],
+    method: [
+      "Sift the flour, sugar, cocoa and bicarbonate together — no egg means no second chance to fix lumps.",
+      "Whisk the olive oil into the chicha morada and pour it into the dry ingredients.",
+      "Add the vinegar last and mix for 30 seconds only; the acid and bicarbonate start working immediately.",
+      "Get it into the tins and into the oven straight away, or the rise is spent before it bakes.",
+      "Bake at 180 °C for 32 to 35 minutes until a skewer comes out clean.",
+      "Cool in the tin — a vegan sponge is fragile hot and firms up considerably as it cools."
+    ],
+    makeAhead: "Bake the day before; oil-based sponges keep better than butter ones and stay moist for three days.",
+    holds: "All day at room temperature. No dairy and no egg, so it is also the safest cake in a hot van.",
+    scaling: "Mix in batches no larger than two tins. The raising is chemical and it does not wait."
+  },
+  {
+    dishId: 158,
+    yields: "2 tortes, 24 slices",
+    prepMin: 30,
+    cookMin: 40,
+    ingredients: [
+      { qty: "800 g", item: "ground almonds" },
+      { qty: "400 g", item: "quinoa flour" },
+      { qty: "800 g", item: "caster sugar" },
+      { qty: "16", item: "eggs, separated" },
+      { qty: "400 g", item: "butter, melted" },
+      { qty: "3", item: "lemons, zest only" },
+      { qty: "150 g", item: "toasted flaked almonds" }
+    ],
+    method: [
+      "Keep this away from every wheat surface in the kitchen — for a coeliac guest that is the whole point.",
+      "Whisk the yolks with two-thirds of the sugar until pale, then fold in the almonds and quinoa flour.",
+      "Beat the whites to soft peak with the remaining sugar; they are the only lift this cake gets.",
+      "Fold the whites through in three additions, losing as little air as you can manage.",
+      "Fold in the melted butter and lemon zest last, then bake at 170 °C for 38 to 40 minutes.",
+      "Scatter flaked almonds over while warm so they stick, and cool completely in the tin."
+    ],
+    makeAhead: "Bake 2 days ahead. It is denser and better on the second day.",
+    holds: "All day at room temperature. Wheat-free by construction, not by substitution."
+  },
+  {
+    dishId: 159,
+    yields: "20 portions",
+    prepMin: 30,
+    cookMin: 120,
+    ingredients: [
+      { qty: "20", item: "egg whites" },
+      { qty: "1.2 kg", item: "caster sugar" },
+      { qty: "40 ml", item: "white wine vinegar" },
+      { qty: "60 g", item: "cornflour" },
+      { qty: "1.2 L", item: "double cream" },
+      { qty: "6", item: "chirimoya" },
+      { qty: "4", item: "limes" }
+    ],
+    method: [
+      "Wipe the bowl with lemon and dry it — a trace of fat and the whites will not whip.",
+      "Beat the whites to soft peak, then add the sugar a spoonful at a time over a full 8 minutes.",
+      "Fold in the cornflour and vinegar at the end; they give the marshmallow centre.",
+      "Bake at 110 °C for 2 hours, then switch the oven off and leave them in it to cool completely.",
+      "Scoop the chirimoya at the last moment and pick the seeds out — every one of them.",
+      "Whip the cream to soft peak, pile it on, and top with chirimoya and lime at the venue."
+    ],
+    makeAhead: "Bake the meringue 2 days ahead and keep it sealed and dry. Assemble at the venue only.",
+    holds: "Twenty minutes assembled. Lima humidity is the enemy — keep the shells boxed until the last moment."
+  },
+  {
+    dishId: 160,
+    yields: "3 loaves, 30 slices",
+    prepMin: 25,
+    cookMin: 55,
+    ingredients: [
+      { qty: "2.4 kg", item: "very ripe bananas" },
+      { qty: "800 g", item: "chancaca" },
+      { qty: "1.1 kg", item: "plain flour" },
+      { qty: "500 g", item: "butter, melted" },
+      { qty: "9", item: "eggs" },
+      { qty: "20 g", item: "bicarbonate of soda" },
+      { qty: "2 tsp", item: "ground cinnamon" }
+    ],
+    method: [
+      "Use bananas that are black — anything less and the loaf tastes of flour rather than fruit.",
+      "Melt two-thirds of the chancaca with a splash of water and let it cool before it meets the eggs.",
+      "Mash the bananas roughly, leaving lumps; a puree gives you a dense wet loaf.",
+      "Fold everything together in as few strokes as possible and get it into lined tins.",
+      "Bake at 170 °C for 50 to 55 minutes, covering the tops with foil at 35 minutes if they colour fast.",
+      "Melt the remaining chancaca and brush it over while the loaves are still hot in the tin."
+    ],
+    makeAhead: "Bake 3 days ahead. It improves for two of them and then holds.",
+    holds: "Days, wrapped. The best-keeping cake here and the cheapest to make."
+  },
+  {
+    dishId: 161,
+    yields: "2 cakes, 24 slices",
+    prepMin: 40,
+    cookMin: 35,
+    ingredients: [
+      { qty: "1 kg", item: "butter" },
+      { qty: "1 kg", item: "caster sugar" },
+      { qty: "1 kg", item: "self-raising flour" },
+      { qty: "18", item: "eggs" },
+      { qty: "800 ml", item: "maracuya juice" },
+      { qty: "300 g", item: "icing sugar" },
+      { qty: "8", item: "egg yolks" }
+    ],
+    method: [
+      "Make the curd first: cook the maracuya juice, yolks, sugar and a third of the butter to a thick coat.",
+      "Pass the curd, press cling film onto the surface and chill it hard — a warm curd will not hold in a cake.",
+      "Cream the remaining butter with the caster sugar, beat in the whole eggs, fold in the flour.",
+      "Bake at 180 °C for 30 to 35 minutes and cool the sponges completely in the tins.",
+      "Split each sponge and fill generously with the cold curd — this is what people came for.",
+      "Glaze the top with icing sugar slackened with a little more maracuya juice, and let it set."
+    ],
+    makeAhead: "Curd keeps a week refrigerated. Bake the day before, fill and glaze on the morning.",
+    holds: "Six hours at room temperature. The glaze holds colour better than a lemon one does."
+  },
+  {
+    dishId: 162,
+    yields: "48 squares",
+    prepMin: 25,
+    cookMin: 60,
+    ingredients: [
+      { qty: "900 g", item: "medium oatmeal" },
+      { qty: "700 g", item: "plain flour" },
+      { qty: "1 kg", item: "chancaca" },
+      { qty: "600 g", item: "butter" },
+      { qty: "60 g", item: "ground ginger" },
+      { qty: "6", item: "eggs" },
+      { qty: "500 ml", item: "milk" }
+    ],
+    method: [
+      "Melt the chancaca and butter together gently until no grain remains, then take it off the heat.",
+      "Mix the oatmeal, flour, ginger and a pinch of salt, and pour the warm chancaca mixture in.",
+      "Beat the eggs into the milk and add it last, to a batter that pours rather than drops.",
+      "Bake at 150 °C for a full hour — parkin is baked low and slow or the outside sets before the middle.",
+      "Cool completely in the tin before you attempt to cut it. Warm parkin tears.",
+      "Wrap the whole slab and leave it a week before cutting; this is not optional, it is the recipe."
+    ],
+    makeAhead: "Make it a week to ten days ahead. It is inedible on day one and excellent on day seven.",
+    holds: "Weeks in a tin. An October product that can be made in September.",
+    scaling: "One of the few things here you can make a month of stock of, so make it when the oven is free."
+  },
+  {
+    dishId: 163,
+    yields: "40 squares",
+    prepMin: 30,
+    cookMin: 45,
+    ingredients: [
+      { qty: "1.2 kg", item: "plain flour" },
+      { qty: "800 g", item: "caster sugar" },
+      { qty: "600 ml", item: "sunflower oil" },
+      { qty: "900 ml", item: "water" },
+      { qty: "2 kg", item: "aguaymanto" },
+      { qty: "500 g", item: "rolled oats" },
+      { qty: "300 g", item: "soft brown sugar" }
+    ],
+    method: [
+      "Whisk oil, water, caster sugar and vanilla, then fold in the flour and raising agent quickly.",
+      "Spread it thin in lined trays and scatter the aguaymanto over rather than folding it in.",
+      "Rub the oats and brown sugar together with a little more oil into a loose crumble.",
+      "Scatter the crumble over the fruit thickly and unpressed, right out to the edges.",
+      "Bake at 180 °C for 40 to 45 minutes until the crumble is set and the fruit bubbles at the corners.",
+      "Cool completely before cutting; the fruit layer needs to firm up or the squares fall apart."
+    ],
+    makeAhead: "Bake 2 days ahead. No dairy and no egg, so it keeps better than a butter tray bake.",
+    holds: "Two days at room temperature. Vegan, and nobody has to be told it is."
+  },
+  {
+    dishId: 164,
+    yields: "3 loaves, 30 slices",
+    prepMin: 25,
+    cookMin: 45,
+    ingredients: [
+      { qty: "900 g", item: "butter" },
+      { qty: "900 g", item: "caster sugar" },
+      { qty: "900 g", item: "self-raising flour" },
+      { qty: "15", item: "eggs" },
+      { qty: "12", item: "lemons" },
+      { qty: "30 g", item: "muna, dried" },
+      { qty: "400 g", item: "granulated sugar" }
+    ],
+    method: [
+      "Zest all twelve lemons before juicing any of them — it cannot be done the other way round.",
+      "Cream the butter and caster sugar, add eggs one at a time, then fold in flour and lemon zest.",
+      "Bake at 175 °C for 40 to 45 minutes until a skewer comes out clean.",
+      "Steep the muna in the hot lemon juice for 10 minutes, then strain it and stir in the granulated sugar.",
+      "Skewer the hot loaves all over and spoon the syrup on in three passes, letting each soak in.",
+      "Leave them in the tins until cold, or the syrup runs out of the bottom instead of into the crumb."
+    ],
+    makeAhead: "Bake and drizzle 2 days ahead. The muna comes forward on the second day.",
+    holds: "Three days wrapped. Travels well and does not need refrigeration."
+  },
+  {
+    dishId: 165,
+    yields: "2 cakes, 24 slices",
+    prepMin: 40,
+    cookMin: 45,
+    ingredients: [
+      { qty: "1.4 kg", item: "papa amarilla" },
+      { qty: "800 g", item: "70% Peruvian dark chocolate" },
+      { qty: "700 g", item: "caster sugar" },
+      { qty: "16", item: "eggs, separated" },
+      { qty: "500 g", item: "butter" },
+      { qty: "200 g", item: "ground almonds" },
+      { qty: "2 tbsp", item: "cocoa powder" }
+    ],
+    method: [
+      "Boil the potatoes whole, peel them hot and rice them, then let them cool completely and dry out.",
+      "Melt the chocolate with the butter and cool it to blood heat before anything else goes in.",
+      "Beat the yolks with two-thirds of the sugar, then fold in the riced potato and the ground almonds.",
+      "Combine with the chocolate — the potato is what makes this fudgy rather than heavy.",
+      "Whip the whites with the remaining sugar and fold them in; there is no flour to lift it.",
+      "Bake at 170 °C for 40 to 45 minutes and cool fully in the tin before turning out."
+    ],
+    makeAhead: "Bake the day before. It firms overnight and cuts far more cleanly cold.",
+    holds: "All day at room temperature. Wheat-free, and the same trick as the Scottish macaroon."
+  },
+  {
+    dishId: 166,
+    yields: "3 tarts, 36 slices",
+    prepMin: 50,
+    cookMin: 20,
+    ingredients: [
+      { qty: "900 g", item: "cacao shortcrust pastry" },
+      { qty: "1.5 L", item: "double cream" },
+      { qty: "8", item: "chirimoya" },
+      { qty: "400 g", item: "caster sugar" },
+      { qty: "18", item: "gelatine leaves" },
+      { qty: "4", item: "limes" },
+      { qty: "100 g", item: "cacao nibs" }
+    ],
+    method: [
+      "Line the rings with cacao pastry, chill, and blind bake at 175 °C until dry and sandy.",
+      "Scoop the chirimoya and pick out every seed — they are bitter and there is no forgiving one.",
+      "Crush half the flesh with lime and sugar, and keep the other half in rough pieces.",
+      "Warm a third of the cream, dissolve the softened gelatine into it and cool to room temperature.",
+      "Fold the gelatine cream through the rest, whipped to soft peak, with the crushed chirimoya.",
+      "Fill the cases, set 4 hours, and finish with the reserved fruit and cacao nibs at the venue."
+    ],
+    makeAhead: "Bake the cases 3 days ahead. Fill the day before; chirimoya browns, so top at the venue.",
+    holds: "Needs refrigeration. Ninety minutes out before the set softens."
+  },
+  {
+    dishId: 167,
+    yields: "40 squares",
+    prepMin: 25,
+    cookMin: 35,
+    ingredients: [
+      { qty: "1.1 kg", item: "plain flour" },
+      { qty: "700 g", item: "caster sugar" },
+      { qty: "500 ml", item: "coconut oil, melted" },
+      { qty: "800 ml", item: "coconut milk" },
+      { qty: "700 g", item: "lucuma pulp" },
+      { qty: "300 g", item: "desiccated coconut" },
+      { qty: "20 g", item: "baking powder" }
+    ],
+    method: [
+      "Warm the coconut oil only until it runs — hot oil cooks the flour into lumps on contact.",
+      "Whisk the oil, coconut milk and half the lucuma pulp together until completely smooth.",
+      "Fold in the flour, sugar, baking powder and two-thirds of the desiccated coconut.",
+      "Spread in lined trays and bake at 180 °C for 30 to 35 minutes until the edges pull away.",
+      "Beat the remaining lucuma with a little coconut milk into a thin icing.",
+      "Ice the cold traybake, scatter the last of the coconut over and cut once the icing has set."
+    ],
+    makeAhead: "Bake 3 days ahead. Coconut oil keeps it moist longer than butter would.",
+    holds: "Three days at room temperature. Vegan, dairy-free, and it survives a hot van better than anything else here."
+  },
+  {
+    dishId: 168,
+    yields: "3 tortes, 36 slices",
+    prepMin: 35,
+    cookMin: 35,
+    ingredients: [
+      { qty: "1.5 kg", item: "70% Peruvian dark chocolate" },
+      { qty: "1.1 kg", item: "butter" },
+      { qty: "20", item: "eggs" },
+      { qty: "700 g", item: "caster sugar" },
+      { qty: "250 ml", item: "whisky" },
+      { qty: "2 tbsp", item: "cocoa powder" },
+      { qty: "10 g", item: "flaked salt" }
+    ],
+    method: [
+      "There is no flour in this at all, so keep it off every wheat surface if a coeliac is eating.",
+      "Melt the chocolate and butter together over water and cool it to just above blood heat.",
+      "Whisk the eggs and sugar over a bain-marie until they triple and hold a ribbon for three seconds.",
+      "Fold the chocolate through in three additions, keeping as much air as you can.",
+      "Stir the whisky in at the very end, off the heat, so the spirit reads on the palate.",
+      "Bake in a water bath at 160 °C for 32 to 35 minutes — it should still wobble as one piece."
+    ],
+    makeAhead: "Bake 2 days ahead. It slices cleanly cold and comes to room temperature in an hour.",
+    holds: "Four hours at room temperature. The richest thing on the sheet, so cut it small."
+  },
+  {
+    dishId: 169,
+    yields: "3 tarts, 30 slices",
+    prepMin: 55,
+    cookMin: 30,
+    ingredients: [
+      { qty: "900 g", item: "sweet shortcrust pastry" },
+      { qty: "16", item: "limes" },
+      { qty: "200 ml", item: "pisco" },
+      { qty: "18", item: "egg yolks" },
+      { qty: "12", item: "egg whites" },
+      { qty: "1.2 kg", item: "caster sugar" },
+      { qty: "400 g", item: "butter" }
+    ],
+    method: [
+      "Blind bake the pastry cases until fully dry — a lime curd will soften an underbaked base by service.",
+      "Cook the lime juice, yolks and half the sugar over water until it coats the back of a spoon.",
+      "Beat the butter in off the heat, a cube at a time, then stir the pisco through and pass it.",
+      "Fill the cases and chill until the curd is fully set, at least three hours.",
+      "Boil the remaining sugar with water to 118 °C and pour it onto whipping whites for Italian meringue.",
+      "Pipe the meringue on and torch it at the venue — torched early, it weeps within the hour."
+    ],
+    makeAhead: "Cases 3 days, curd 2 days. Meringue on the day and torched at the venue, never before.",
+    holds: "Two hours torched. The alcohol means it needs the licence, same as the cocktail."
+  },
+  {
+    dishId: 170,
+    yields: "2 cakes, 24 slices",
+    prepMin: 50,
+    cookMin: 40,
+    ingredients: [
+      { qty: "600 g", item: "kiwicha" },
+      { qty: "900 g", item: "plain flour" },
+      { qty: "700 g", item: "caster sugar" },
+      { qty: "600 g", item: "butter" },
+      { qty: "14", item: "eggs" },
+      { qty: "500 ml", item: "algarrobina" },
+      { qty: "1.2 L", item: "double cream" }
+    ],
+    method: [
+      "Toast the kiwicha until it pops and cool it — it is the texture the whole cake is built on.",
+      "Cream the butter and sugar, beat in the eggs, then fold in the flour and two-thirds of the kiwicha.",
+      "Bake in four thin layers at 180 °C for 18 to 20 minutes each; thin layers are the point.",
+      "Warm the algarrobina slightly and brush each cooled layer with it so it soaks in.",
+      "Whip the cream to soft peak with a little algarrobina folded through it.",
+      "Stack four layers with cream between, and press the remaining kiwicha round the sides."
+    ],
+    makeAhead: "Bake the layers 2 days ahead. Assemble the day before so the algarrobina soaks through.",
+    holds: "Needs refrigeration once assembled. Two hours out at an event."
+  },
+  {
+    dishId: 171,
+    yields: "40 portions",
+    prepMin: 45,
+    cookMin: 210,
+    ingredients: [
+      { qty: "1.2 kg", item: "plain flour" },
+      { qty: "600 g", item: "medium oatmeal" },
+      { qty: "700 g", item: "suet" },
+      { qty: "900 g", item: "chancaca" },
+      { qty: "800 g", item: "dried aguaymanto" },
+      { qty: "40 g", item: "mixed spice" },
+      { qty: "600 ml", item: "milk" }
+    ],
+    method: [
+      "Scald the cloth in boiling water, wring it out and flour it heavily — this is what makes the skin.",
+      "Mix the dry ingredients, rub in the suet, then bring it together with the melted chancaca and milk.",
+      "Turn the mixture onto the floured cloth, gather it and tie it loosely to leave room to swell.",
+      "Simmer for three and a half hours on an upturned plate, topping the water up so it never stops.",
+      "Turn it out and dry the skin in a low oven for 15 minutes, which is the step everyone skips.",
+      "Cool completely before slicing; it is better on day three than on the day it is made."
+    ],
+    makeAhead: "Steam a fortnight ahead. It keeps like a Christmas pudding and improves the whole time.",
+    holds: "Weeks wrapped. Slices cold, fries in butter for breakfast the next morning.",
+    scaling: "One pot takes one dumpling. Four dumplings means four pots and a full hob for an afternoon."
   }
 ];
