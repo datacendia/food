@@ -60,6 +60,25 @@ After a market run, the loop is: update the cost column, flip "Cost verified?"
 to Yes, re-import, run the tests. Anything the new price pushes over the
 food-cost ceiling fails immediately and by name.
 
+## Where the event is
+
+`lib/venues.ts` costs transport against the actual venue: drive time from the
+kitchen, what Lima rush hour adds to it, fuel, load-in crew, and a generator
+when a live station has no mains power. `data/venues.ts` holds twelve districts
+and seven venue types.
+
+The tiers used to carry a flat transport figure — S/60 for boxes, S/300 for
+plated — the same whether the van went ten minutes down the road or ninety-five
+minutes south to Asia. At the far end that understated the line by S/818 on one
+event. It also over-charged every near job, which loses work.
+
+Pass `district` and `venue` to `buildQuote` and it costs the real run. Omit them
+and it falls back to the flat figure and labels itself an estimate on the line,
+so an unset venue is visible rather than silently wrong.
+
+Every rate in that module is UNVERIFIED. Drive the districts you actually work
+in and replace the numbers.
+
 ## The pricing rules
 
 `lib/pricing.ts` is the only place money is calculated, and it exists to
@@ -117,6 +136,8 @@ npm run verify:standalone  # build it, then check it in a real browser
 ## Still to do
 
 - Verify all 150 costs against real Lima suppliers
+- Time the drive to the districts you actually work in, and replace the
+  estimates in `data/venues.ts`
 - Confirm the 19 seasonal windows against the market, and the *vedas* against
   the legal calendar
 - A real allergen audit — the current allergens are derived from dish text and
