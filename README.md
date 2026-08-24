@@ -79,6 +79,45 @@ so an unset venue is visible rather than silently wrong.
 Every rate in that module is UNVERIFIED. Drive the districts you actually work
 in and replace the numbers.
 
+## What a recipe actually costs
+
+`lib/costing.ts` prices every one of the 1,140 ingredient lines from
+`data/prices.ts`, multiplies the batch out and divides by the yield, then
+compares the answer with the cost the matrix claims. It never overwrites
+either figure — which of the two is wrong is a question for a market run.
+
+The gap is large and it runs mostly one way. Hand-checked example: 103
+Highland Toffee is 1.5 kg sugar, 400 g butter and 400 ml condensed milk —
+S/24.80 for 120 shards, so **S/0.21 a shard against a claimed S/1.20.** The
+bakery is systematically over-costed, because sugar and flour are cheap and
+the estimates assumed otherwise.
+
+Prices in `data/prices.ts` are Lima estimates and are flagged unverified,
+exactly like the dish costs. The point is not that the numbers are now right;
+it is that they are now *checkable*, and the report says which to check first.
+
+## Scaling to a real event
+
+`lib/scaling.ts` takes a menu, a head count and a tier, and scales each recipe
+to what the event needs — whole batches only, because half a batch of
+shortbread is a different biscuit. `shoppingList()` then adds the scaled lines
+together across the menu, so butter appears once with a total and a price, and
+every row names the dishes that want it.
+
+Canapés scale by bites per guest using the same rule `lib/pricing.ts` prices
+by, so the shopping list and the quote cannot disagree about how much food is
+being made.
+
+## The kitchen book
+
+```
+npm run book
+```
+
+Writes `kitchen-book.html` — all 150 recipes, indexed by course, with page
+breaks set so a recipe never splits across a page. Print to PDF from a
+browser. Generated from the same data as the app, so it cannot drift.
+
 ## The pricing rules
 
 `lib/pricing.ts` is the only place money is calculated, and it exists to
@@ -135,7 +174,9 @@ npm run verify:standalone  # build it, then check it in a real browser
 
 ## Still to do
 
-- Verify all 150 costs against real Lima suppliers
+- Verify all 150 costs against real Lima suppliers — start with the dishes
+  `costVariance()` puts furthest from their claimed figure
+- Replace the estimates in `data/prices.ts` with real invoice prices
 - Time the drive to the districts you actually work in, and replace the
   estimates in `data/venues.ts`
 - Confirm the 19 seasonal windows against the market, and the *vedas* against
