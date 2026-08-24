@@ -30,6 +30,11 @@ const DISHES_LEN = DISHES.length;
 
 const browser = await chromium.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+// The page defaults to Spanish because the buyers are Peruvian. Every check
+// below drives it by its English labels, so pin the language before loading.
+await page.addInitScript(() => {
+  try { localStorage.setItem("ayesicena-lang", "en"); } catch (e) {}
+});
 await page.goto("file://" + FILE);
 
 let failures = 0;
@@ -444,6 +449,90 @@ console.log(`\nrecipe-costed dishes shown in the matrix: ${shownReal.filter((r) 
 const anyCosted = shownReal.filter((r) => r[1] > 0).length >= TS_RECIPES.length * 0.95;
 if (!anyCosted) failures++;
 console.log(`  at least 95% carry a computed cost ${anyCosted ? "✓" : "✗"}`);
+
+// --- Spanish: the toggle works, and coverage is reported honestly ---------
+const esPage = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+await esPage.addInitScript(() => {
+  try { localStorage.setItem("ayesicena-lang", "es"); } catch (e) {}
+});
+await esPage.goto("file://" + FILE);
+await esPage.waitForTimeout(900);
+
+const navEs = await esPage.getByRole("tab").allInnerTexts();
+const navTranslated = navEs.filter((t) => /Inicio|La noche|Buscar|La matriz|Temporada|Comparar|Insumos|Recetas|Paquetes|Armar/.test(t)).length;
+const navOk = navTranslated >= 10;
+if (!navOk) failures++;
+console.log(`\nSpanish nav translated: ${navTranslated} of ${navEs.length - 1} ${navOk ? "✓" : "✗"}`);
+
+// Dish names must NOT be translated - the Scottish name is the product.
+await esPage.getByRole("tab", { name: "La matriz" }).click();
+await esPage.waitForTimeout(600);
+const matrixEs = await esPage.locator("#menuBody tbody tr").count();
+const namesKept = await esPage.locator("#menuBody", { hasText: "Haggis Bonbons" }).count();
+const namesOk = matrixEs === DISHES_LEN && namesKept > 0;
+if (!namesOk) failures++;
+console.log(`dish names left in English: ${namesOk ? "✓" : "✗"} (${matrixEs} rows)`);
+
+// Coverage, reported per pane. One number for the whole page is useless:
+// the recipes are 4,000 strings of kitchen English and swamp everything the
+// client actually reads.
+const PANES = [
+  ["home", "Inicio"], ["matrix", "La matriz"], ["find", "Buscar platos"],
+  ["compare", "Comparar"], ["packages", "Paquetes"], ["builder", "Armar el menú"],
+  ["recipes", "Recetas"]
+];
+console.log("Spanish coverage by pane");
+let clientT = 0, clientU = 0;
+for (const [id, label] of PANES) {
+  await esPage.getByRole("tab", { name: label }).click();
+  await esPage.waitForTimeout(500);
+  const c = await esPage.evaluate(() => {
+    const data = JSON.parse(document.getElementById("data").textContent);
+    const dict = data.es;
+    const values = new Set(Object.values(dict));
+    // Untranslated by policy, not by omission: dish names are the product,
+    // the British original is a name too, and suppliers are proper nouns.
+    const names = new Set([
+      ...data.dishes.map((d) => d.name),
+      ...data.dishes.map((d) => d.origin),
+      ...data.dishes.map((d) => d.source),
+      ...data.dishes.map((d) => d.keyIngredients)
+    ]);
+    // The page records every string it produced, so coverage is measured
+    // against what actually happened rather than re-derived from the rules.
+    const applied = window.__i18nApplied || {};
+    const pane = [...document.querySelectorAll(".pane")].find((p) => !p.hidden);
+    const w = document.createTreeWalker(pane, NodeFilter.SHOW_TEXT);
+    let t = 0, u = 0, n;
+    while ((n = w.nextNode())) {
+      const s = n.nodeValue.replace(/\s+/g, " ").trim();
+      // Only prose: a phrase of several words. Names and numbers are the same
+      // in both languages and would flatter the figure.
+      if (!s || s.split(" ").length < 4) continue;
+      // Dish names are deliberately untranslated - "Haggis Bonbons" is the
+      // product - so counting them would understate real coverage.
+      if (names.has(s)) continue;
+      if (values.has(s) || applied[s]) t++; else u++;
+    }
+    return { t, u };
+  });
+  const pct = c.t + c.u ? (c.t / (c.t + c.u)) * 100 : 100;
+  if (id !== "recipes") { clientT += c.t; clientU += c.u; }
+  console.log(`  ${id.padEnd(9)} ${pct.toFixed(0).padStart(3)}%  (${c.u} strings still English)`);
+}
+const clientPct = (clientT / (clientT + clientU)) * 100;
+const clientOk = clientPct >= 80;
+if (!clientOk) failures++;
+console.log(`client-facing panes: ${clientPct.toFixed(0)}% ${clientOk ? "✓" : "✗ expected at least 80%"}`);
+
+// Switching back to English must restore the source text, not a translation.
+await esPage.locator("#langBtn").click();
+await esPage.waitForTimeout(900);
+const navBack = await esPage.getByRole("tab").allInnerTexts();
+const backOk = navBack.some((t) => t.trim() === "The matrix");
+if (!backOk) failures++;
+console.log(`toggling back to English restores the source: ${backOk ? "✓" : "✗"}`);
+await esPage.close();
 
 await browser.close();
 

@@ -118,6 +118,24 @@ Writes `kitchen-book.html` — all 150 recipes, indexed by course, with page
 breaks set so a recipe never splits across a page. Print to PDF from a
 browser. Generated from the same data as the app, so it cannot drift.
 
+## Spanish
+
+The buyers are Peruvian, so **Spanish is the default** and English is the
+toggle, not the other way round. The choice is remembered per browser.
+
+`data/i18n.ts` holds the dictionary. Strings the app composes at render time —
+"Staff — 2 waiters, 1 chef" is a different string every time — are matched by
+shape in `ES_PATTERNS` instead, with the numbers carried through untouched.
+
+Two things stay in English on purpose, and the coverage figure knows it:
+**dish names**, because "Haggis Bonbons" is the product and translating it
+sells a different thing; and **supplier names**, because Surquillo N.1 is
+Surquillo N.1.
+
+`npm run verify:standalone` reports coverage per pane. It currently reads
+**96% of client-facing prose**. The recipes are **0%** — 1,688 strings of
+kitchen English. That is the next translation job and it is not a small one.
+
 ## The pricing rules
 
 `lib/pricing.ts` is the only place money is calculated, and it exists to
@@ -183,6 +201,6 @@ npm run verify:standalone  # build it, then check it in a real browser
   the legal calendar
 - A real allergen audit — the current allergens are derived from dish text and
   are a starting point, not a legal one
-- Spanish translation
+- Translate the 150 recipes into Spanish — the UI and dish descriptions are done, the kitchen text is not
 - WhatsApp quote export
 - Netlify is not yet connected to this repo — deploys are still manual

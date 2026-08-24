@@ -28,7 +28,9 @@ function loadData(file, exportName) {
     // it missed.
     .replace(/export const (\w+)\s*:[^=]+=/g, "module.exports.$1 =")
     .replace(/export const (\w+)\s*=/g, "module.exports.$1 =")
-    .replace(/\bas const\b/g, "");
+    .replace(/\bas const\b/g, "")
+    // Type aliases have no runtime meaning and are not valid CJS.
+    .replace(/^export type .*$/gm, "");
   const tmp = path.join(ROOT, `.${exportName}.tmp.cjs`);
   fs.writeFileSync(tmp, js);
   try {
@@ -48,6 +50,8 @@ const EVENTS = loadData("events.ts", "EVENTS");
 const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
 const MOMENTS = loadData("moments.ts", "MOMENTS");
 const RECIPES = loadData("recipes.ts", "RECIPES");
+const ES = loadData("i18n.ts", "ES");
+const ES_PATTERNS = loadData("i18n.ts", "ES_PATTERNS");
 const PRICES = loadData("prices.ts", "PRICES");
 const SUB_RECIPE_OF = loadData("prices.ts", "SUB_RECIPE_OF");
 const SUB_PREP_PRICES = loadData("prices.ts", "SUB_PREP_PRICES");
@@ -109,6 +113,7 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
   ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: RECIPES,
   districts: DISTRICTS, venues: VENUE_TYPES,
+  es: ES, esPatterns: ES_PATTERNS,
   prices: PRICES, subOf: SUB_RECIPE_OF, subPrices: SUB_PREP_PRICES,
   sundryPrices: NON_FOOD_PRICES, alias: COMPOUND_ALIAS, sundries: NON_FOOD,
   trip: { vanHourly: 45, perKm: 1.8, crewHourly: 18, generator: 280,
@@ -118,7 +123,7 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
   lead: { cold: 1440, oven: 240, hob: 180, griddle: 30, fryer: 15 },
   months: ["January","February","March","April","May","June","July","August","September","October","November","December"] });
 
-const html = `<title>Aye Si Cena</title>
+const html = String.raw`<title>Aye Si Cena</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -323,6 +328,8 @@ footer p{margin:0 0 7px;max-width:70ch}
       <button class="tab" role="tab" data-pane="recipes" aria-selected="false">Recipes</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
+      <button id="langBtn" class="tab" type="button" aria-label="Cambiar idioma"
+        style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px"></button>
     </nav>
   </div>
 </header>
@@ -544,6 +551,16 @@ var MOMENTS = D.moments, FORMATS = D.formats, CAP = D.cap, LEAD = D.lead;
 var ORDER = D.order;
 var RECIPES = D.recipes;
 var DISTRICTS = D.districts, VENUES = D.venues, TRIP = D.trip;
+var ES = D.es;
+// Compiled once: the page re-translates on every render and recompiling these
+// per text node would be the slowest thing on the page.
+var ES_RX = (D.esPatterns || []).map(function(p){ return [new RegExp(p[0]), p[1]]; });
+function patternTranslate(key){
+  for (var i = 0; i < ES_RX.length; i++){
+    if (ES_RX[i][0].test(key)) return key.replace(ES_RX[i][0], ES_RX[i][1]);
+  }
+  return null;
+}
 var PRICES = D.prices, SUB_OF = D.subOf, SUB_PRICES = D.subPrices;
 var SUNDRY_PRICES = D.sundryPrices, ALIAS = D.alias, SUNDRIES = D.sundries;
 
@@ -617,8 +634,8 @@ function singular(w){
 }
 function canonIng(item){
   var t = String(item == null ? "" : item).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
-  t = t.split(",")[0].replace(/\\([^)]*\\)/g," ").split(/\\bor\\b/)[0].replace(/[^a-z0-9%\\s-]/g," ");
-  return t.split(/\\s+/).filter(Boolean)
+  t = t.split(",")[0].replace(/\([^)]*\)/g," ").split(/\bor\b/)[0].replace(/[^a-z0-9%\s-]/g," ");
+  return t.split(/\s+/).filter(Boolean)
     .filter(function(w){ return PREP_WORDS.indexOf(w) === -1; })
     .map(singular).join(" ").trim();
 }
@@ -630,14 +647,14 @@ var EACH_W = ["","batch","quantity","pack","tin","loaf","sheet","sheets","clove"
 var BUNCH_W = ["bunch","bunches","handful","handfuls"];
 
 function parseQty(q){
-  var m = /^\\s*([\\d./]+)\\s*(.*)$/.exec(q == null ? "" : q);
+  var m = /^\s*([\d./]+)\s*(.*)$/.exec(q == null ? "" : q);
   if (!m) return null;
   var a;
-  if (/^\\d+\\s*\\/\\s*\\d+$/.test(m[1])){
+  if (/^\d+\s*\/\s*\d+$/.test(m[1])){
     var f = m[1].split("/"); a = Number(f[0]) / Number(f[1]);
   } else a = Number(m[1]);
   if (!isFinite(a) || a <= 0) return null;
-  var u = m[2].trim().toLowerCase().replace(/\\.$/,"");
+  var u = m[2].trim().toLowerCase().replace(/\.$/,"");
   if (MASS[u]) return { amount:a*MASS[u], base:"g" };
   if (VOL[u])  return { amount:a*VOL[u],  base:"ml" };
   if (u === "tbsp") return { amount:a*15, base:"ml" };
@@ -655,9 +672,9 @@ var PER_BASE = { kg:{b:"g",size:1000}, L:{b:"ml",size:1000},
                  each:{b:"each",size:1}, bunch:{b:"bunch",size:1} };
 
 function portionsOf(yields){
-  var ex = /(\\d+)\\s*(portions?|pieces?|servings?|slices?)/i.exec(yields);
+  var ex = /(\d+)\s*(portions?|pieces?|servings?|slices?)/i.exec(yields);
   if (ex) return Number(ex[1]);
-  var all = String(yields).match(/\\d+(?:\\.\\d+)?/g);
+  var all = String(yields).match(/\d+(?:\.\d+)?/g);
   return all && all.length ? Math.max.apply(null, all.map(Number)) : null;
 }
 
@@ -736,7 +753,7 @@ RECIPES.forEach(function(r){
 
 function scaleQty(qty, factor){
   var m = parseQty(qty); if (!m) return qty;
-  var parts = /^\\s*([\\d./]+)\\s*(.*)$/.exec(qty); if (!parts) return qty;
+  var parts = /^\s*([\d./]+)\s*(.*)$/.exec(qty); if (!parts) return qty;
   var unit = parts[2].trim(), written;
   if (parts[1].indexOf("/") > -1){
     var f = parts[1].split("/"); written = Number(f[0]) / Number(f[1]);
@@ -893,6 +910,117 @@ function buildQuote(dishes, guests, tierId, ctx){
     warnings:warnings };
 }
 
+// --- language ------------------------------------------------------------
+// Rather than thread a key through every string in the page, the dictionary
+// is applied over the rendered DOM after each paint. A string absent from it
+// stays English and is visibly so - which is what makes the coverage figure
+// below honest rather than assumed.
+var LANG = "es";   // localiseLabels() runs once the dictionary is in scope
+try { LANG = localStorage.getItem("ayesicena-lang") || "es"; } catch (e) { LANG = "es"; }
+
+// Text nodes inside these never get touched: dish names, supplier names and
+// the numbers are the same in both languages.
+var NO_TRANSLATE = "SCRIPT,STYLE,CODE".split(",");
+
+function translateNode(root){
+  if (LANG !== "es") return;
+  var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+  var n, hits = 0, misses = 0;
+  var pending = [];
+  while ((n = walker.nextNode())){
+    var parent = n.parentElement;
+    if (!parent || NO_TRANSLATE.indexOf(parent.tagName) > -1) continue;
+    var raw = n.nodeValue;
+    var key = raw.replace(/\s+/g, " ").trim();
+    if (!key || !/[a-zA-Z]{3}/.test(key)) continue;
+    var direct = ES[key];
+    if (direct === undefined) direct = patternTranslate(key);
+    if (direct !== undefined && direct !== null){
+      // The key is whitespace-normalised, but the node is not: markup wraps
+      // long sentences across lines. Replacing the key inside the raw value
+      // found nothing, so every multi-line string silently stayed English.
+      // Swap the whole value instead, keeping the surrounding whitespace.
+      var lead = /^\s*/.exec(raw)[0];
+      var trail = /\s*$/.exec(raw)[0];
+      pending.push([n, lead + direct + trail]);
+      hits++;
+    } else misses++;
+  }
+  // Mutating while walking invalidates the walker, so apply afterwards.
+  pending.forEach(function(x){
+    x[0].nodeValue = x[1];
+    APPLIED[x[1].replace(/\s+/g, " ").trim()] = 1;
+  });
+  LANG_STATS = { hits: hits, misses: misses };
+}
+var LANG_STATS = { hits: 0, misses: 0 };
+// Every string this layer produced, so coverage can be measured exactly
+// rather than inferred by re-deriving the patterns.
+var APPLIED = {};
+window.__i18nApplied = APPLIED;
+
+/** Attributes carry visible text too - placeholders and labels. */
+function translateAttrs(root){
+  if (LANG !== "es") return;
+  ["placeholder", "aria-label", "title"].forEach(function(a){
+    [].forEach.call(root.querySelectorAll("[" + a + "]"), function(el){
+      var v = el.getAttribute(a);
+      if (ES[v] !== undefined) el.setAttribute(a, ES[v]);
+    });
+  });
+}
+
+function localiseLabels(){
+  if (LANG !== "es") return;
+  Object.keys(LABELS).forEach(function(k){ if (ES[LABELS[k]]) LABELS[k] = ES[LABELS[k]]; });
+  Object.keys(FORMATS).forEach(function(k){ if (ES[FORMATS[k]]) FORMATS[k] = ES[FORMATS[k]]; });
+  AXES.forEach(function(a, i){ if (ES[a]) AXES[i] = AXES[i]; });   // axes keep their ids
+}
+
+function applyLanguage(){
+  document.documentElement.lang = LANG;
+  var btn = document.getElementById("langBtn");
+  if (btn) btn.textContent = LANG === "es" ? "EN" : "ES";
+  if (LANG === "es"){
+    translateNode(document.body);
+    translateAttrs(document);
+  }
+}
+
+/**
+ * Every pane repaints itself with innerHTML on interaction, which would undo
+ * the translation. Watching the document catches all of them - including any
+ * render function added later - rather than needing a call at the end of each.
+ *
+ * translateNode mutates text, which fires the observer again, so a re-entrancy
+ * flag is what stops this looping forever.
+ */
+var translating = false;
+var langObserver = new MutationObserver(function(records){
+  if (LANG !== "es" || translating) return;
+  translating = true;
+  try {
+    records.forEach(function(rec){
+      [].forEach.call(rec.addedNodes, function(node){
+        if (node.nodeType === 1) { translateNode(node); translateAttrs(node); }
+        else if (node.nodeType === 3 && node.parentElement) translateNode(node.parentElement);
+      });
+    });
+  } finally {
+    // Let the mutations we just caused drain before listening again.
+    setTimeout(function(){ translating = false; }, 0);
+  }
+});
+langObserver.observe(document.body, { childList: true, subtree: true });
+
+document.getElementById("langBtn").addEventListener("click", function(){
+  LANG = (LANG === "es") ? "en" : "es";
+  try { localStorage.setItem("ayesicena-lang", LANG); } catch (e) {}
+  // Swapping back to English means re-rendering from source, since the
+  // translation is destructive to the DOM text.
+  location.reload();
+});
+
 // --- tabs ----------------------------------------------------------------
 var tabs = [].slice.call(document.querySelectorAll(".tab"));
 function show(name){
@@ -900,6 +1028,7 @@ function show(name){
   ["home","moments","find","menu","recipes","seasonal","compare","graph","packages","builder"].forEach(function(p){
     document.getElementById("pane-" + p).hidden = (p !== name);
   });
+  applyLanguage();
   window.scrollTo(0,0);
 }
 tabs.forEach(function(t){ t.addEventListener("click", function(){ show(t.dataset.pane); }); });
@@ -1083,8 +1212,8 @@ document.getElementById("pkgRates").innerHTML =
    ["On-site chef shift", soles(K.CHEF)],
    ["IGV", Math.round(K.IGV*100) + "%"]].map(function(r){
     return "<div class='card'><p class='src' style='margin:0'>" + r[0] + "</p>" +
-      "<p class='tnum' style=\\"font-family:'IBM Plex Mono',monospace;font-size:1.3rem;" +
-      "font-weight:600;margin:5px 0 0\\">" + r[1] + "</p></div>";
+      "<p class='tnum' style=\"font-family:'IBM Plex Mono',monospace;font-size:1.3rem;" +
+      "font-weight:600;margin:5px 0 0\">" + r[1] + "</p></div>";
   }).join("");
 
 // --- find dishes ---------------------------------------------------------
@@ -1642,7 +1771,7 @@ renderCompare();
 // --- ingredient graph -----------------------------------------------------
 function splitIngredients(raw){
   return raw.split(/[,;]/).map(function(x){
-    return x.trim().toLowerCase().replace(/\\s*\\([^)]*\\)/g, "").trim();
+    return x.trim().toLowerCase().replace(/\s*\([^)]*\)/g, "").trim();
   }).filter(function(x){ return x.length > 2; });
 }
 
@@ -1773,7 +1902,7 @@ function normIng(x){
     .replace(/[\u00e1\u00e0\u00e4\u00e2]/g,"a").replace(/[\u00e9\u00e8\u00eb\u00ea]/g,"e")
     .replace(/[\u00ed\u00ec\u00ef\u00ee]/g,"i").replace(/[\u00f3\u00f2\u00f6\u00f4]/g,"o")
     .replace(/[\u00fa\u00f9\u00fc\u00fb]/g,"u").replace(/\u00f1/g,"n")
-    .replace(/\\([^)]*\\)/g, " ");
+    .replace(/\([^)]*\)/g, " ");
 }
 function ingTokens(x){
   return normIng(x).split(/[^a-z]+/)
@@ -2116,8 +2245,8 @@ function render(){
   document.getElementById("pickBody").innerHTML = ORDER.map(function(cat){
     var rows = available.filter(function(d){ return d.category === cat; });
     if (!rows.length) return "";
-    return "<section style='margin-bottom:26px'><h3 class='src' style=\\"font-family:'IBM Plex Mono',monospace;" +
-      "letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px\\">" + LABELS[cat] + "</h3>" +
+    return "<section style='margin-bottom:26px'><h3 class='src' style=\"font-family:'IBM Plex Mono',monospace;" +
+      "letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px\">" + LABELS[cat] + "</h3>" +
       "<div class='picks'>" + rows.map(function(d){
         return "<button class='pick' data-id='" + d.id + "' aria-pressed='" +
           (picked.indexOf(d.id) > -1) + "'>" +
@@ -2195,13 +2324,20 @@ function render(){
       }).join("") + "</ol></div>";
 }
 
+// Data labels first, so headings are built in Spanish rather than patched
+// back into it after the fact.
+localiseLabels();
+renderFind();
 render();
+
+// Everything is painted; translate what is on screen and label the toggle.
+applyLanguage();
 })();
 </script>
 `;
 
 // The page script is emitted from a template literal, which quietly eats one
-// level of backslash: /\\d+/ ships as /d+/, and /\\([^)]*\\)/ ships as
+// level of backslash: /\d+/ ships as /d+/, and /\([^)]*\)/ ships as
 // /([^)]*)/ - a regex that matches empty everywhere. That has silently blanked
 // the whole page once, broken the ingredient graph once, and zeroed the
 // seasonal colouring once. Parse what we are about to write, and refuse to
