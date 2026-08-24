@@ -19,12 +19,11 @@ const require = createRequire(import.meta.url);
 /** Strip the type annotations off a data module and require it for its value. */
 function loadData(file, exportName) {
   const src = fs.readFileSync(path.join(ROOT, "data", file), "utf8");
+  // A data module may export more than one value (venues.ts exports two), and
+  // any `export` left behind breaks the CJS require below - so convert them all.
   const js = src
     .replace(/^import type .*$/gm, "")
-    .replace(
-      new RegExp(`export const ${exportName}\\s*:[^=]+=`),
-      `module.exports.${exportName} =`
-    );
+    .replace(/export const (\w+)\s*:[^=]+=/g, "module.exports.$1 =");
   const tmp = path.join(ROOT, `.${exportName}.tmp.cjs`);
   fs.writeFileSync(tmp, js);
   try {
@@ -44,6 +43,8 @@ const EVENTS = loadData("events.ts", "EVENTS");
 const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
 const MOMENTS = loadData("moments.ts", "MOMENTS");
 const RECIPES = loadData("recipes.ts", "RECIPES");
+const DISTRICTS = loadData("venues.ts", "DISTRICTS");
+const VENUE_TYPES = loadData("venues.ts", "VENUE_TYPES");
 
 if (DISHES.length < 100) {
   throw new Error(`Expected the full matrix, extracted only ${DISHES.length}`);
@@ -96,6 +97,9 @@ const FLAVOUR_AXES = ["sweet","savoury","rich","tart","smoky","spiced","fresh"];
 const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL,
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
   ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: RECIPES,
+  districts: DISTRICTS, venues: VENUE_TYPES,
+  trip: { vanHourly: 45, perKm: 1.8, crewHourly: 18, generator: 280,
+          vanTrips: { scran:1, buffet:2, plated:2 }, loadCrew: { scran:1, buffet:2, plated:3 } },
   formats: { "drop-off": "Drop-off", buffet: "Buffet", plated: "Plated", "live-station": "Live station" },
   cap: { fryer: 2, oven: 4, liveStation: 2, griddle: 3 },
   lead: { cold: 1440, oven: 240, hob: 180, griddle: 30, fryer: 15 },
@@ -417,6 +421,25 @@ footer p{margin:0 0 7px;max-width:70ch}
           <input type="number" id="guests" min="1" max="500" value="20" aria-label="Number of guests">
           <span class="muted" style="margin-left:10px;font-size:.9rem" id="minNote"></span>
         </fieldset>
+        <fieldset>
+          <legend>Where is it?</legend>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end">
+            <label style="display:block;font-size:.86rem;color:var(--ink-2)">District
+              <select id="distSel" aria-label="District"
+                style="display:block;margin-top:5px;padding:9px 11px;border:1px solid var(--line);
+                       border-radius:8px;background:var(--surface);color:var(--ink);font:inherit"></select>
+            </label>
+            <label style="display:block;font-size:.86rem;color:var(--ink-2)">Venue
+              <select id="venueSel" aria-label="Venue type"
+                style="display:block;margin-top:5px;padding:9px 11px;border:1px solid var(--line);
+                       border-radius:8px;background:var(--surface);color:var(--ink);font:inherit"></select>
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;font-size:.86rem;color:var(--ink-2);padding-bottom:9px">
+              <input type="checkbox" id="peakChk" checked> Loading in at rush hour
+            </label>
+          </div>
+          <p id="venueNote" class="muted" style="font-size:.88rem;margin:12px 0 0"></p>
+        </fieldset>
         <div id="dropNote"></div>
         <div id="pickBody"></div>
       </div>
@@ -442,6 +465,7 @@ var INGS = D.ingredients, MONTHS = D.months;
 var MOMENTS = D.moments, FORMATS = D.formats, CAP = D.cap, LEAD = D.lead;
 var ORDER = D.order;
 var RECIPES = D.recipes;
+var DISTRICTS = D.districts, VENUES = D.venues, TRIP = D.trip;
 
 function soles(n){ return "S/ " + n.toFixed(2); }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
@@ -449,8 +473,39 @@ function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
 function ratio(d){ return d.cost / d.price; }
 function flag(d){ var r = ratio(d); return r > K.FC_MAX ? "over" : (r < K.FC_MIN ? "under" : "ok"); }
 
+// --- transport, mirroring lib/venues.ts ----------------------------------
+function transportCost(tierId, district, venue, peak, liveStation){
+  var oneWay = district.driveMinutes + (peak ? district.peakExtra : 0);
+  var trips = TRIP.vanTrips[tierId];
+  var driveMinutes = oneWay * 2 * trips;
+  var vanCost = (driveMinutes / 60) * TRIP.vanHourly;
+  var fuelCost = district.km * 2 * trips * TRIP.perKm;
+  var crew = TRIP.loadCrew[tierId];
+  var crewMinutes = venue.crewMinutes * 2 * trips * crew;
+  var crewCost = (crewMinutes / 60) * TRIP.crewHourly;
+
+  var lines = [
+    { label:"Van \u2014 " + trips + " run" + (trips===1?"":"s") + ", " + Math.round(driveMinutes) + " min driving", total:vanCost },
+    { label:"Fuel \u2014 " + (district.km*2*trips) + " km", total:fuelCost }
+  ];
+  var warnings = [];
+  if (crewCost > 0) lines.push({ label:"Load-in crew \u2014 " + crew + " \u00d7 " + Math.round(crewMinutes/crew) + " min", total:crewCost });
+  if (liveStation && !venue.hasPower){
+    lines.push({ label:"Generator hire \u2014 no mains power on site", total:TRIP.generator });
+    warnings.push(venue.name + " has no mains power. A live station needs a generator, priced in above.");
+  }
+  if (!venue.hasKitchen && tierId === "plated"){
+    warnings.push(venue.name + " has no kitchen. Plated service here means everything finishes off a hot box \u2014 check the menu holds.");
+  }
+  if (oneWay >= 60){
+    warnings.push(district.name + " is " + oneWay + " minutes each way" + (peak?" in traffic":"") + ". Cold-chain and crew hours both need checking before quoting.");
+  }
+  var total = lines.reduce(function(a,l){ return a + l.total; }, 0);
+  return { total:Math.round(total*100)/100, lines:lines, driveMinutes:driveMinutes, warnings:warnings };
+}
+
 // --- quote maths, mirroring lib/pricing.ts -------------------------------
-function buildQuote(dishes, guests, tierId){
+function buildQuote(dishes, guests, tierId, ctx){
   var t = TIERS[tierId], warnings = [];
   if (!dishes.length || !(guests > 0)) return null;
   if (guests < t.minGuests)
@@ -468,6 +523,18 @@ function buildQuote(dishes, guests, tierId){
 
   var waiters = t.guestsPerWaiter > 0 ? Math.ceil(guests / t.guestsPerWaiter) : 0;
   var staffTotal = waiters * K.STAFF + t.chefs * K.CHEF;
+  // Transport is costed against the real venue when one is set.
+  var tLine;
+  if (ctx && ctx.district && ctx.venue){
+    var live = dishes.some(function(d){ return d.format === "live-station"; });
+    var tc = transportCost(tierId, ctx.district, ctx.venue, ctx.peak, live);
+    tLine = { label:"Transport & load-in \u2014 " + ctx.district.name + ", " + ctx.venue.name,
+              perGuest: tc.total/guests, total: tc.total };
+    warnings = warnings.concat(tc.warnings);
+  } else {
+    tLine = { label:"Transport & load-in (flat estimate \u2014 no venue set)",
+              perGuest: t.transport/guests, total: t.transport };
+  }
   var lines = [
     { label:"Menaje hire", perGuest:t.menajePerGuest, total:t.menajePerGuest*guests },
     { label:"Packaging",   perGuest:t.packagingPerGuest, total:t.packagingPerGuest*guests },
@@ -475,7 +542,7 @@ function buildQuote(dishes, guests, tierId){
         ? "Staff — " + waiters + " waiter" + (waiters===1?"":"s") + ", " + t.chefs + " chef"
         : "Staff — " + t.chefs + " chef",
       perGuest: staffTotal/guests, total: staffTotal },
-    { label:"Transport & load-in", perGuest:t.transport/guests, total:t.transport }
+    tLine
   ].filter(function(l){ return l.total > 0; });
 
   var svc = lines.reduce(function(s,l){ return s + l.perGuest; }, 0);
@@ -1226,6 +1293,34 @@ guestsEl.addEventListener("input", function(){
   render();
 });
 
+// Venue state. Defaults to a San Isidro hotel at peak - the commonest job,
+// and the one the old flat figure happened to over-charge for.
+var distIdx = Math.max(0, DISTRICTS.findIndex(function(d){ return d.id === "san-isidro"; }));
+var venueIdx = Math.max(0, VENUES.findIndex(function(v){ return v.id === "hotel"; }));
+var atPeak = true;
+
+document.getElementById("distSel").innerHTML = DISTRICTS.map(function(d,i){
+  return "<option value='" + i + "'" + (i===distIdx?" selected":"") + ">" + esc(d.name) +
+    " \u00b7 " + d.driveMinutes + " min</option>";
+}).join("");
+document.getElementById("venueSel").innerHTML = VENUES.map(function(v,i){
+  return "<option value='" + i + "'" + (i===venueIdx?" selected":"") + ">" + esc(v.name) + "</option>";
+}).join("");
+
+document.getElementById("distSel").addEventListener("change", function(e){
+  distIdx = Number(e.target.value); render();
+});
+document.getElementById("venueSel").addEventListener("change", function(e){
+  venueIdx = Number(e.target.value); render();
+});
+document.getElementById("peakChk").addEventListener("change", function(e){
+  atPeak = e.target.checked; render();
+});
+
+function venueCtx(){
+  return { district: DISTRICTS[distIdx], venue: VENUES[venueIdx], peak: atPeak };
+}
+
 document.getElementById("pickBody").addEventListener("click", function(e){
   var b = e.target.closest("[data-id]"); if (!b) return;
   var id = Number(b.dataset.id), i = picked.indexOf(id);
@@ -1263,7 +1358,8 @@ function render(){
       }).join("") + "</div></section>";
   }).join("");
 
-  var q = buildQuote(selected, guests, tier);
+  document.getElementById("venueNote").textContent = VENUES[venueIdx].note;
+  var q = buildQuote(selected, guests, tier, venueCtx());
   var box = document.getElementById("quote");
   if (!q){
     box.innerHTML = "<h3>Your quote</h3><p class='muted' style='font-size:.9rem;margin-top:8px'>" +

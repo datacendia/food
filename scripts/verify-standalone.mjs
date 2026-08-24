@@ -23,6 +23,8 @@ const { EVENTS } = await import("../.verify-events.mjs");
 const { INGREDIENTS } = await import("../.verify-ingredients.mjs");
 const { MOMENTS } = await import("../.verify-moments.mjs");
 const { RECIPES } = await import("../.verify-recipes.mjs");
+const { DISTRICTS, VENUE_TYPES } = await import("../.verify-venues.mjs");
+const { transportCost } = await import("../lib/venues.ts").catch(() => ({ transportCost: null }));
 const DISHES_LEN = DISHES.length;
 
 const browser = await chromium.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
@@ -64,7 +66,12 @@ ${c.name}`);
     .replace("Client pays", "").trim();
   const net = Number(shownNet.replace("S/", "").trim());
   const gross = Number(shownGross.replace("S/", "").trim());
-  const igvOk = Math.abs(gross - net * c.guests * 1.18) < 0.02;
+  // The per-guest figure on screen is rounded to 2dp, so multiplying it by the
+  // head count carries up to half a centimo of error per guest. Derive the
+  // tolerance from that rather than asserting a flat 2 centimos, which only
+  // ever passed because transport used to be a round number.
+  const tolerance = 0.005 * c.guests * 1.18 + 0.01;
+  const igvOk = Math.abs(gross - net * c.guests * 1.18) < tolerance;
   if (!igvOk) failures++;
   console.log(`  net/guest ${shownNet}  client pays ${shownGross}  IGV maths ${igvOk ? "✓" : "✗"}`);
 }
@@ -257,6 +264,73 @@ const searchExpected = RECIPES.filter((r) => {
 const searchOk = searchShown === searchExpected;
 if (!searchOk) failures++;
 console.log(`search "lucuma": ${searchShown} ${searchOk ? "✓" : "✗ expected " + searchExpected}`);
+
+// --- Venue axis: the page must cost transport the way lib/venues.ts does ---
+// Ported maths, recomputed here rather than trusted.
+const TRIP = { vanHourly: 45, perKm: 1.8, crewHourly: 18, generator: 280,
+  vanTrips: { scran: 1, buffet: 2, plated: 2 }, loadCrew: { scran: 1, buffet: 2, plated: 3 } };
+function expectedTransport(tier, d, v, peak, live) {
+  const oneWay = d.driveMinutes + (peak ? d.peakExtra : 0);
+  const trips = TRIP.vanTrips[tier];
+  const drive = oneWay * 2 * trips;
+  let total = (drive / 60) * TRIP.vanHourly + d.km * 2 * trips * TRIP.perKm;
+  const crew = TRIP.loadCrew[tier];
+  total += ((v.crewMinutes * 2 * trips * crew) / 60) * TRIP.crewHourly;
+  if (live && !v.hasPower) total += TRIP.generator;
+  return Math.round(total * 100) / 100;
+}
+
+await page.getByRole("tab", { name: "Build a menu" }).click();
+await page.waitForTimeout(250);
+console.log("\nTransport by venue (plated, at peak)");
+
+const hotel = VENUE_TYPES.find((v) => v.id === "hotel");
+await page.selectOption("#venueSel", { label: hotel.name });
+await page.check("#peakChk");
+await page.getByRole("button", { name: "The Aye Si Plated Experience", exact: true }).click();
+await page.fill("#guests", "40");
+await page.waitForTimeout(200);
+
+for (const id of ["san-isidro", "la-molina", "asia"]) {
+  const d = DISTRICTS.find((x) => x.id === id);
+  await page.selectOption("#distSel", { label: `${d.name} · ${d.driveMinutes} min` });
+  await page.waitForTimeout(180);
+  const shown = await page.locator("#quote .qrow", { hasText: "Transport" }).first().innerText();
+  const perGuest = Number((shown.match(/S\/\s*([\d.]+)/) || [])[1]);
+  const expected = Math.round((expectedTransport("plated", d, hotel, true, false) / 40) * 100) / 100;
+  const ok = Math.abs(perGuest - expected) < 0.02;
+  if (!ok) failures++;
+  console.log(`  ${d.name.padEnd(18)} S/ ${perGuest} per guest ${ok ? "✓" : "✗ expected " + expected}`);
+}
+
+// A harder venue in the same district must cost more, not the same.
+const si = DISTRICTS.find((x) => x.id === "san-isidro");
+await page.selectOption("#distSel", { label: `${si.name} · ${si.driveMinutes} min` });
+const readTransport = async () => {
+  const t = await page.locator("#quote .qrow", { hasText: "Transport" }).first().innerText();
+  return Number((t.match(/S\/\s*([\d.]+)/) || [])[1]);
+};
+await page.selectOption("#venueSel", { label: hotel.name });
+await page.waitForTimeout(180);
+const easyCost = await readTransport();
+await page.selectOption("#venueSel", { label: VENUE_TYPES.find((v) => v.id === "apartment").name });
+await page.waitForTimeout(180);
+const hardCost = await readTransport();
+const venueOk = hardCost > easyCost;
+if (!venueOk) failures++;
+console.log(`venue access moves the price: hotel S/ ${easyCost} → walk-up S/ ${hardCost} ${venueOk ? "✓" : "✗"}`);
+
+// Rush hour must cost more than off-peak.
+await page.selectOption("#venueSel", { label: hotel.name });
+await page.waitForTimeout(150);
+const peakCost = await readTransport();
+await page.uncheck("#peakChk");
+await page.waitForTimeout(180);
+const offCost = await readTransport();
+const peakOk = peakCost > offCost;
+if (!peakOk) failures++;
+console.log(`rush hour costs more: peak S/ ${peakCost} vs off-peak S/ ${offCost} ${peakOk ? "✓" : "✗"}`);
+await page.check("#peakChk");
 
 await browser.close();
 

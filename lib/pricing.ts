@@ -14,6 +14,8 @@
  */
 
 import type { Dish, ServiceTier } from "./dishes";
+import { transportCost } from "./venues";
+import type { District, VenueType } from "./venues";
 
 export const IGV_RATE = 0.18;
 
@@ -35,7 +37,11 @@ export interface TierRules {
   guestsPerWaiter: number;
   /** On-site chefs required regardless of head count. */
   chefs: number;
-  /** Flat transport + load-in for the event. */
+  /**
+   * Fallback flat transport, used only when no venue is given. A real quote
+   * should pass a district and venue type and let lib/venues cost the run;
+   * this number is a placeholder that ignores where the event actually is.
+   */
   transport: number;
   /** Canape bites included per guest. */
   bitesPerGuest: number;
@@ -115,6 +121,14 @@ export interface QuoteInput {
   tier: ServiceTier;
   /** Whether the headline figure includes IGV. Defaults to net (+ IGV). */
   basis?: QuoteBasis;
+  /**
+   * Where the event is. Omit and the quote falls back to the tier's flat
+   * transport figure, which is wrong for anywhere but the near districts.
+   */
+  district?: District;
+  venue?: VenueType;
+  /** Loading in during Lima rush hour. Most evening events do. */
+  peak?: boolean;
 }
 
 export interface QuoteLine {
@@ -207,6 +221,32 @@ export function buildQuote(input: QuoteInput): Quote {
   const waiters = tier.guestsPerWaiter > 0 ? Math.ceil(guests / tier.guestsPerWaiter) : 0;
   const staffTotal = waiters * STAFF_SHIFT_COST + tier.chefs * CHEF_SHIFT_COST;
 
+  // Transport: costed against the real venue where one is given, and flagged
+  // as a placeholder where it is not.
+  let transportLine: QuoteLine;
+  if (input.district && input.venue) {
+    const liveStation = dishes.some((d) => d.format === "live-station");
+    const t = transportCost({
+      tier: tierId,
+      district: input.district,
+      venue: input.venue,
+      peak: input.peak,
+      liveStation
+    });
+    transportLine = {
+      label: `Transport & load-in — ${input.district.name}, ${input.venue.name}`,
+      perGuest: t.total / guests,
+      total: t.total
+    };
+    warnings.push(...t.warnings);
+  } else {
+    transportLine = {
+      label: "Transport & load-in (flat estimate — no venue set)",
+      perGuest: tier.transport / guests,
+      total: tier.transport
+    };
+  }
+
   const serviceLines: QuoteLine[] = [
     {
       label: "Menaje hire",
@@ -226,11 +266,7 @@ export function buildQuote(input: QuoteInput): Quote {
       perGuest: staffTotal / guests,
       total: staffTotal
     },
-    {
-      label: "Transport & load-in",
-      perGuest: tier.transport / guests,
-      total: tier.transport
-    }
+    transportLine
   ].filter((l) => l.total > 0);
 
   const serviceCostPerGuest = serviceLines.reduce((s, l) => s + l.perGuest, 0);

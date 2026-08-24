@@ -6,6 +6,7 @@ import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 import { buildQuote, TIERS, soles, marginFlag } from "@/lib/pricing";
 import { findConflicts } from "@/lib/conflicts";
 import { buildRunSheet } from "@/lib/runsheet";
+import { DISTRICTS, VENUE_TYPES } from "@/data/venues";
 
 
 
@@ -14,6 +15,15 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
   const [guests, setGuests] = useState(20);
   const [picked, setPicked] = useState<number[]>([1, 2, 20, 76]);
   const [serviceTime, setServiceTime] = useState("19:30");
+  // Where the event is. Defaults to a San Isidro hotel loading in at rush hour -
+  // the commonest job, and the one a flat transport figure over-charges for.
+  const [distIdx, setDistIdx] = useState(
+    Math.max(0, DISTRICTS.findIndex((d) => d.id === "san-isidro"))
+  );
+  const [venueIdx, setVenueIdx] = useState(
+    Math.max(0, VENUE_TYPES.findIndex((v) => v.id === "hotel"))
+  );
+  const [peak, setPeak] = useState(true);
 
   // A dish only appears if it is offered at the chosen tier.
   const available = useMemo(
@@ -31,11 +41,18 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
   const quote = useMemo(() => {
     if (selected.length === 0 || guests <= 0) return null;
     try {
-      return buildQuote({ dishes: selected, guests, tier });
+      return buildQuote({
+        dishes: selected,
+        guests,
+        tier,
+        district: DISTRICTS[distIdx],
+        venue: VENUE_TYPES[venueIdx],
+        peak
+      });
     } catch {
       return null;
     }
-  }, [selected, guests, tier]);
+  }, [selected, guests, tier, distIdx, venueIdx, peak]);
 
   const conflicts = useMemo(() => findConflicts(selected, tier), [selected, tier]);
   // Dishes named by a blocker get outlined in the picker, so the warning points
@@ -102,6 +119,51 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
           <span className="ml-3 text-sm text-ink-3">
             minimum {TIERS[tier].minGuests} for this tier
           </span>
+        </fieldset>
+
+        <fieldset className="mb-8">
+          <legend className="mb-2 font-mono text-[11px] uppercase tracking-wider text-ink-3">
+            Where is it?
+          </legend>
+          <div className="flex flex-wrap items-end gap-4">
+            <label className="block text-sm text-ink-2">
+              District
+              <select
+                value={distIdx}
+                onChange={(e) => setDistIdx(Number(e.target.value))}
+                className="mt-1.5 block rounded-lg border border-line bg-surface px-3 py-2 text-ink"
+              >
+                {DISTRICTS.map((d, i) => (
+                  <option key={d.id} value={i}>
+                    {d.name} · {d.driveMinutes} min
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block text-sm text-ink-2">
+              Venue
+              <select
+                value={venueIdx}
+                onChange={(e) => setVenueIdx(Number(e.target.value))}
+                className="mt-1.5 block rounded-lg border border-line bg-surface px-3 py-2 text-ink"
+              >
+                {VENUE_TYPES.map((v, i) => (
+                  <option key={v.id} value={i}>
+                    {v.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex items-center gap-2 pb-2 text-sm text-ink-2">
+              <input
+                type="checkbox"
+                checked={peak}
+                onChange={(e) => setPeak(e.target.checked)}
+              />
+              Loading in at rush hour
+            </label>
+          </div>
+          <p className="mt-3 text-sm text-ink-3">{VENUE_TYPES[venueIdx].note}</p>
         </fieldset>
 
         {droppedCount > 0 && (
