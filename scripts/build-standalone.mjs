@@ -132,6 +132,26 @@ const html = `<title>Aye Si Cena</title>
   --c-smoky:#8AA0B0;--c-spiced:#E07B6C;--c-fresh:#A8C665;
 }
 *{box-sizing:border-box}
+.graphstage{position:relative;margin-top:18px;border:1px solid var(--line);border-radius:14px;
+  background:var(--surface);overflow:hidden;touch-action:none}
+#graphSvg{display:block;width:100%;height:min(70vh,620px);cursor:grab}
+#graphSvg.dragging{cursor:grabbing}
+#graphSvg .edge{stroke:var(--line);stroke-linecap:round;transition:stroke .2s,stroke-opacity .2s}
+#graphSvg .edge.lit{stroke:var(--aji);stroke-opacity:.85}
+#graphSvg .node{cursor:pointer}
+#graphSvg .node circle{transition:fill-opacity .2s,stroke-width .2s}
+#graphSvg .node:hover circle{stroke-width:3}
+#graphSvg .node.sel circle{stroke:var(--aji);stroke-width:3}
+#graphSvg .node.dim{opacity:.22}
+#graphSvg .node text{pointer-events:none;font-size:9.5px;fill:var(--ink-2)}
+#graphSvg .node.sel text{fill:var(--ink);font-weight:700}
+.graphpanel{position:absolute;right:12px;top:12px;width:min(300px,calc(100% - 24px));
+  max-height:calc(100% - 24px);overflow:auto;background:var(--raised);border:1px solid var(--line);
+  border-radius:12px;padding:14px 15px;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+.graphpanel h3{margin:0 0 3px;font-size:1.02rem}
+.graphpanel .close{float:right;border:0;background:none;color:var(--ink-3);cursor:pointer;
+  font-size:17px;line-height:1;padding:0 2px}
+@media (prefers-reduced-motion:reduce){#graphSvg .edge,#graphSvg .node circle{transition:none}}
 .compass-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:6px}
 #compass{width:100%;max-width:400px;user-select:none;overflow:visible}
 #compass .wedge{cursor:pointer;transition:transform .32s cubic-bezier(.2,.8,.2,1),
@@ -340,10 +360,16 @@ footer p{margin:0 0 7px;max-width:70ch}
     <h1>What unlocks what</h1>
     <p class="lede">Every ingredient sized by how much menu it opens up. What belongs on a standing
       order, and which dishes carry an ingredient nothing else uses.</p>
-    <div class="grid" style="grid-template-columns:1fr;margin-top:28px">
-      <div id="graphSvg" style="overflow-x:auto"></div>
-      <div id="graphList"></div>
+    <div class="chips" id="graphControls" style="margin-top:22px"></div>
+    <div class="graphstage">
+      <svg id="graphSvg" role="application" tabindex="0"
+        aria-label="Ingredient network. Drag a node to move it, click to see its dishes."></svg>
+      <div id="graphPanel" class="graphpanel" hidden></div>
     </div>
+    <p class="muted mono" style="font-size:11px;margin:10px 0 0;text-align:center">
+      drag to move &middot; scroll to zoom &middot; click a node for its dishes
+    </p>
+    <div id="graphList" style="margin-top:32px"></div>
     <div id="graphOrphans" style="margin-top:34px;border-top:1px solid var(--line);padding-top:22px"></div>
   </section>
 
@@ -1344,37 +1370,349 @@ function buildGraph(){
     .sort(function(a,b){ return b.dishes.length - a.dishes.length || b.value - a.value; });
 }
 
+// --- graph interaction ----------------------------------------------------
+(function(){
+  var svg = document.getElementById("graphSvg");
+  var dragIdx = null, dragged = false, panning = null;
+
+  function toLocal(e){
+    var r = svg.getBoundingClientRect();
+    return { x: ((e.clientX - r.left) - VIEW.x) / VIEW.k,
+             y: ((e.clientY - r.top)  - VIEW.y) / VIEW.k };
+  }
+
+  svg.addEventListener("pointerdown", function(e){
+    var g = e.target.closest("[data-node]");
+    svg.setPointerCapture(e.pointerId);
+    dragged = false;
+    if (g){
+      dragIdx = Number(g.dataset.node);
+      SIM.nodes[dragIdx].fixed = true;
+      svg.classList.add("dragging");
+    } else {
+      panning = { x: e.clientX - VIEW.x, y: e.clientY - VIEW.y };
+      svg.classList.add("dragging");
+    }
+  });
+
+  svg.addEventListener("pointermove", function(e){
+    if (dragIdx !== null){
+      var p = toLocal(e);
+      SIM.nodes[dragIdx].x = p.x; SIM.nodes[dragIdx].y = p.y;
+      dragged = true;
+      reheat(0.35);
+    } else if (panning){
+      VIEW.x = e.clientX - panning.x; VIEW.y = e.clientY - panning.y;
+      dragged = true;
+      paintGraph();
+    }
+  });
+
+  function release(e){
+    if (dragIdx !== null){
+      // Let go and the node rejoins the simulation rather than staying pinned.
+      SIM.nodes[dragIdx].fixed = false;
+      if (!dragged) select(dragIdx);
+      reheat(0.4);
+    }
+    dragIdx = null; panning = null;
+    svg.classList.remove("dragging");
+  }
+  svg.addEventListener("pointerup", release);
+  svg.addEventListener("pointercancel", release);
+
+  svg.addEventListener("wheel", function(e){
+    e.preventDefault();
+    var r = svg.getBoundingClientRect();
+    var mx = e.clientX - r.left, my = e.clientY - r.top;
+    var k = Math.max(0.4, Math.min(3, VIEW.k * (e.deltaY < 0 ? 1.12 : 0.89)));
+    // Zoom about the pointer, not the origin.
+    VIEW.x = mx - (mx - VIEW.x) * (k / VIEW.k);
+    VIEW.y = my - (my - VIEW.y) * (k / VIEW.k);
+    VIEW.k = k;
+    paintGraph();
+  }, { passive: false });
+
+  svg.addEventListener("keydown", function(e){
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var g = e.target.closest("[data-node]");
+    if (g){ e.preventDefault(); select(Number(g.dataset.node)); }
+    if (e.key === "Escape") select(null);
+  });
+
+  function select(i){
+    SIM.sel = (SIM.sel === i) ? null : i;
+    paintGraph();
+    renderGraphPanel();
+  }
+
+  document.getElementById("graphPanel").addEventListener("click", function(e){
+    if (e.target.id === "graphClose"){ SIM.sel = null; paintGraph(); renderGraphPanel(); }
+  });
+
+  document.getElementById("graphControls").addEventListener("click", function(e){
+    var b = e.target.closest("[data-shared],[data-graph]");
+    if (!b) return;
+    if (b.dataset.graph === "reheat"){ reheat(1); return; }
+    SIM.minShared = Number(b.dataset.shared);
+    SIM.edges = buildIngredientEdges(SIM.nodes, SIM.minShared);
+    SIM.sel = null;
+    renderGraphControls();
+    renderGraphPanel();
+    reheat(0.7);
+  });
+
+  // The stage has no size until its pane is shown, so lay out on first view.
+  window.addEventListener("resize", function(){ if (SIM.nodes.length) reheat(0.3); });
+})();
+
+// --- force-directed ingredient network ------------------------------------
+// Hand-rolled rather than d3, because the whole point of this build is that it
+// is one file with nothing to fetch. ~30 nodes makes the O(n^2) repulsion
+// cheap enough that a quadtree would be premature.
+var SIM = { nodes: [], edges: [], alpha: 0, raf: 0, sel: null, minShared: 2 };
+var VIEW = { k: 1, x: 0, y: 0 };
+
+/**
+ * Do a matrix ingredient string and a seasonal-window name refer to the same
+ * thing? Plain substring matching missed "Papas nativas" against "papa nativa"
+ * on the plural alone, and choked on "Asparagus (Ica)" and "Trout & paiche".
+ */
+function normIng(x){
+  return String(x).toLowerCase()
+    .replace(/[\u00e1\u00e0\u00e4\u00e2]/g,"a").replace(/[\u00e9\u00e8\u00eb\u00ea]/g,"e")
+    .replace(/[\u00ed\u00ec\u00ef\u00ee]/g,"i").replace(/[\u00f3\u00f2\u00f6\u00f4]/g,"o")
+    .replace(/[\u00fa\u00f9\u00fc\u00fb]/g,"u").replace(/\u00f1/g,"n")
+    .replace(/\\([^)]*\\)/g, " ");
+}
+function ingTokens(x){
+  return normIng(x).split(/[^a-z]+/)
+    .filter(function(w){ return w.length > 2; })
+    .map(function(w){ return w.replace(/s$/, ""); });   // crude singular
+}
+function sameIngredient(a, b){
+  var at = ingTokens(a);
+  // "Trout & paiche" is two ingredients sharing one window; either side counts.
+  return normIng(b).split("&").some(function(part){
+    var bt = ingTokens(part);
+    if (!bt.length || !at.length) return false;
+    var shorter = bt.length <= at.length ? bt : at;
+    var longer  = bt.length <= at.length ? at : bt;
+    return shorter.every(function(w){ return longer.indexOf(w) > -1; });
+  });
+}
+
+/** Ingredients that appear together in at least minShared dishes. */
+function buildIngredientEdges(nodes, minShared){
+  var byName = {};
+  nodes.forEach(function(n, i){ byName[n.name] = i; });
+  var pairs = {};
+  DISHES.forEach(function(d){
+    var names = splitIngredients(d.keyIngredients).filter(function(n){
+      return byName[n] !== undefined;
+    });
+    var uniq = names.filter(function(v, i){ return names.indexOf(v) === i; });
+    for (var a = 0; a < uniq.length; a++){
+      for (var b = a + 1; b < uniq.length; b++){
+        var key = uniq[a] < uniq[b] ? uniq[a] + "\u0000" + uniq[b] : uniq[b] + "\u0000" + uniq[a];
+        pairs[key] = (pairs[key] || 0) + 1;
+      }
+    }
+  });
+  return Object.keys(pairs).filter(function(k){ return pairs[k] >= minShared; })
+    .map(function(k){
+      var p = k.split("\u0000");
+      return { s: byName[p[0]], t: byName[p[1]], w: pairs[k] };
+    });
+}
+
+function graphGeometry(){
+  var svg = document.getElementById("graphSvg");
+  var r = svg.getBoundingClientRect();
+  return { w: r.width || 900, h: r.height || 600 };
+}
+
+function stepSim(){
+  var g = graphGeometry(), cx = g.w / 2, cy = g.h / 2;
+  var n = SIM.nodes, e = SIM.edges;
+  var a = SIM.alpha;
+
+  // Repulsion, every pair.
+  for (var i = 0; i < n.length; i++){
+    for (var j = i + 1; j < n.length; j++){
+      var dx = n[j].x - n[i].x, dy = n[j].y - n[i].y;
+      var d2 = dx*dx + dy*dy || 0.01;
+      var d = Math.sqrt(d2);
+      var force = (900 + n[i].r * n[j].r * 3) / d2;
+      var fx = (dx / d) * force, fy = (dy / d) * force;
+      n[i].vx -= fx; n[i].vy -= fy;
+      n[j].vx += fx; n[j].vy += fy;
+      // Hard collision, so labels stay readable.
+      var minD = n[i].r + n[j].r + 16;
+      if (d < minD){
+        var push = (minD - d) * 0.5;
+        n[i].x -= (dx/d) * push; n[i].y -= (dy/d) * push;
+        n[j].x += (dx/d) * push; n[j].y += (dy/d) * push;
+      }
+    }
+  }
+
+  // Links pull, weighted by how many dishes the pair shares.
+  e.forEach(function(l){
+    var s = n[l.s], t = n[l.t];
+    var dx = t.x - s.x, dy = t.y - s.y;
+    var d = Math.sqrt(dx*dx + dy*dy) || 0.01;
+    var target = 120 - Math.min(l.w, 6) * 8;
+    var k = (d - target) * 0.012 * a;
+    var fx = (dx/d) * k, fy = (dy/d) * k;
+    s.vx += fx; s.vy += fy;
+    t.vx -= fx; t.vy -= fy;
+  });
+
+  // Gentle pull to centre, integrate, damp.
+  n.forEach(function(p){
+    if (p.fixed) { p.vx = p.vy = 0; return; }
+    // Centring has to beat repulsion or the graph inflates until it clips.
+    p.vx += (cx - p.x) * 0.012 * a;
+    p.vy += (cy - p.y) * 0.012 * a;
+    p.x += p.vx; p.y += p.vy;
+    p.vx *= 0.82; p.vy *= 0.82;
+    p.x = Math.max(p.r + 6, Math.min(g.w - p.r - 6, p.x));
+    // The label hangs below the node, so the floor sits higher than the ceiling.
+    p.y = Math.max(p.r + 6, Math.min(g.h - p.r - 20, p.y));
+  });
+
+  SIM.alpha *= 0.985;
+}
+
+function paintGraph(){
+  var svg = document.getElementById("graphSvg");
+  var g = graphGeometry();
+  svg.setAttribute("viewBox", "0 0 " + g.w + " " + g.h);
+  var sel = SIM.sel;
+  var lit = {};
+  if (sel !== null){
+    lit[sel] = 1;
+    SIM.edges.forEach(function(l){
+      if (l.s === sel) lit[l.t] = 1;
+      if (l.t === sel) lit[l.s] = 1;
+    });
+  }
+
+  var out = "<g transform='translate(" + VIEW.x + "," + VIEW.y + ") scale(" + VIEW.k + ")'>";
+  SIM.edges.forEach(function(l){
+    var on = sel !== null && (l.s === sel || l.t === sel);
+    if (sel !== null && !on) return;   // a selection is a question; hide the noise
+    out += "<line class='edge" + (on ? " lit" : "") + "' x1='" + SIM.nodes[l.s].x.toFixed(1) +
+      "' y1='" + SIM.nodes[l.s].y.toFixed(1) + "' x2='" + SIM.nodes[l.t].x.toFixed(1) +
+      "' y2='" + SIM.nodes[l.t].y.toFixed(1) + "' stroke-width='" +
+      Math.min(0.6 + l.w * 0.35, 3).toFixed(2) + "' stroke-opacity='" +
+      (on ? 0.95 : Math.min(0.34 + l.w * 0.09, 0.75)).toFixed(2) + "'/>";
+  });
+  SIM.nodes.forEach(function(p, i){
+    var dim = sel !== null && !lit[i];
+    out += "<g class='node" + (i === sel ? " sel" : "") + (dim ? " dim" : "") +
+      "' data-node='" + i + "' role='button' tabindex='0' aria-label='" +
+      esc(p.name) + ", " + p.dishes.length + " dishes'>" +
+      "<circle cx='" + p.x.toFixed(1) + "' cy='" + p.y.toFixed(1) + "' r='" + p.r.toFixed(1) +
+        "' fill='" + p.colour + "' fill-opacity='" + (i === sel ? 0.95 : 0.55) +
+        "' stroke='" + p.colour + "' stroke-width='1.5'/>" +
+      "<text x='" + p.x.toFixed(1) + "' y='" + (p.y + p.r + 12).toFixed(1) +
+        "' text-anchor='middle'>" + esc(p.name.length > 17 ? p.name.slice(0,16) + "\u2026" : p.name) +
+      "</text></g>";
+  });
+  svg.innerHTML = out + "</g>";
+}
+
+function tick(){
+  stepSim();
+  paintGraph();
+  if (SIM.alpha > 0.005) SIM.raf = requestAnimationFrame(tick);
+  else SIM.raf = 0;
+}
+
+function reheat(a){
+  SIM.alpha = a || 0.9;
+  if (!SIM.raf) SIM.raf = requestAnimationFrame(tick);
+}
+
+function initGraphSim(){
+  var graph = buildGraph();
+  var top = graph.slice(0, 30);
+  var maxReach = Math.max.apply(null, top.map(function(n){ return n.dishes.length; }).concat([1]));
+  var g = graphGeometry();
+  // Seasonal ingredients are the ones that will strand you, so colour carries
+  // that rather than just prettifying the node.
+  var seasonal = {};
+  INGS.forEach(function(i){ if (!i.yearRound) seasonal[i.id] = 1; });
+
+  SIM.nodes = top.map(function(n, i){
+    var a = (i / top.length) * Math.PI * 2;
+    // Is THIS ingredient the seasonal one? Matching through dishes flagged
+    // almost everything, because most dishes touch something seasonal.
+    var risky = INGS.some(function(ing){
+      return !ing.yearRound && sameIngredient(n.name, ing.name);
+    });
+    return {
+      name: n.name, dishes: n.dishes, value: n.value,
+      r: 7 + Math.sqrt(n.dishes.length / maxReach) * 20,
+      x: g.w/2 + Math.cos(a) * 180 + (Math.random()-0.5)*30,
+      y: g.h/2 + Math.sin(a) * 180 + (Math.random()-0.5)*30,
+      vx: 0, vy: 0, fixed: false,
+      colour: risky ? "var(--c-tart)" : "var(--c-savoury)"
+    };
+  });
+  SIM.edges = buildIngredientEdges(SIM.nodes, SIM.minShared);
+  SIM.sel = null;
+  VIEW = { k: 1, x: 0, y: 0 };
+  reheat(1);
+}
+
+function renderGraphPanel(){
+  var el = document.getElementById("graphPanel");
+  if (SIM.sel === null){ el.hidden = true; return; }
+  var p = SIM.nodes[SIM.sel];
+  var partners = SIM.edges.filter(function(l){ return l.s === SIM.sel || l.t === SIM.sel; })
+    .sort(function(a,b){ return b.w - a.w; }).slice(0, 6)
+    .map(function(l){ return SIM.nodes[l.s === SIM.sel ? l.t : l.s].name + " (" + l.w + ")"; });
+  var names = p.dishes.slice(0, 12).map(function(id){
+    var d = DISHES.filter(function(x){ return x.id === id; })[0];
+    return d ? esc(d.name) : "";
+  }).filter(Boolean);
+  el.hidden = false;
+  el.innerHTML =
+    "<button class='close' id='graphClose' aria-label='Close'>\u00d7</button>" +
+    "<h3 class='cap'>" + esc(p.name) + "</h3>" +
+    "<p class='src' style='margin:0 0 10px'>" + p.dishes.length + " dishes \u00b7 " +
+      soles(p.value) + " of menu</p>" +
+    (partners.length
+      ? "<p class='mono' style='font-size:10px;letter-spacing:.08em;text-transform:uppercase;" +
+        "color:var(--ink-3);margin:0 0 5px'>Travels with</p><p style='font-size:.86rem;margin:0 0 12px'>" +
+        partners.join(", ") + "</p>"
+      : "<p class='muted' style='font-size:.86rem'>Shares no dish with another top ingredient.</p>") +
+    "<p class='mono' style='font-size:10px;letter-spacing:.08em;text-transform:uppercase;" +
+      "color:var(--ink-3);margin:0 0 5px'>Used in</p>" +
+    "<p style='font-size:.86rem;margin:0'>" + names.join(", ") +
+      (p.dishes.length > 12 ? " and " + (p.dishes.length - 12) + " more" : "") + "</p>";
+}
+
+function renderGraphControls(){
+  document.getElementById("graphControls").innerHTML =
+    [2,3,4].map(function(m){
+      return "<button class='chip' data-shared='" + m + "' aria-pressed='" +
+        (SIM.minShared === m) + "'>link at " + m + "+ shared dishes</button>";
+    }).join("") +
+    "<button class='chip mono' data-graph='reheat' style='font-size:11px'>shake</button>" +
+    "<span class='mono' style='font-size:11px;color:var(--ink-3);margin-left:8px'>" +
+      "<span style='color:var(--c-tart)'>\u25cf</span> seasonal &nbsp;" +
+      "<span style='color:var(--c-savoury)'>\u25cf</span> year-round</span>";
+}
+
 function renderGraph(){
   var graph = buildGraph();
-  var top = graph.slice(0, 24);
-  var size = 620, cx = size/2, cy = size/2, radius = 205;
-  var maxReach = Math.max.apply(null, top.map(function(n){ return n.dishes.length; }).concat([1]));
-
-  var svg = "<svg viewBox='0 0 " + size + " " + size + "' width='" + size + "' height='" + size +
-    "' role='img' aria-label='Ingredients sized by how many dishes each unlocks' style='max-width:100%'>";
-  var nodes = top.map(function(n, i){
-    var a = (i / top.length) * Math.PI * 2 - Math.PI/2;
-    return { n:n, x: cx + Math.cos(a)*radius, y: cy + Math.sin(a)*radius,
-      r: 6 + Math.sqrt(n.dishes.length/maxReach)*16,
-      lx: cx + Math.cos(a)*(radius+34), ly: cy + Math.sin(a)*(radius+34),
-      anchor: Math.cos(a) > 0.25 ? "start" : (Math.cos(a) < -0.25 ? "end" : "middle") };
-  });
-  nodes.forEach(function(p){
-    svg += "<line x1='" + cx + "' y1='" + cy + "' x2='" + p.x.toFixed(1) + "' y2='" + p.y.toFixed(1) +
-      "' stroke='var(--line)' stroke-width='0.6'/>";
-  });
-  svg += "<circle cx='" + cx + "' cy='" + cy + "' r='26' fill='var(--raised)' stroke='var(--line)'/>";
-  svg += "<text x='" + cx + "' y='" + (cy+4) + "' text-anchor='middle' font-size='10' fill='var(--ink-3)'>" +
-    DISHES.length + "</text>";
-  nodes.forEach(function(p){
-    svg += "<circle cx='" + p.x.toFixed(1) + "' cy='" + p.y.toFixed(1) + "' r='" + p.r.toFixed(1) +
-      "' fill='var(--surface)' stroke='var(--ink-3)' stroke-width='1.2'/>" +
-      "<text x='" + p.lx.toFixed(1) + "' y='" + (p.ly+3).toFixed(1) + "' text-anchor='" + p.anchor +
-      "' font-size='9.5' fill='var(--ink-2)'>" +
-      esc(p.n.name.length > 16 ? p.n.name.slice(0,15) + "…" : p.n.name) + "</text>";
-  });
-  svg += "</svg>";
-  document.getElementById("graphSvg").innerHTML = svg;
+  var top = graph.slice(0, 30);
+  renderGraphControls();
+  if (!SIM.nodes.length) initGraphSim(); else { paintGraph(); reheat(0.5); }
 
   document.getElementById("graphList").innerHTML =
     "<h2>Buy these first</h2>" +

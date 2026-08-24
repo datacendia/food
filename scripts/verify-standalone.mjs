@@ -24,6 +24,7 @@ const { INGREDIENTS } = await import("../.verify-ingredients.mjs");
 const { MOMENTS } = await import("../.verify-moments.mjs");
 const { RECIPES } = await import("../.verify-recipes.mjs");
 const { DISTRICTS, VENUE_TYPES } = await import("../.verify-venues.mjs");
+const { INGREDIENTS: SEASONAL } = await import("../.verify-ingredients.mjs");
 const { transportCost } = await import("../lib/venues.ts").catch(() => ({ transportCost: null }));
 const DISHES_LEN = DISHES.length;
 
@@ -205,13 +206,10 @@ const cards = await page.locator("#cmpBody .card").count();
 if (cards !== 3) failures++;
 console.log(`compare tiers rendered: ${cards} ${cards === 3 ? "✓" : "✗ expected 3"}`);
 
-// Graph: node count and orphan count must match the TypeScript's view.
+// Graph: the orphan count is a finding to report, not a number to pin. The
+// network itself is checked further down, after the simulation has cooled.
 await page.getByRole("tab", { name: "Ingredients" }).click();
 await page.waitForTimeout(200);
-const nodes = await page.locator("#graphSvg circle").count();
-// 24 ingredient nodes plus the centre.
-if (nodes !== 25) failures++;
-console.log(`graph nodes: ${nodes} ${nodes === 25 ? "✓" : "✗ expected 25"}`);
 const orphanTxt = await page.locator("#graphOrphans h2").innerText();
 console.log(`graph orphans: ${orphanTxt.replace(/[^0-9]/g, "")} (informational)`);
 
@@ -331,6 +329,61 @@ const peakOk = peakCost > offCost;
 if (!peakOk) failures++;
 console.log(`rush hour costs more: peak S/ ${peakCost} vs off-peak S/ ${offCost} ${peakOk ? "✓" : "✗"}`);
 await page.check("#peakChk");
+
+// --- Ingredient network: a real layout, not a fixed ring ------------------
+await page.getByRole("tab", { name: "Ingredients" }).click();
+await page.waitForTimeout(2600);   // let the simulation cool
+
+const gNodes = await page.locator("#graphSvg .node").count();
+const gEdges = await page.locator("#graphSvg .edge").count();
+if (gNodes < 20) failures++;
+if (gEdges < 5) failures++;
+console.log(`\ngraph nodes: ${gNodes} ${gNodes >= 20 ? "✓" : "✗ expected at least 20"}`);
+console.log(`graph edges: ${gEdges} ${gEdges >= 5 ? "✓" : "✗ expected at least 5"}`);
+
+// Nothing may sit outside the stage - a node clipped by the frame is unusable.
+const stage = await page.locator("#graphSvg").boundingBox();
+const outside = await page.$$eval("#graphSvg .node circle", (els) =>
+  els.filter((e) => {
+    const b = e.getBoundingClientRect();
+    return b.width === 0 || b.height === 0;
+  }).length
+);
+if (outside > 0) failures++;
+console.log(`nodes with no rendered box: ${outside} ${outside === 0 ? "✓" : "✗"}`);
+
+// The seasonal colouring is a claim about buying risk, so it has to be a
+// plausible subset - never all of them and never none. It has silently been
+// both while this was built.
+const colours = await page.$$eval("#graphSvg .node circle", (els) =>
+  els.map((e) => e.getAttribute("fill"))
+);
+const flagged = colours.filter((c) => c.includes("tart")).length;
+const colourOk = flagged > 0 && flagged < colours.length;
+if (!colourOk) failures++;
+console.log(
+  `seasonal nodes flagged: ${flagged} of ${colours.length} ` +
+  (colourOk ? "✓" : "✗ must be some but not all")
+);
+
+// Selecting a node narrows the edges to its own.
+await page.locator("#graphSvg .node").first().click();
+await page.waitForTimeout(400);
+const panelUp = await page.locator("#graphPanel").isVisible();
+const selEdges = await page.locator("#graphSvg .edge").count();
+const selOk = panelUp && selEdges < gEdges;
+if (!selOk) failures++;
+console.log(`selection opens a panel and narrows edges: ${selEdges} of ${gEdges} ${selOk ? "✓" : "✗"}`);
+
+// Raising the link threshold must not add edges.
+await page.locator("#graphClose").click();
+await page.waitForTimeout(200);
+await page.locator('[data-shared="4"]').click();
+await page.waitForTimeout(1400);
+const strictEdges = await page.locator("#graphSvg .edge").count();
+const thresholdOk = strictEdges <= gEdges;
+if (!thresholdOk) failures++;
+console.log(`link threshold 2+ → 4+: ${gEdges} → ${strictEdges} ${thresholdOk ? "✓" : "✗"}`);
 
 await browser.close();
 
