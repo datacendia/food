@@ -22,6 +22,7 @@ const { FLAVOURS } = await import("../.verify-flavours.mjs");
 const { EVENTS } = await import("../.verify-events.mjs");
 const { INGREDIENTS } = await import("../.verify-ingredients.mjs");
 const { MOMENTS } = await import("../.verify-moments.mjs");
+const { RECIPES } = await import("../.verify-recipes.mjs");
 const DISHES_LEN = DISHES.length;
 
 const browser = await chromium.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
@@ -213,6 +214,49 @@ await page.waitForTimeout(150);
 const runSheetRows = await page.locator("#quote ol li").count();
 if (runSheetRows < 2) failures++;
 console.log(`run sheet steps: ${runSheetRows} ${runSheetRows >= 2 ? "✓" : "✗ expected at least 2"}`);
+
+// --- Recipes: the pane must carry every recipe, and filter like the data ---
+await page.getByRole("tab", { name: "Recipes" }).click();
+await page.waitForTimeout(200);
+const recCards = await page.locator("#recBody .card").count();
+const recOk = recCards === RECIPES.length;
+if (!recOk) failures++;
+console.log(`\nrecipe cards rendered: ${recCards} ${recOk ? "✓" : "✗ expected " + RECIPES.length}`);
+
+// A recipe with no method or no quantities renders as a card and still fails a cook.
+const stepCount = await page.locator("#recBody ol li").count();
+const expectedSteps = RECIPES.reduce((n, r) => n + r.method.length, 0);
+if (stepCount !== expectedSteps) failures++;
+console.log(`method steps rendered: ${stepCount} ${stepCount === expectedSteps ? "✓" : "✗ expected " + expectedSteps}`);
+
+// Course filter must agree with the categories in the data.
+const byId = new Map(DISHES.map((d) => [d.id, d]));
+for (const cat of ["canape", "main", "dessert"]) {
+  const expected = RECIPES.filter((r) => byId.get(r.dishId)?.category === cat).length;
+  await page.locator(`[data-rcat="${cat}"]`).click();
+  await page.waitForTimeout(120);
+  const shown = Number((await page.locator("#recCount b").innerText()).trim());
+  const ok = shown === expected;
+  if (!ok) failures++;
+  console.log(`  course ${cat.padEnd(8)} ${String(shown).padStart(3)} ${ok ? "✓" : "✗ expected " + expected}`);
+  await page.locator(`[data-rcat="${cat}"]`).click();
+  await page.waitForTimeout(90);
+}
+
+// Search reaches into ingredients, not just dish names.
+await page.fill("#recSearch", "lucuma");
+await page.waitForTimeout(200);
+const searchShown = Number((await page.locator("#recCount b").innerText()).trim());
+const searchExpected = RECIPES.filter((r) => {
+  const d = byId.get(r.dishId);
+  const hay = (d.name + " " + d.fusion + " " + d.keyIngredients + " " +
+    r.ingredients.map((i) => i.qty + " " + i.item).join(" ") + " " +
+    r.method.join(" ") + " " + r.makeAhead + " " + r.holds).toLowerCase();
+  return hay.includes("lucuma");
+}).length;
+const searchOk = searchShown === searchExpected;
+if (!searchOk) failures++;
+console.log(`search "lucuma": ${searchShown} ${searchOk ? "✓" : "✗ expected " + searchExpected}`);
 
 await browser.close();
 

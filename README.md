@@ -98,8 +98,7 @@ so `npm run verify:standalone` drives it in a headless browser and checks its
 rendered figures against `lib/pricing.ts`. Run that after any pricing change.
 It needs Playwright's Chromium available locally.
 
-**Not yet verified since the 150-dish import.** That check is the first thing
-to run when you pick this up.
+Verified against the 150-dish data, recipes pane included.
 
 ## Commands
 
@@ -124,4 +123,4 @@ npm run verify:standalone  # build it, then check it in a real browser
   are a starting point, not a legal one
 - Spanish translation
 - WhatsApp quote export
-- Recipes are not yet in the standalone build
+- Netlify is not yet connected to this repo — deploys are still manual

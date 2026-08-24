@@ -43,6 +43,7 @@ const FLAVOURS = loadData("flavours.ts", "FLAVOURS");
 const EVENTS = loadData("events.ts", "EVENTS");
 const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
 const MOMENTS = loadData("moments.ts", "MOMENTS");
+const RECIPES = loadData("recipes.ts", "RECIPES");
 
 if (DISHES.length < 100) {
   throw new Error(`Expected the full matrix, extracted only ${DISHES.length}`);
@@ -52,6 +53,10 @@ if (unflavoured.length) {
   throw new Error(`Dishes missing a flavour entry: ${unflavoured.join(", ")}`);
 }
 const dishIds = new Set(DISHES.map((d) => d.id));
+const ghostRecipes = RECIPES.filter((r) => !dishIds.has(r.dishId)).map((r) => r.dishId);
+if (ghostRecipes.length) {
+  throw new Error(`Recipes for dishes not in the matrix: ${ghostRecipes.join(", ")}`);
+}
 for (const ing of INGREDIENTS) {
   const ghosts = ing.dishes.filter((id) => !dishIds.has(id));
   if (ghosts.length) throw new Error(`${ing.id} references missing dishes: ${ghosts.join(", ")}`);
@@ -90,7 +95,7 @@ const FLAVOUR_AXES = ["sweet","savoury","rich","tart","smoky","spiced","fresh"];
 
 const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL,
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
-  ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS,
+  ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: RECIPES,
   formats: { "drop-off": "Drop-off", buffet: "Buffet", plated: "Plated", "live-station": "Live station" },
   cap: { fryer: 2, oven: 4, liveStation: 2, griddle: 3 },
   lead: { cold: 1440, oven: 240, hob: 180, griddle: 30, fryer: 15 },
@@ -250,6 +255,7 @@ footer p{margin:0 0 7px;max-width:70ch}
       <button class="tab" role="tab" data-pane="seasonal" aria-selected="false">Season</button>
       <button class="tab" role="tab" data-pane="compare" aria-selected="false">Compare</button>
       <button class="tab" role="tab" data-pane="graph" aria-selected="false">Ingredients</button>
+      <button class="tab" role="tab" data-pane="recipes" aria-selected="false">Recipes</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
     </nav>
@@ -343,6 +349,29 @@ footer p{margin:0 0 7px;max-width:70ch}
     <div id="menuBody"></div>
   </section>
 
+  <section class="pane" id="pane-recipes" hidden>
+    <h1>Recipes</h1>
+    <p class="lede">How each dish is actually made, at catering scale. Every one carries a
+      make-ahead plan and an honest hold time — what a dish will and will not survive is a
+      scheduling fact, not a detail.</p>
+    <p class="lede" style="font-size:.92rem;color:var(--ink-3);margin-top:10px">Quantities are
+      batch quantities, not domestic ones. Cross-check them against the run sheet in Build a menu
+      before a real service.</p>
+    <fieldset style="margin-top:28px">
+      <legend>Course</legend>
+      <div class="chips" id="recCats"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Search</legend>
+      <input id="recSearch" type="search" placeholder="dish, ingredient or technique"
+        aria-label="Search recipes"
+        style="width:100%;max-width:420px;padding:10px 12px;border:1px solid var(--line);
+               border-radius:8px;background:var(--surface);color:var(--ink);font:inherit">
+    </fieldset>
+    <div id="recCount" style="border-top:1px solid var(--line);padding-top:18px;margin-bottom:20px"></div>
+    <div id="recBody"></div>
+  </section>
+
   <section class="pane" id="pane-seasonal" hidden>
     <h1>What the market has</h1>
     <p class="lede">You buy all year, so the menu moves with the market. Pick a month to see what is
@@ -412,6 +441,7 @@ var FLAV = D.flavours, EVENTS = D.events, AXES = D.axes;
 var INGS = D.ingredients, MONTHS = D.months;
 var MOMENTS = D.moments, FORMATS = D.formats, CAP = D.cap, LEAD = D.lead;
 var ORDER = D.order;
+var RECIPES = D.recipes;
 
 function soles(n){ return "S/ " + n.toFixed(2); }
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
@@ -468,7 +498,7 @@ function buildQuote(dishes, guests, tierId){
 var tabs = [].slice.call(document.querySelectorAll(".tab"));
 function show(name){
   tabs.forEach(function(t){ t.setAttribute("aria-selected", String(t.dataset.pane === name)); });
-  ["home","moments","find","menu","seasonal","compare","graph","packages","builder"].forEach(function(p){
+  ["home","moments","find","menu","recipes","seasonal","compare","graph","packages","builder"].forEach(function(p){
     document.getElementById("pane-" + p).hidden = (p !== name);
   });
   window.scrollTo(0,0);
@@ -532,6 +562,106 @@ document.getElementById("menuBody").innerHTML = ORDER.map(function(cat){
         "<td class='src'>" + esc(d.source) + "</td></tr>";
     }).join("") + "</tbody></table></div>";
 }).join("");
+
+// --- recipes -------------------------------------------------------------
+// One card per dish, filtered by course and by a free-text search that reaches
+// into the ingredients and the method - so "fryer" or "lucuma" both find work.
+var RECIPE_BY_DISH = {};
+RECIPES.forEach(function(r){ RECIPE_BY_DISH[r.dishId] = r; });
+var DISH_BY_ID = {};
+DISHES.forEach(function(d){ DISH_BY_ID[d.id] = d; });
+
+var recCat = "";      // "" means every course
+var recQuery = "";
+
+function recipeHaystack(r, d){
+  return (d.name + " " + d.fusion + " " + d.keyIngredients + " " +
+    r.ingredients.map(function(i){ return i.qty + " " + i.item; }).join(" ") + " " +
+    r.method.join(" ") + " " + r.makeAhead + " " + r.holds).toLowerCase();
+}
+
+function recipeMatches(r){
+  var d = DISH_BY_ID[r.dishId];
+  if (!d) return false;
+  if (recCat && d.category !== recCat) return false;
+  if (recQuery && recipeHaystack(r, d).indexOf(recQuery) === -1) return false;
+  return true;
+}
+
+function renderRecCats(){
+  var html = "<button class='chip" + (recCat === "" ? " on" : "") + "' data-rcat=''>All" +
+    "<span class='tnum'> " + RECIPES.length + "</span></button>";
+  html += ORDER.map(function(c){
+    var n = RECIPES.filter(function(r){
+      var d = DISH_BY_ID[r.dishId]; return d && d.category === c;
+    }).length;
+    if (!n) return "";
+    return "<button class='chip" + (recCat === c ? " on" : "") + "' data-rcat='" + c + "'>" +
+      LABELS[c] + "<span class='tnum'> " + n + "</span></button>";
+  }).join("");
+  document.getElementById("recCats").innerHTML = html;
+  [].forEach.call(document.querySelectorAll("[data-rcat]"), function(b){
+    b.addEventListener("click", function(){
+      recCat = (recCat === b.dataset.rcat) ? "" : b.dataset.rcat;
+      renderRecCats(); renderRecipes();
+    });
+  });
+}
+
+function renderRecipes(){
+  var hits = RECIPES.filter(recipeMatches);
+  document.getElementById("recCount").innerHTML =
+    "<b class='tnum'>" + hits.length + "</b> of " + RECIPES.length + " recipes" +
+    (recQuery ? " matching &ldquo;" + esc(recQuery) + "&rdquo;" : "");
+
+  if (!hits.length){
+    document.getElementById("recBody").innerHTML =
+      "<p class='muted'>Nothing matches that. Try an ingredient rather than a dish name.</p>";
+    return;
+  }
+
+  document.getElementById("recBody").innerHTML = hits.map(function(r){
+    var d = DISH_BY_ID[r.dishId];
+    var total = r.prepMin + r.cookMin;
+    return "<div class='card' style='margin-bottom:18px'>" +
+      "<p class='dish-n'>" + String(d.id).padStart(3,"0") + " &middot; " + LABELS[d.category] + "</p>" +
+      "<h3 style='margin:3px 0 6px'>" + esc(d.name) + "</h3>" +
+      "<p class='dna' style='margin:0 0 10px'><span class='u'>" + esc(d.origin) +
+        "</span> <span style='color:var(--ink-3)'>&rarr;</span> <span class='p'>" +
+        esc(d.subOrigin) + "</span></p>" +
+      "<p class='src' style='margin:0 0 16px'>" + esc(r.yields) +
+        " &middot; prep " + r.prepMin + " min &middot; cook " + r.cookMin + " min" +
+        " &middot; <span class='tnum'>" + total + " min</span> total" +
+        " &middot; " + esc(FORMATS[d.format]) + "</p>" +
+
+      "<div class='grid' style='grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px'>" +
+        "<div><h4 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;" +
+          "text-transform:uppercase;color:var(--ink-3)'>Ingredients</h4><dl style='margin:0'>" +
+          r.ingredients.map(function(i){
+            return "<div class='kv'><dt>" + esc(i.item) + "</dt>" +
+              "<dd class='tnum'>" + esc(i.qty) + "</dd></div>";
+          }).join("") + "</dl></div>" +
+        "<div><h4 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;" +
+          "text-transform:uppercase;color:var(--ink-3)'>Method</h4><ol style='margin:0;padding-left:18px'>" +
+          r.method.map(function(m){
+            return "<li style='margin-bottom:7px;line-height:1.5'>" + esc(m) + "</li>";
+          }).join("") + "</ol></div>" +
+      "</div>" +
+
+      "<div style='margin-top:16px;border-top:1px solid var(--line);padding-top:14px'>" +
+        "<div class='kv'><dt>Make ahead</dt><dd>" + esc(r.makeAhead) + "</dd></div>" +
+        "<div class='kv'><dt>Holds</dt><dd>" + esc(r.holds) + "</dd></div>" +
+        (r.scaling ? "<div class='kv'><dt>At scale</dt><dd>" + esc(r.scaling) + "</dd></div>" : "") +
+      "</div></div>";
+  }).join("");
+}
+
+document.getElementById("recSearch").addEventListener("input", function(e){
+  recQuery = e.target.value.trim().toLowerCase();
+  renderRecipes();
+});
+renderRecCats();
+renderRecipes();
 
 // --- packages ------------------------------------------------------------
 document.getElementById("pkgCards").innerHTML = Object.keys(TIERS).map(function(k){
