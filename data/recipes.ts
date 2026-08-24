@@ -30,7 +30,9 @@ export const RECIPES: Recipe[] = [
       { qty: "1 tbsp", item: "ground white pepper" },
       { qty: "2 tsp", item: "ground mace", note: "the flavour that reads as Scottish; do not skip" },
       { qty: "500 ml", item: "lamb or beef stock" },
-      { qty: "200 g", item: "flour, 4 eggs, 300 g panko", note: "for the crumbing station" },
+      { qty: "200 g", item: "flour", note: "for the crumbing station" },
+      { qty: "4", item: "eggs", note: "for the crumbing station" },
+      { qty: "300 g", item: "panko", note: "for the crumbing station" },
       { qty: "300 ml", item: "huacatay aioli", note: "mayonnaise, huacatay paste, lime, garlic" }
     ],
     method: [
@@ -63,7 +65,8 @@ export const RECIPES: Recipe[] = [
       { qty: "1 tbsp", item: "white pepper" },
       { qty: "4", item: "manzana israel, peeled and diced", note: "firm apple that holds its shape" },
       { qty: "2", item: "rocoto, deseeded, fine dice" },
-      { qty: "100 ml", item: "cider vinegar and 80 g sugar", note: "for the chutney" },
+      { qty: "100 ml", item: "cider vinegar", note: "for the chutney" },
+      { qty: "80 g", item: "sugar", note: "for the chutney" },
       { qty: "2", item: "eggs, beaten", note: "egg wash" }
     ],
     method: [
@@ -141,7 +144,10 @@ export const RECIPES: Recipe[] = [
     prepMin: 90,
     cookMin: 30,
     ingredients: [
-      { qty: "700 g", item: "flour, 300 g lard, 300 ml boiling water, 2 tsp salt", note: "hot water crust" },
+      { qty: "700 g", item: "flour", note: "hot water crust" },
+      { qty: "300 g", item: "lard", note: "hot water crust" },
+      { qty: "300 ml", item: "boiling water", note: "hot water crust" },
+      { qty: "2 tsp", item: "salt", note: "hot water crust" },
       { qty: "1 kg", item: "lamb, coarse minced", note: "shoulder, some fat left in" },
       { qty: "30 g", item: "ají panca paste" },
       { qty: "2 tsp", item: "ground cumin" },
@@ -199,9 +205,12 @@ export const RECIPES: Recipe[] = [
       { qty: "800 g", item: "papa amarilla, boiled and riced" },
       { qty: "1", item: "leek, fine dice, sweated in butter" },
       { qty: "500 ml", item: "milk" },
-      { qty: "60 g", item: "butter and 60 g flour", note: "for a tight béchamel" },
+      { qty: "60 g", item: "butter", note: "for a tight béchamel" },
+      { qty: "60 g", item: "flour", note: "for a tight béchamel" },
       { qty: "1", item: "bay leaf" },
-      { qty: "200 g", item: "flour, 4 eggs, 300 g panko", note: "crumbing" }
+      { qty: "200 g", item: "flour", note: "crumbing" },
+      { qty: "4", item: "eggs", note: "crumbing" },
+      { qty: "300 g", item: "panko", note: "crumbing" }
     ],
     method: [
       "Warm the milk with the bay and the fish trimmings. Infuse 15 minutes, then strain.",
@@ -277,8 +286,11 @@ export const RECIPES: Recipe[] = [
     cookMin: 240,
     ingredients: [
       { qty: "1.5 kg", item: "beef shin or osobuco, on the bone" },
-      { qty: "2", item: "onions, 2 carrots, 1 head garlic" },
-      { qty: "2", item: "bay leaves, 1 tbsp black peppercorns" },
+      { qty: "2", item: "onions" },
+      { qty: "2", item: "carrots" },
+      { qty: "1", item: "head garlic" },
+      { qty: "2", item: "bay leaves" },
+      { qty: "1 tbsp", item: "black peppercorns" },
       { qty: "1", item: "ají limo, whole" },
       { qty: "2 litres", item: "water" },
       { qty: "1 bunch", item: "parsley, chopped" },
@@ -303,11 +315,15 @@ export const RECIPES: Recipe[] = [
     cookMin: 20,
     ingredients: [
       { qty: "800 g", item: "trout fillet, skin on, pin-boned" },
-      { qty: "200 g", item: "coarse salt and 150 g sugar", note: "the cure" },
+      { qty: "200 g", item: "coarse salt", note: "the cure" },
+      { qty: "150 g", item: "sugar", note: "the cure" },
       { qty: "100 ml", item: "whisky" },
       { qty: "1 bunch", item: "dill, chopped" },
       { qty: "200 g", item: "aguaymanto, halved" },
-      { qty: "250 g", item: "flour, 2 eggs, 300 ml milk, 1 tsp baking powder", note: "blini batter" },
+      { qty: "250 g", item: "flour", note: "blini batter" },
+      { qty: "2", item: "eggs", note: "blini batter" },
+      { qty: "300 ml", item: "milk", note: "blini batter" },
+      { qty: "1 tsp", item: "baking powder", note: "blini batter" },
       { qty: "300 ml", item: "crème fraîche or thick yoghurt" }
     ],
     method: [
@@ -379,7 +395,9 @@ export const RECIPES: Recipe[] = [
       { qty: "2", item: "onions, sweated soft" },
       { qty: "1 bunch", item: "huacatay, chopped" },
       { qty: "100 g", item: "flour, for binding if loose" },
-      { qty: "200 g", item: "flour, 4 eggs, 300 g panko", note: "crumbing" }
+      { qty: "200 g", item: "flour", note: "crumbing" },
+      { qty: "4", item: "eggs", note: "crumbing" },
+      { qty: "300 g", item: "panko", note: "crumbing" }
     ],
     method: [
       "Mash the stovies coarse — texture is the point, this is not a purée.",
@@ -450,7 +468,9 @@ export const RECIPES: Recipe[] = [
     cookMin: 180,
     ingredients: [
       { qty: "2 kg", item: "pork belly, skin on" },
-      { qty: "2 tbsp", item: "salt, 1 tbsp cumin, 6 garlic cloves" },
+      { qty: "2 tbsp", item: "salt" },
+      { qty: "1 tbsp", item: "cumin" },
+      { qty: "6", item: "garlic cloves" },
       { qty: "500 g", item: "morcilla, sliced" },
       { qty: "50", item: "small brioche or pan francés rolls" },
       { qty: "1 quantity", item: "salsa criolla", note: "red onion, lime, ají limo, coriander — dressed at the last minute" }
@@ -601,7 +621,9 @@ export const RECIPES: Recipe[] = [
       { qty: "1 bunch", item: "flat parsley" },
       { qty: "2 tsp", item: "dried oregano" },
       { qty: "2", item: "eggs" },
-      { qty: "400 g", item: "thick yoghurt, 1 lemon, 1 garlic clove", note: "for the dip" }
+      { qty: "400 g", item: "thick yoghurt", note: "for the dip" },
+      { qty: "1", item: "lemon", note: "for the dip" },
+      { qty: "1", item: "garlic clove", note: "for the dip" }
     ],
     method: [
       "Squeeze the soaked bread lightly — damp, not dripping.",
@@ -648,8 +670,11 @@ export const RECIPES: Recipe[] = [
       { qty: "700 g", item: "sausage meat" },
       { qty: "300 g", item: "morcilla, crumbled" },
       { qty: "100 g", item: "pinhead oats, toasted" },
-      { qty: "1 tsp", item: "mace, 1 tbsp white pepper" },
-      { qty: "150 g", item: "flour, 3 eggs, 250 g panko", note: "crumbing" }
+      { qty: "1 tsp", item: "mace" },
+      { qty: "1 tbsp", item: "white pepper" },
+      { qty: "150 g", item: "flour", note: "crumbing" },
+      { qty: "3", item: "eggs", note: "crumbing" },
+      { qty: "250 g", item: "panko", note: "crumbing" }
     ],
     method: [
       "Boil the quail eggs exactly 2 minutes 20 seconds, then straight into iced water.",
@@ -755,7 +780,10 @@ export const RECIPES: Recipe[] = [
     prepMin: 90,
     cookMin: 35,
     ingredients: [
-      { qty: "1 kg", item: "flour, 400 g lard, 400 ml boiling water, 1 tbsp salt", note: "hot water crust" },
+      { qty: "1 kg", item: "flour", note: "hot water crust" },
+      { qty: "400 g", item: "lard", note: "hot water crust" },
+      { qty: "400 ml", item: "boiling water", note: "hot water crust" },
+      { qty: "1 tbsp", item: "salt", note: "hot water crust" },
       { qty: "2 kg", item: "lamb shoulder, coarse minced" },
       { qty: "50 g", item: "ají panca paste" },
       { qty: "1 tbsp", item: "ground cumin" },
@@ -819,7 +847,8 @@ export const RECIPES: Recipe[] = [
       { qty: "1 tbsp", item: "ground mace" },
       { qty: "800 ml", item: "lamb stock" },
       { qty: "3 kg", item: "papa amarilla, boiled" },
-      { qty: "250 g", item: "butter and 200 ml milk", note: "for the mash" }
+      { qty: "250 g", item: "butter", note: "for the mash" },
+      { qty: "200 ml", item: "milk", note: "for the mash" }
     ],
     method: [
       "Brown the lamb hard in batches. Grey mince makes grey pie.",
@@ -846,7 +875,8 @@ export const RECIPES: Recipe[] = [
       { qty: "1 litre", item: "beef stock" },
       { qty: "40 g", item: "cornflour, slaked", note: "only if it needs tightening" },
       { qty: "3 kg", item: "papa amarilla" },
-      { qty: "250 g", item: "butter, 200 ml milk" }
+      { qty: "250 g", item: "butter" },
+      { qty: "200 ml", item: "milk" }
     ],
     method: [
       "Brown the mince in batches until genuinely dark. This dish has nowhere to hide, so the colour is the flavour.",
@@ -893,7 +923,9 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { qty: "2 kg", item: "lamb neck or shoulder, on the bone" },
       { qty: "300 g", item: "quinoa, rinsed until the water runs clear", note: "replaces pearl barley; rinse or it is bitter" },
-      { qty: "4", item: "carrots, 3 turnips, 3 leeks, all diced small" },
+      { qty: "4", item: "carrots" },
+      { qty: "3", item: "turnips" },
+      { qty: "3", item: "leeks, all diced small" },
       { qty: "2", item: "onions" },
       { qty: "4 litres", item: "water" },
       { qty: "200 g", item: "dried split peas, soaked" },
@@ -922,7 +954,8 @@ export const RECIPES: Recipe[] = [
       { qty: "400 g", item: "choclo kernels" },
       { qty: "3 litres", item: "chicken stock" },
       { qty: "16", item: "prunes, halved" },
-      { qty: "2", item: "bay leaves, 1 tbsp black peppercorns" },
+      { qty: "2", item: "bay leaves" },
+      { qty: "1 tbsp", item: "black peppercorns" },
       { qty: "1 bunch", item: "parsley" }
     ],
     method: [
@@ -944,9 +977,13 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { qty: "3 kg", item: "chicken thigh, boneless, in large pieces" },
       { qty: "500 g", item: "thick yoghurt", note: "for the marinade" },
-      { qty: "60 g", item: "ají amarillo paste and 40 g ají panca paste" },
-      { qty: "2 tbsp", item: "garam masala, 1 tbsp turmeric, 1 tbsp cumin" },
-      { qty: "6", item: "garlic cloves, 50 g ginger, both grated" },
+      { qty: "60 g", item: "ají amarillo paste" },
+      { qty: "40 g", item: "ají panca paste" },
+      { qty: "2 tbsp", item: "garam masala" },
+      { qty: "1 tbsp", item: "turmeric" },
+      { qty: "1 tbsp", item: "cumin" },
+      { qty: "6", item: "garlic cloves" },
+      { qty: "50 g", item: "ginger, both grated" },
       { qty: "1.5 kg", item: "tomatoes, or 2 tins" },
       { qty: "600 ml", item: "double cream" },
       { qty: "150 g", item: "butter" },
@@ -975,9 +1012,11 @@ export const RECIPES: Recipe[] = [
       { qty: "6", item: "onions, sliced thin" },
       { qty: "500 ml", item: "chicha de jora" },
       { qty: "500 ml", item: "beef stock" },
-      { qty: "50 g", item: "butter and 2 tbsp flour", note: "to thicken the gravy" },
+      { qty: "50 g", item: "butter", note: "to thicken the gravy" },
+      { qty: "2 tbsp", item: "flour", note: "to thicken the gravy" },
       { qty: "3 kg", item: "papa amarilla" },
-      { qty: "250 g", item: "butter, 200 ml milk", note: "for the mash" },
+      { qty: "250 g", item: "butter", note: "for the mash" },
+      { qty: "200 ml", item: "milk", note: "for the mash" },
       { qty: "2 tsp", item: "wholegrain mustard" }
     ],
     method: [
@@ -997,12 +1036,16 @@ export const RECIPES: Recipe[] = [
     prepMin: 45,
     cookMin: 25,
     ingredients: [
-      { qty: "20", item: "chita or cabrilla fillets, 180 g each", note: "Terminal Pesquero; any firm white fish works" },
-      { qty: "500 g", item: "flour and 100 g cornflour" },
+      { qty: "20", item: "chita or cabrilla fillets", note: "180 g each; Terminal Pesquero, any firm white fish works" },
+      { qty: "500 g", item: "flour" },
+      { qty: "100 g", item: "cornflour" },
       { qty: "700 ml", item: "very cold beer" },
       { qty: "2 tsp", item: "baking powder" },
       { qty: "3 kg", item: "yuca, peeled and cut into chips" },
-      { qty: "400 g", item: "mayonnaise, 2 tbsp capers, 1 ají limo, 1 lemon", note: "ají tartare" },
+      { qty: "400 g", item: "mayonnaise", note: "ají tartare" },
+      { qty: "2 tbsp", item: "capers", note: "ají tartare" },
+      { qty: "1", item: "ají limo", note: "ají tartare" },
+      { qty: "1", item: "lemon", note: "ají tartare" },
       { qty: "4 litres", item: "frying oil" }
     ],
     method: [
@@ -1055,7 +1098,8 @@ export const RECIPES: Recipe[] = [
       { qty: "150 g", item: "chancaca, grated" },
       { qty: "150 ml", item: "whisky" },
       { qty: "3 tbsp", item: "soy sauce" },
-      { qty: "2", item: "star anise, 1 cinnamon stick" },
+      { qty: "2", item: "star anise" },
+      { qty: "1", item: "cinnamon stick" },
       { qty: "500 ml", item: "chicken stock" }
     ],
     method: [
@@ -1077,7 +1121,9 @@ export const RECIPES: Recipe[] = [
     cookMin: 180,
     ingredients: [
       { qty: "4 kg", item: "pork leg, cured", note: "ask the butcher for a lightly cured, unsmoked gammon" },
-      { qty: "2", item: "onions, 2 carrots, 2 bay leaves" },
+      { qty: "2", item: "onions" },
+      { qty: "2", item: "carrots" },
+      { qty: "2", item: "bay leaves" },
       { qty: "1.5 litres", item: "Irn Bru", note: "specialist UK importer; roughly S/ 8-12 a can wholesale and unverified" },
       { qty: "40", item: "whole cloves" },
       { qty: "3 tbsp", item: "wholegrain mustard" },
@@ -1107,7 +1153,8 @@ export const RECIPES: Recipe[] = [
       { qty: "1 bunch", item: "huacatay, chopped", note: "the Peruvian half; it sits where mint would" },
       { qty: "4", item: "lemons, juice and zest" },
       { qty: "8", item: "garlic cloves, crushed" },
-      { qty: "500 g", item: "thick yoghurt, 1 cucumber, grated and squeezed", note: "tzatziki" },
+      { qty: "500 g", item: "thick yoghurt", note: "tzatziki" },
+      { qty: "1", item: "cucumber, grated and squeezed", note: "tzatziki" },
       { qty: "20", item: "flatbreads or pita" }
     ],
     method: [
@@ -1127,7 +1174,7 @@ export const RECIPES: Recipe[] = [
     prepMin: 30,
     cookMin: 15,
     ingredients: [
-      { qty: "20", item: "corvina fillets, 160 g each, skin on" },
+      { qty: "20", item: "corvina fillets", note: "160 g each, skin on" },
       { qty: "500 ml", item: "good olive oil" },
       { qty: "10", item: "garlic cloves, sliced thin" },
       { qty: "2", item: "ají limo, sliced into rings" },
@@ -1153,11 +1200,15 @@ export const RECIPES: Recipe[] = [
     cookMin: 0,
     ingredients: [
       { qty: "3 kg", item: "paiche or trout fillet, skin on, pin-boned" },
-      { qty: "400 g", item: "coarse salt and 300 g sugar" },
+      { qty: "400 g", item: "coarse salt" },
+      { qty: "300 g", item: "sugar" },
       { qty: "3 bunches", item: "dill, chopped" },
       { qty: "3 tbsp", item: "crushed white peppercorns" },
       { qty: "100 ml", item: "algarrobina", note: "replaces the usual aquavit or gin" },
-      { qty: "200 g", item: "wholegrain mustard, 80 g sugar, 50 ml vinegar, 150 ml oil", note: "hovmästarsås" },
+      { qty: "200 g", item: "wholegrain mustard", note: "hovmästarsås" },
+      { qty: "80 g", item: "sugar", note: "hovmästarsås" },
+      { qty: "50 ml", item: "vinegar", note: "hovmästarsås" },
+      { qty: "150 ml", item: "oil", note: "hovmästarsås" },
       { qty: "1 loaf", item: "rye bread" }
     ],
     method: [
@@ -1449,7 +1500,9 @@ export const RECIPES: Recipe[] = [
       { qty: "1 litre", item: "chicha morada" },
       { qty: "200 ml", item: "red wine vinegar" },
       { qty: "150 g", item: "chancaca or brown sugar" },
-      { qty: "2", item: "cinnamon sticks, 6 cloves, 3 star anise" },
+      { qty: "2", item: "cinnamon sticks" },
+      { qty: "6", item: "cloves" },
+      { qty: "3", item: "star anise" },
       { qty: "3", item: "apples, grated" },
       { qty: "100 g", item: "butter" }
     ],
@@ -1752,7 +1805,9 @@ export const RECIPES: Recipe[] = [
       { qty: "2.5 kg", item: "papa nativa, mixed colours, roasted" },
       { qty: "600 g", item: "berros", note: "watercress; wants cool water, so check the Season page" },
       { qty: "2", item: "ají limo, minced" },
-      { qty: "200 ml", item: "olive oil, 80 ml lime juice, 1 tbsp honey", note: "vinaigrette" },
+      { qty: "200 ml", item: "olive oil", note: "vinaigrette" },
+      { qty: "80 ml", item: "lime juice", note: "vinaigrette" },
+      { qty: "1 tbsp", item: "honey", note: "vinaigrette" },
       { qty: "400 g", item: "crème fraîche" },
       { qty: "1 bunch", item: "dill" }
     ],
@@ -1779,7 +1834,8 @@ export const RECIPES: Recipe[] = [
       { qty: "1.5 kg", item: "papa amarilla, cut for chips and fried" },
       { qty: "4", item: "red onions, in thick wedges" },
       { qty: "6", item: "tomatoes, in wedges" },
-      { qty: "150 ml", item: "sillao and 80 ml red wine vinegar" },
+      { qty: "150 ml", item: "sillao" },
+      { qty: "80 ml", item: "red wine vinegar" },
       { qty: "2", item: "ají amarillo, sliced" },
       { qty: "1 bunch", item: "coriander" }
     ],
@@ -1834,7 +1890,8 @@ export const RECIPES: Recipe[] = [
       { qty: "20", item: "crusty rolls or sourdough portions" },
       { qty: "600 g", item: "aguaymanto preserve", note: "as dish 122" },
       { qty: "400 g", item: "rocoto piccalilli or pickles" },
-      { qty: "20", item: "apples, 40 radishes, celery" }
+      { qty: "20", item: "apples" },
+      { qty: "40", item: "radishes, celery" }
     ],
     method: [
       "This is an assembly job, and the discipline is in the cutting rather than the cooking.",
@@ -1928,9 +1985,12 @@ export const RECIPES: Recipe[] = [
       { qty: "2.5 kg", item: "chicken thigh, in large pieces" },
       { qty: "60 g", item: "ají amarillo paste" },
       { qty: "1 bunch", item: "huacatay" },
-      { qty: "2 tbsp", item: "sillao, 1 tbsp cumin, 1 tbsp smoked paprika", note: "the brasa marinade" },
+      { qty: "2 tbsp", item: "sillao", note: "the brasa marinade" },
+      { qty: "1 tbsp", item: "cumin", note: "the brasa marinade" },
+      { qty: "1 tbsp", item: "smoked paprika", note: "the brasa marinade" },
       { qty: "600 ml", item: "chicken stock" },
-      { qty: "60 g", item: "butter and 60 g flour", note: "roux" },
+      { qty: "60 g", item: "butter", note: "roux" },
+      { qty: "60 g", item: "flour", note: "roux" },
       { qty: "200 ml", item: "cream" }
     ],
     method: [
@@ -2056,7 +2116,7 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { qty: "1.5 kg", item: "granulated sugar" },
       { qty: "400 ml", item: "whole milk" },
-      { qty: "1 tin", item: "condensed milk, 397 g" },
+      { qty: "1 tin", item: "condensed milk", note: "397 g tin" },
       { qty: "150 g", item: "butter" },
       { qty: "300 g", item: "lúcuma pulp" },
       { qty: "1 tsp", item: "salt" }
@@ -2081,7 +2141,7 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { qty: "1.5 kg", item: "granulated sugar" },
       { qty: "400 ml", item: "whole milk" },
-      { qty: "1 tin", item: "condensed milk, 397 g" },
+      { qty: "1 tin", item: "condensed milk", note: "397 g tin" },
       { qty: "150 g", item: "butter" },
       { qty: "200 g", item: "70% dark chocolate, chopped" },
       { qty: "60 g", item: "cacao nibs" },
@@ -2109,7 +2169,8 @@ export const RECIPES: Recipe[] = [
       { qty: "300 g", item: "caster sugar" },
       { qty: "2", item: "eggs" },
       { qty: "400 g", item: "maracuyá curd or thick passionfruit jam" },
-      { qty: "600 g", item: "icing sugar and 80 ml maracuyá juice", note: "for the icing" },
+      { qty: "600 g", item: "icing sugar", note: "for the icing" },
+      { qty: "80 ml", item: "maracuyá juice", note: "for the icing" },
       { qty: "40", item: "glacé cherries" }
     ],
     method: [
@@ -2130,10 +2191,13 @@ export const RECIPES: Recipe[] = [
     prepMin: 45,
     cookMin: 120,
     ingredients: [
-      { qty: "500 g", item: "butter, 500 g caster sugar" },
+      { qty: "500 g", item: "butter" },
+      { qty: "500 g", item: "caster sugar" },
       { qty: "8", item: "eggs" },
-      { qty: "700 g", item: "plain flour and 2 tsp baking powder" },
-      { qty: "400 g", item: "raisins and 300 g dried aguaymanto" },
+      { qty: "700 g", item: "plain flour" },
+      { qty: "2 tsp", item: "baking powder" },
+      { qty: "400 g", item: "raisins" },
+      { qty: "300 g", item: "dried aguaymanto" },
       { qty: "200 g", item: "mixed peel" },
       { qty: "150 ml", item: "whisky, plus more for feeding" },
       { qty: "200 g", item: "pecans, whole", note: "for the traditional concentric top" },
@@ -2209,11 +2273,17 @@ export const RECIPES: Recipe[] = [
     prepMin: 70,
     cookMin: 150,
     ingredients: [
-      { qty: "700 g", item: "plain flour and 150 g butter", note: "for the plain pastry casing" },
-      { qty: "1 kg", item: "raisins and 500 g currants" },
-      { qty: "200 g", item: "mixed peel and 150 g chopped almonds" },
+      { qty: "700 g", item: "plain flour", note: "for the plain pastry casing" },
+      { qty: "150 g", item: "butter", note: "for the plain pastry casing" },
+      { qty: "1 kg", item: "raisins" },
+      { qty: "500 g", item: "currants" },
+      { qty: "200 g", item: "mixed peel" },
+      { qty: "150 g", item: "chopped almonds" },
       { qty: "300 g", item: "plain flour, for the filling" },
-      { qty: "2 tsp", item: "ground allspice, 2 tsp cinnamon, 1 tsp ginger, 1 tsp black pepper" },
+      { qty: "2 tsp", item: "ground allspice" },
+      { qty: "2 tsp", item: "cinnamon" },
+      { qty: "1 tsp", item: "ginger" },
+      { qty: "1 tsp", item: "black pepper" },
       { qty: "1 tsp", item: "bicarbonate of soda" },
       { qty: "200 ml", item: "pisco or whisky" },
       { qty: "300 ml", item: "milk" },
@@ -2243,8 +2313,11 @@ export const RECIPES: Recipe[] = [
       { qty: "300 g", item: "pinhead oats" },
       { qty: "600 g", item: "raisins and currants" },
       { qty: "200 g", item: "chancaca or dark sugar" },
-      { qty: "2 tsp", item: "cinnamon, 2 tsp mixed spice, 1 tsp ginger" },
-      { qty: "2", item: "eggs and 300 ml milk" },
+      { qty: "2 tsp", item: "cinnamon" },
+      { qty: "2 tsp", item: "mixed spice" },
+      { qty: "1 tsp", item: "ginger" },
+      { qty: "2", item: "eggs" },
+      { qty: "300 ml", item: "milk" },
       { qty: "150 ml", item: "algarrobina" },
       { qty: "1", item: "large cloth and flour for dusting", note: "the cloot" }
     ],
@@ -2397,10 +2470,13 @@ export const RECIPES: Recipe[] = [
     prepMin: 60,
     cookMin: 30,
     ingredients: [
-      { qty: "1", item: "plain sponge, 30 cm, cubed", note: "day-old is better; fresh sponge turns to paste" },
+      { qty: "1", item: "plain sponge", note: "a 30 cm sponge, cubed; day-old is better, fresh turns to paste" },
       { qty: "200 ml", item: "whisky" },
       { qty: "800 g", item: "raspberries or local berries" },
-      { qty: "1.5 litres", item: "milk, 12 egg yolks, 200 g sugar, 60 g cornflour", note: "custard" },
+      { qty: "1.5 litres", item: "milk", note: "custard" },
+      { qty: "12", item: "egg yolks", note: "custard" },
+      { qty: "200 g", item: "sugar", note: "custard" },
+      { qty: "60 g", item: "cornflour", note: "custard" },
       { qty: "1 litre", item: "double cream" },
       { qty: "100 g", item: "toasted flaked almonds" }
     ],
@@ -2452,10 +2528,12 @@ export const RECIPES: Recipe[] = [
       { qty: "700 g", item: "dates, stoned and chopped" },
       { qty: "500 ml", item: "boiling water" },
       { qty: "2 tsp", item: "bicarbonate of soda" },
-      { qty: "250 g", item: "butter and 400 g soft brown sugar" },
+      { qty: "250 g", item: "butter" },
+      { qty: "400 g", item: "soft brown sugar" },
       { qty: "4", item: "eggs" },
       { qty: "500 g", item: "self-raising flour" },
-      { qty: "600 g", item: "chancaca and 600 ml double cream", note: "for the sauce" },
+      { qty: "600 g", item: "chancaca", note: "for the sauce" },
+      { qty: "600 ml", item: "double cream", note: "for the sauce" },
       { qty: "200 g", item: "butter, for the sauce" }
     ],
     method: [
@@ -2477,7 +2555,8 @@ export const RECIPES: Recipe[] = [
     cookMin: 15,
     ingredients: [
       { qty: "1 batch", item: "wholemeal shortbread base", note: "as dish 76, wholemeal flour, cut in 4 cm rounds" },
-      { qty: "400 g", item: "caster sugar and 120 ml water", note: "for the Italian meringue" },
+      { qty: "400 g", item: "caster sugar", note: "for the Italian meringue" },
+      { qty: "120 ml", item: "water", note: "for the Italian meringue" },
       { qty: "160 g", item: "egg whites" },
       { qty: "20 g", item: "freeze-dried strawberry powder", note: "powder, not purée; purée will collapse the meringue" },
       { qty: "8 g", item: "gelatine, bloomed", note: "stabiliser" },
@@ -2508,7 +2587,8 @@ export const RECIPES: Recipe[] = [
       { qty: "250 g", item: "cold butter, cubed" },
       { qty: "400 g", item: "choclo kernels", note: "fresh, not frozen — frozen releases water into the dough" },
       { qty: "300 g", item: "queso paria, grated" },
-      { qty: "2 tsp", item: "salt and 1 tsp cayenne" },
+      { qty: "2 tsp", item: "salt" },
+      { qty: "1 tsp", item: "cayenne" },
       { qty: "500 ml", item: "buttermilk or milk soured with lemon" },
       { qty: "1", item: "egg, for wash" }
     ],
@@ -2529,7 +2609,8 @@ export const RECIPES: Recipe[] = [
     prepMin: 90,
     cookMin: 25,
     ingredients: [
-      { qty: "700 g", item: "plain flour and 150 g quinoa flour" },
+      { qty: "700 g", item: "plain flour" },
+      { qty: "150 g", item: "quinoa flour" },
       { qty: "14 g", item: "dried yeast" },
       { qty: "700 ml", item: "warm water" },
       { qty: "2 tsp", item: "salt" },
@@ -2564,7 +2645,9 @@ export const RECIPES: Recipe[] = [
       { qty: "250 g", item: "sugar" },
       { qty: "6", item: "eggs" },
       { qty: "400 g", item: "lúcuma pulp" },
-      { qty: "400 g", item: "sugar and 300 ml water and 1 lemon", note: "for the syrup" }
+      { qty: "400 g", item: "sugar", note: "for the syrup" },
+      { qty: "300 ml", item: "water", note: "for the syrup" },
+      { qty: "1", item: "lemon", note: "for the syrup" }
     ],
     method: [
       "Make the syrup first and cool it completely. Cold syrup onto hot pastry is the rule — reverse it and the filo goes soggy.",
@@ -2586,10 +2669,13 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { qty: "1 kg", item: "strong white flour" },
       { qty: "14 g", item: "dried yeast" },
-      { qty: "120 g", item: "sugar and 2 tsp salt" },
+      { qty: "120 g", item: "sugar" },
+      { qty: "2 tsp", item: "salt" },
       { qty: "500 ml", item: "warm milk" },
       { qty: "150 g", item: "butter, softened, for the dough" },
-      { qty: "250 g", item: "butter, 200 g sugar, 3 tbsp ground cardamom", note: "the filling paste" },
+      { qty: "250 g", item: "butter", note: "the filling paste" },
+      { qty: "200 g", item: "sugar", note: "the filling paste" },
+      { qty: "3 tbsp", item: "ground cardamom", note: "the filling paste" },
       { qty: "120 g", item: "cacao nibs" },
       { qty: "1", item: "egg and pearl sugar, to finish" }
     ],
