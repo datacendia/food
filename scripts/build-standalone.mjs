@@ -114,18 +114,43 @@ const html = `<title>Aye Si Cena</title>
   --bg:#E8E9E6;--surface:#F5F5F2;--raised:#DEE0DB;
   --ink:#1E2326;--ink-2:#565E62;--ink-3:#7C8589;--line:#CBCFC9;
   --aji:#A96A0F;--thistle:#63488A;--good:#2C6349;--warn:#8A5A11;--bad:#96382B;
+  --c-sweet:#B07314;--c-savoury:#5C4A86;--c-rich:#8A4B22;--c-tart:#2F7D5B;
+  --c-smoky:#4A5A66;--c-spiced:#A33B2C;--c-fresh:#6E8F33;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#14181A;--surface:#1C2124;--raised:#252B2F;
   --ink:#E4E3DC;--ink-2:#9AA2A5;--ink-3:#6F787C;--line:#2C3337;
   --aji:#E5A63C;--thistle:#AB93D1;--good:#6FBF95;--warn:#E0A458;--bad:#E0776A;
+  --c-sweet:#E0A343;--c-savoury:#A794D6;--c-rich:#D08650;--c-tart:#5FB68C;
+  --c-smoky:#8AA0B0;--c-spiced:#E07B6C;--c-fresh:#A8C665;
 }}
 :root[data-theme="dark"]{
   --bg:#14181A;--surface:#1C2124;--raised:#252B2F;
   --ink:#E4E3DC;--ink-2:#9AA2A5;--ink-3:#6F787C;--line:#2C3337;
   --aji:#E5A63C;--thistle:#AB93D1;--good:#6FBF95;--warn:#E0A458;--bad:#E0776A;
+  --c-sweet:#E0A343;--c-savoury:#A794D6;--c-rich:#D08650;--c-tart:#5FB68C;
+  --c-smoky:#8AA0B0;--c-spiced:#E07B6C;--c-fresh:#A8C665;
 }
 *{box-sizing:border-box}
+.compass-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:6px}
+#compass{width:100%;max-width:400px;user-select:none;overflow:visible}
+#compass .wedge{cursor:pointer;transition:transform .32s cubic-bezier(.2,.8,.2,1),
+  opacity .24s ease;transform-origin:200px 200px}
+#compass .wedge path{transition:fill .3s ease,stroke .3s ease,filter .3s ease}
+#compass .wedge:hover{transform:scale(1.035)}
+#compass .wedge.on{transform:scale(1.05)}
+#compass .wedge.off-limits{cursor:default;opacity:.28}
+#compass .wedge.off-limits:hover{transform:none}
+#compass text{pointer-events:none}
+#compass .hubN{font-variant-numeric:tabular-nums}
+@keyframes hubPop{0%{opacity:0;transform:scale(.55)}60%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+#compass .hubN{animation:hubPop .42s cubic-bezier(.2,.8,.2,1) both;transform-origin:200px 214px}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rise{animation:riseIn .42s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){
+  #compass .wedge,#compass .wedge path,#compass .hubN,.rise{animation:none!important;transition:none!important}
+  #compass .wedge:hover,#compass .wedge.on{transform:none}
+}
 body{margin:0;background:var(--bg);color:var(--ink);
   font-family:Karla,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.55;
   -webkit-font-smoothing:antialiased}
@@ -332,8 +357,13 @@ footer p{margin:0 0 7px;max-width:70ch}
       <div class="grid g3" id="evtGrid"></div>
     </fieldset>
     <fieldset>
-      <legend>Flavour compass</legend>
-      <div class="chips" id="flavChips"></div>
+      <legend>The palate compass</legend>
+      <p class="muted" style="font-size:.9rem;margin:0 0 6px">Each wedge is a flavour the
+        matrix carries, and its depth is how much of it. Tap to steer.</p>
+      <div class="compass-wrap">
+        <svg id="compass" viewBox="0 0 400 400" role="group" aria-label="Flavour compass"></svg>
+        <div class="chips" id="flavChips" style="justify-content:center"></div>
+      </div>
     </fieldset>
     <fieldset>
       <legend>Service format</legend>
@@ -786,8 +816,8 @@ document.getElementById("fmtChips").addEventListener("click", function(e){
   renderFind();
 });
 
-document.getElementById("flavChips").addEventListener("click", function(e){
-  var b = e.target.closest("[data-flav]"); if (!b) return;
+function onFlavHit(b){
+  if (!b) return;
   if (b.dataset.flav === "__mode"){
     flavMode = (flavMode === "any") ? "all" : "any";
   } else {
@@ -795,6 +825,21 @@ document.getElementById("flavChips").addEventListener("click", function(e){
     if (i > -1) flav.splice(i,1); else flav.push(b.dataset.flav);
   }
   renderFind();
+}
+
+// Both the wheel and the mode switch feed the same handler. The wedges are
+// focusable, so the compass is operable from the keyboard as well as by tap.
+document.getElementById("flavChips").addEventListener("click", function(e){
+  onFlavHit(e.target.closest("[data-flav]"));
+});
+document.getElementById("compass").addEventListener("click", function(e){
+  var g = e.target.closest("[data-flav]");
+  if (g && !g.classList.contains("off-limits")) onFlavHit(g);
+});
+document.getElementById("compass").addEventListener("keydown", function(e){
+  if (e.key !== "Enter" && e.key !== " ") return;
+  var g = e.target.closest("[data-flav]");
+  if (g && !g.classList.contains("off-limits")){ e.preventDefault(); onFlavHit(g); }
 });
 
 document.addEventListener("input", function(e){
@@ -804,6 +849,102 @@ document.addEventListener("input", function(e){
 document.addEventListener("click", function(e){
   if (e.target && e.target.id === "clearFind"){ evtId = null; flav = []; fmts = []; renderFind(); }
 });
+
+// --- the palate compass ---------------------------------------------------
+// A wedge per flavour axis. The wedge's depth is the share of the current
+// selection carrying that flavour, so the wheel is a reading of the matrix
+// rather than a decorated row of buttons.
+var AXIS_COLOUR = {
+  sweet:  "var(--c-sweet)",
+  savoury:"var(--c-savoury)",
+  rich:   "var(--c-rich)",
+  tart:   "var(--c-tart)",
+  smoky:  "var(--c-smoky)",
+  spiced: "var(--c-spiced)",
+  fresh:  "var(--c-fresh)"
+};
+var CX = 200, CY = 200, R_IN = 74, R_OUT = 168;
+
+function arcPath(cx, cy, rIn, rOut, a0, a1){
+  var x0 = cx + Math.cos(a0)*rOut, y0 = cy + Math.sin(a0)*rOut;
+  var x1 = cx + Math.cos(a1)*rOut, y1 = cy + Math.sin(a1)*rOut;
+  var x2 = cx + Math.cos(a1)*rIn,  y2 = cy + Math.sin(a1)*rIn;
+  var x3 = cx + Math.cos(a0)*rIn,  y3 = cy + Math.sin(a0)*rIn;
+  var big = (a1 - a0) > Math.PI ? 1 : 0;
+  return "M" + x0 + " " + y0 +
+    "A" + rOut + " " + rOut + " 0 " + big + " 1 " + x1 + " " + y1 +
+    "L" + x2 + " " + y2 +
+    "A" + rIn + " " + rIn + " 0 " + big + " 0 " + x3 + " " + y3 + "Z";
+}
+
+function renderCompass(base, matchCount){
+  var n = AXES.length;
+  var gap = 0.035;                     // radians of breathing room between wedges
+  var counts = AXES.map(function(a){
+    return base.filter(function(d){ return (FLAV[d.id] || []).indexOf(a) > -1; }).length;
+  });
+  var peak = Math.max.apply(null, counts.concat([1]));
+
+  var parts = ['<defs>' +
+    '<radialGradient id="cglow" cx="50%" cy="50%" r="50%">' +
+      '<stop offset="0%" stop-color="var(--aji)" stop-opacity=".22"/>' +
+      '<stop offset="72%" stop-color="var(--aji)" stop-opacity="0"/>' +
+    '</radialGradient></defs>' +
+    '<circle cx="200" cy="200" r="196" fill="url(#cglow)"/>'];
+
+  AXES.forEach(function(a, i){
+    var a0 = (i/n)*Math.PI*2 - Math.PI/2 + gap/2;
+    var a1 = a0 + (Math.PI*2/n) - gap;
+    var on = flav.indexOf(a) > -1;
+    var count = counts[i];
+    var dead = count === 0 && !on;
+    // Depth carries the count: a flavour the current selection barely has
+    // reaches less far out than one it is full of.
+    // The floor is set by the label, not by taste: a two-line label needs
+    // this much wedge under it, or the count falls off the fill onto the
+    // ghost behind and disappears.
+    var LABEL_BAND = 46;
+    var depth = R_IN + LABEL_BAND + (R_OUT - R_IN - LABEL_BAND) * (count / peak);
+    var mid = (a0 + a1) / 2;
+    var lr = R_IN + 24;
+    var lx = CX + Math.cos(mid)*lr, ly = CY + Math.sin(mid)*lr;
+    var col = AXIS_COLOUR[a] || "var(--aji)";
+
+    parts.push(
+      "<g class='wedge" + (on ? " on" : "") + (dead ? " off-limits" : "") + "' " +
+        "data-flav='" + a + "' role='button' tabindex='" + (dead ? -1 : 0) + "' " +
+        "aria-pressed='" + on + "' aria-label='" + a + ", " + count + " dishes'>" +
+        // the full-depth ghost, so the wheel always reads as a circle
+        "<path d='" + arcPath(CX,CY,R_IN,R_OUT,a0,a1) + "' fill='var(--raised)' " +
+          "stroke='var(--line)' stroke-width='1'/>" +
+        // the data-bearing wedge
+        "<path d='" + arcPath(CX,CY,R_IN,depth,a0,a1) + "' fill='" + col + "' " +
+          "fill-opacity='" + (on ? 0.95 : 0.42) + "' stroke='" + col + "' " +
+          "stroke-width='" + (on ? 2 : 1) + "'/>" +
+        "<text x='" + lx.toFixed(1) + "' y='" + (ly-3).toFixed(1) + "' text-anchor='middle' " +
+          "dominant-baseline='middle' font-size='13' font-weight='" + (on ? 700 : 500) + "' " +
+          "fill='" + (on ? "var(--bg)" : "var(--ink)") + "'>" + a + "</text>" +
+        "<text x='" + lx.toFixed(1) + "' y='" + (ly+12.5).toFixed(1) + "' text-anchor='middle' " +
+          "dominant-baseline='middle' font-size='11' font-weight='600' class='tnum' " +
+          "fill='" + (on ? "var(--bg)" : "var(--ink-2)") + "'>" + count + "</text>" +
+      "</g>"
+    );
+  });
+
+  parts.push(
+    "<circle cx='200' cy='200' r='" + R_IN + "' fill='var(--surface)' " +
+      "stroke='var(--aji)' stroke-opacity='.45' stroke-width='1.5'/>" +
+    "<text x='200' y='186' text-anchor='middle' font-size='9.5' " +
+      "letter-spacing='.16em' fill='var(--ink-3)'>DISHES</text>" +
+    "<text x='200' y='214' text-anchor='middle' font-size='34' class='hubN' " +
+      "fill='var(--aji)' font-weight='600'>" + matchCount + "</text>" +
+    "<text x='200' y='234' text-anchor='middle' font-size='9.5' " +
+      "fill='var(--ink-3)'>of " + DISHES.length + "</text>"
+  );
+
+  var svg = document.getElementById("compass");
+  svg.innerHTML = parts.join("");
+}
 
 function renderFind(){
   var ev = null;
@@ -826,16 +967,15 @@ function renderFind(){
     b.setAttribute("aria-pressed", String(b.dataset.evt === evtId));
   });
 
-  document.getElementById("flavChips").innerHTML = AXES.map(function(a){
-    var n = base.filter(function(d){ return (FLAV[d.id] || []).indexOf(a) > -1; }).length;
-    var on = flav.indexOf(a) > -1;
-    var dis = (n === 0 && !on) ? " disabled" : "";
-    return "<button class='chip' data-flav='" + a + "' aria-pressed='" + on + "'" + dis + ">" +
-      "<span class='cap'>" + a + "</span> " +
-      "<span class='mono tnum' style='font-size:11px;opacity:.65'>" + n + "</span></button>";
-  }).join("") + (flav.length > 1
-    ? "<button class='chip mono' data-flav='__mode' style='font-size:11px'>match: " + flavMode + "</button>"
-    : "");
+  renderCompass(base, out.length);
+
+  // The match-mode switch stays a control, not a wedge - it changes how the
+  // wheel reads rather than what is on it.
+  document.getElementById("flavChips").innerHTML = flav.length > 1
+    ? "<button class='chip mono' data-flav='__mode' style='font-size:11px'>match: " + flavMode +
+      " \u00b7 tap to switch</button>"
+    : "<span class='muted mono' style='font-size:11px'>" +
+      (flav.length ? "one flavour selected" : "no flavour selected \u2014 showing everything") + "</span>";
 
   document.getElementById("fmtChips").innerHTML = Object.keys(FORMATS).map(function(f){
     var n = eventBase.filter(function(d){ return d.format === f; }).length;
@@ -864,8 +1004,11 @@ function renderFind(){
     if (!rows.length) return "";
     return "<section style='margin-bottom:26px'>" +
       "<h3 class='mono grouphead'>" + LABELS[cat] + " &middot; " + rows.length + "</h3>" +
-      "<div class='grid g3'>" + rows.map(function(d){
-        return "<div class='card' style='padding:15px'>" +
+      "<div class='grid g3'>" + rows.map(function(d, i){
+        // Cap the stagger: past a dozen cards the delay stops reading as
+        // rhythm and starts reading as lag.
+        var delay = Math.min(i, 11) * 0.035;
+        return "<div class='card rise' style='padding:15px;animation-delay:" + delay + "s'>" +
           "<div class='pick-top'><span class='pick-name'>" + esc(d.name) + "</span>" +
           "<span class='pick-price tnum'>" + soles(d.price) + "</span></div>" +
           "<span class='dna'><span class='u'>" + esc(d.origin) +
