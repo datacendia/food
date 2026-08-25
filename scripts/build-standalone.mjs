@@ -52,6 +52,11 @@ const MOMENTS = loadData("moments.ts", "MOMENTS");
 const RECIPES = loadData("recipes.ts", "RECIPES");
 const ES = loadData("i18n.ts", "ES");
 const ES_INGREDIENTS = loadData("i18n-ingredients.ts", "ES_INGREDIENTS");
+const INGREDIENT_ATTRS = loadData("ingredient-attributes.ts", "INGREDIENT_ATTRS");
+const PLANT_PLAIN = loadData("ingredient-attributes.ts", "PLANT_PLAIN");
+const HARD_TEXTURE_DISHES = loadData("ingredient-attributes.ts", "HARD_TEXTURE_DISHES");
+const NOT_FOR_CHILDREN = loadData("ingredient-attributes.ts", "NOT_FOR_CHILDREN");
+const VEDAS = loadData("vedas.ts", "VEDAS");
 const ES_PATTERNS = loadData("i18n.ts", "ES_PATTERNS");
 const PRICES = loadData("prices.ts", "PRICES");
 const SUB_RECIPE_OF = loadData("prices.ts", "SUB_RECIPE_OF");
@@ -115,6 +120,21 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
   ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: RECIPES,
   districts: DISTRICTS, venues: VENUE_TYPES,
   es: ES, esPatterns: ES_PATTERNS, esIng: ES_INGREDIENTS,
+  attrs: INGREDIENT_ATTRS, plain: PLANT_PLAIN,
+  hardDishes: HARD_TEXTURE_DISHES, notForKids: NOT_FOR_CHILDREN, vedas: VEDAS,
+  diets: [
+    ["vegetarian","Vegetarian","No meat, fish or shellfish. Dairy and eggs are fine."],
+    ["vegan","Vegan","No animal product at all, including honey, gelatine and dairy."],
+    ["pescatarian","Pescatarian","Fish and shellfish are fine; no meat."],
+    ["gluten-free","Coeliac / gluten-free","For coeliac disease, not a preference. Oats are excluded unless certified."],
+    ["dairy-free","Lactose / dairy-free","Covers lactose intolerance and milk allergy."],
+    ["nut-free","Nut-free","Tree nuts and peanuts."],
+    ["no-pork","No pork","Pork, bacon, morcilla, lard."],
+    ["no-alcohol","No alcohol","Cooking burns off less than people think."],
+    ["lower-sugar","Lower sugar","A guide for guests managing blood sugar, not a medical claim."],
+    ["kid-friendly","Children","Nothing hot, boozy, skewered or on the bone."],
+    ["soft-texture","Soft texture","For guests who cannot chew easily. Not an IDDSI assessment."]
+  ],
   prices: PRICES, subOf: SUB_RECIPE_OF, subPrices: SUB_PREP_PRICES,
   sundryPrices: NON_FOOD_PRICES, alias: COMPOUND_ALIAS, sundries: NON_FOOD,
   trip: { vanHourly: 45, perKm: 1.8, crewHourly: 18, generator: 280,
@@ -151,6 +171,21 @@ const html = String.raw`<title>Aye Si Cena</title>
   --c-smoky:#8AA0B0;--c-spiced:#E07B6C;--c-fresh:#A8C665;
 }
 *{box-sizing:border-box}
+.dietbox{margin-top:14px;padding:11px 13px;border-radius:9px;background:var(--raised);
+  border-left:3px solid var(--aji)}
+.dietbox.bad{border-left-color:var(--bad)}
+.dietbox p{margin:0;font-size:.86rem}
+.dietbox .lbl{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  margin-bottom:4px}
+.alg{display:inline-block;margin:0 5px 4px 0;padding:2px 7px;border-radius:20px;
+  background:var(--bad);color:var(--bg);font-size:11px;font-weight:600}
+.suit{display:inline-block;margin:0 5px 4px 0;padding:2px 7px;border-radius:20px;
+  border:1px solid var(--good);color:var(--good);font-size:11px}
+.vedabox{margin-top:12px;padding:11px 13px;border-radius:9px;border:2px solid var(--bad);
+  background:var(--raised)}
+.vedabox p{margin:0 0 5px;font-size:.84rem;line-height:1.5}
+.vedabox .lbl{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--bad);
+  font-weight:700}
 .rc.over{color:var(--bad);font-weight:600}
 .rc.under{color:var(--warn)}
 .rc.muted{color:var(--ink-3)}
@@ -419,6 +454,14 @@ footer p{margin:0 0 7px;max-width:70ch}
       <legend>Service format</legend>
       <div class="chips" id="fmtChips"></div>
     </fieldset>
+    <fieldset>
+      <legend>Who is eating?</legend>
+      <p class="muted" style="font-size:.9rem;margin:0 0 8px">Derived from every ingredient in
+        the recipe, including sub-preparations &mdash; not from the dish description. Still not a
+        legal allergen audit: confirm against the products you actually buy.</p>
+      <div class="chips" id="dietChips"></div>
+      <p id="dietNote" class="muted" style="font-size:.88rem;margin:10px 0 0"></p>
+    </fieldset>
     <div id="findCount" style="border-top:1px solid var(--line);padding-top:18px;margin-bottom:20px"></div>
     <div id="findResults"></div>
   </section>
@@ -507,6 +550,18 @@ footer p{margin:0 0 7px;max-width:70ch}
           <span class="muted" style="margin-left:10px;font-size:.9rem" id="minNote"></span>
         </fieldset>
         <fieldset>
+          <legend>When is it?</legend>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end">
+            <label style="display:block;font-size:.86rem;color:var(--ink-2)">Month
+              <select id="monthSel" aria-label="Month of the event"
+                style="display:block;margin-top:5px;padding:9px 11px;border:1px solid var(--line);
+                       border-radius:8px;background:var(--surface);color:var(--ink);font:inherit"></select>
+            </label>
+          </div>
+          <div id="vedaBox"></div>
+          <div id="seasonBox"></div>
+        </fieldset>
+        <fieldset>
           <legend>Where is it?</legend>
           <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end">
             <label style="display:block;font-size:.86rem;color:var(--ink-2)">District
@@ -552,6 +607,8 @@ var MOMENTS = D.moments, FORMATS = D.formats, CAP = D.cap, LEAD = D.lead;
 var ORDER = D.order;
 var RECIPES = D.recipes;
 var DISTRICTS = D.districts, VENUES = D.venues, TRIP = D.trip;
+var ATTRS = D.attrs || {}, PLAIN = D.plain || [], DIETS = D.diets || [];
+var HARD_DISHES = D.hardDishes || [], NO_KIDS = D.notForKids || [], VEDAS = D.vedas || [];
 var ES = D.es, ES_ING = D.esIng || {};
 // Compiled once: the page re-translates on every render and recompiling these
 // per text node would be the slowest thing on the page.
@@ -581,6 +638,50 @@ function marketName(key){
 // lib/ingredient-key.ts. They drifted once and the shop asked a butcher for
 // two litres of lamb.
 window.__canonIng = canonIng;
+
+/**
+ * The two things that are not about taste: what the law forbids this month,
+ * and who at the table cannot eat any of it.
+ *
+ * A veda is a blocker, not a warning. Selling a species inside its closed
+ * season is an offence, so it renders as one.
+ */
+function renderLegal(menu, month){
+  var vbox = document.getElementById("vedaBox");
+  var sbox = document.getElementById("seasonBox");
+  var monthName = MONTHS[month - 1];
+
+  var hits = vedaHitsFor(menu, month);
+  if (!hits.length) vbox.innerHTML = "";
+  else {
+    var byVeda = {};
+    hits.forEach(function(h){ (byVeda[h.veda.id] = byVeda[h.veda.id] || []).push(h); });
+    vbox.innerHTML = Object.keys(byVeda).map(function(k){
+      var g = byVeda[k], v = g[0].veda;
+      var names = g.map(function(x){ return x.dish.name; }).join(", ");
+      return "<div class='vedabox'><p class='lbl'>Veda \u00b7 this is the law, not a preference</p>" +
+        "<p><strong>" + esc(v.species) + " is in veda in " + esc(monthName) + ".</strong> " +
+        "Selling " + esc(names) + " that month is an offence, not a risk.</p>" +
+        "<p class='muted'>" + esc(v.note) + "</p>" +
+        "<p class='muted'>Dates move every year. Confirm the current resoluci\u00f3n ministerial " +
+        "at gob.pe/produce before you quote.</p></div>";
+    }).join("");
+  }
+
+  // Seasonal is a different kind of fact: poor and dear, not illegal.
+  var blocked = {};
+  INGS.forEach(function(i){
+    if (i.yearRound || i.months.indexOf(month) > -1) return;
+    i.dishes.forEach(function(id){ blocked[id] = (blocked[id] || []).concat([i.name]); });
+  });
+  var off = menu.filter(function(d){ return blocked[d.id]; });
+  sbox.innerHTML = off.length
+    ? "<p class='muted' style='font-size:.86rem;margin:10px 0 0'><strong>" + off.length +
+      " dish" + (off.length === 1 ? "" : "es") + " out of window in " + esc(monthName) + ":</strong> " +
+      off.map(function(d){ return esc(d.name) + " (" + esc(blocked[d.id].join(", ")) + ")"; }).join("; ") +
+      ". Buyable, but poor and dear \u2014 see Season for what to swap in.</p>"
+    : "";
+}
 
 function renderShop(menu, guests, tierId){
   var el = document.getElementById("shopBody");
@@ -839,6 +940,134 @@ function buildShoppingList(menu, guests, tierId){
   }).sort(function(a,b){ return b.soles - a.soles; });
   return { scaled:scaled, list:list,
     total: Math.round(list.reduce(function(s,r){ return s + r.soles; },0)*100)/100 };
+}
+
+// --- dietary, mirroring lib/dietary.ts ------------------------------------
+// Derived from the recipe's own ingredient lines, never from the dish text.
+// An ingredient nobody has classified invalidates the answer rather than
+// shading it: suits comes back empty and the card says why.
+var PLAIN_SET = {};
+PLAIN.forEach(function(k){ PLAIN_SET[k] = 1; });
+
+function attrsFor(key){
+  if (ATTRS[key]) return ATTRS[key];
+  if (PLAIN_SET[key]) return {};
+  return null;
+}
+
+function collectKeys(recipe, depth, seen){
+  depth = depth || 0; seen = seen || {};
+  var out = { keys: [], unknown: [] };
+  if (depth > 3 || seen[recipe.dishId]) return out;
+  seen[recipe.dishId] = 1;
+  recipe.ingredients.forEach(function(ing){
+    var key = canonIng(ing.item);
+    if (SUB_OF[key] !== undefined){
+      var sub = recipeFor(SUB_OF[key]);
+      if (sub){
+        var inner = collectKeys(sub, depth + 1, seen);
+        out.keys = out.keys.concat(inner.keys);
+        out.unknown = out.unknown.concat(inner.unknown);
+        return;
+      }
+    }
+    if (attrsFor(key) === null) out.unknown.push(key); else out.keys.push(key);
+  });
+  return out;
+}
+
+function dishDietary(recipe){
+  var got = collectKeys(recipe);
+  var allergens = {}, because = {};
+  function blame(diet, key){
+    if (!because[diet]) because[diet] = [];
+    if (because[diet].indexOf(key) === -1) because[diet].push(key);
+  }
+  var vegetarian = true, vegan = true, hasMeat = false;
+
+  got.keys.forEach(function(key){
+    var a = attrsFor(key) || {};
+    (a.allergens || []).forEach(function(al){ allergens[al] = 1; });
+    var isVeg = a.vegetarian === undefined ? true : a.vegetarian;
+    var isVegan = a.vegan === undefined ? isVeg : a.vegan;
+    if (!isVeg){
+      vegetarian = false; blame("vegetarian", key);
+      var al = a.allergens || [];
+      var aquatic = al.indexOf("fish") > -1 || al.indexOf("crustaceans") > -1 || al.indexOf("molluscs") > -1;
+      if (!aquatic) hasMeat = true;
+    }
+    if (!isVegan){ vegan = false; blame("vegan", key); }
+    var al2 = a.allergens || [];
+    if (al2.indexOf("gluten") > -1) blame("gluten-free", key);
+    if (al2.indexOf("milk") > -1) blame("dairy-free", key);
+    if (al2.indexOf("nuts") > -1 || al2.indexOf("peanuts") > -1) blame("nut-free", key);
+    if (al2.indexOf("pork") > -1) blame("no-pork", key);
+    if (al2.indexOf("alcohol") > -1) blame("no-alcohol", key);
+    if (a.sugary) blame("lower-sugar", key);
+    if (a.hot) blame("kid-friendly", key);
+    if (a.hardTexture) blame("soft-texture", key);
+  });
+
+  if (HARD_DISHES.indexOf(recipe.dishId) > -1) blame("soft-texture", "hard or crisp as served");
+  if (NO_KIDS.indexOf(recipe.dishId) > -1) blame("kid-friendly", "skewered, boned or offal");
+  if (because["no-alcohol"]) because["no-alcohol"].forEach(function(k){ blame("kid-friendly", k); });
+
+  var suits = [];
+  function ok(d){ return !because[d]; }
+  if (vegetarian) suits.push("vegetarian");
+  if (vegan && vegetarian) suits.push("vegan");
+  if (!hasMeat) suits.push("pescatarian");
+  ["gluten-free","dairy-free","nut-free","no-pork","no-alcohol","lower-sugar",
+   "kid-friendly","soft-texture"].forEach(function(d){ if (ok(d)) suits.push(d); });
+
+  return {
+    dishId: recipe.dishId,
+    allergens: Object.keys(allergens).sort(),
+    suits: got.unknown.length ? [] : suits,
+    because: because,
+    unknown: got.unknown
+  };
+}
+
+// Computed once. Every dish, every diet.
+// Exposed so verify-standalone can hold this port to lib/dietary.ts.
+var DIET_INDEX = {};
+RECIPES.forEach(function(r){ DIET_INDEX[r.dishId] = dishDietary(r); });
+window.__dietIndex = DIET_INDEX;
+
+function dietLabel(id){
+  for (var i = 0; i < DIETS.length; i++) if (DIETS[i][0] === id) return DIETS[i][1];
+  return id;
+}
+function dietNote(id){
+  for (var i = 0; i < DIETS.length; i++) if (DIETS[i][0] === id) return DIETS[i][2];
+  return "";
+}
+function suitsAll(dishId, diets){
+  if (!diets.length) return true;
+  var p = DIET_INDEX[dishId];
+  if (!p) return false;
+  for (var i = 0; i < diets.length; i++) if (p.suits.indexOf(diets[i]) === -1) return false;
+  return true;
+}
+
+// --- vedas, mirroring lib/vedas.ts ----------------------------------------
+function vedaHitsFor(dishes, month){
+  var hits = [];
+  dishes.forEach(function(d){
+    var r = recipeFor(d.id); if (!r) return;
+    var keys = r.ingredients.map(function(i){ return canonIng(i.item); });
+    VEDAS.forEach(function(v){
+      if (v.closed.indexOf(month) === -1) return;
+      for (var i = 0; i < v.ingredientKeys.length; i++){
+        if (keys.indexOf(v.ingredientKeys[i]) > -1){
+          hits.push({ veda: v, dish: d, ingredient: v.ingredientKeys[i] });
+          return;
+        }
+      }
+    });
+  });
+  return hits;
 }
 
 // --- transport, mirroring lib/venues.ts ----------------------------------
@@ -1170,6 +1399,28 @@ function recipeItem(item){
   return comma > -1 ? es + item.slice(comma) : es;
 }
 
+/** What a recipe declares, and what it suits. Read off its own ingredients. */
+function dietaryPanel(dishId){
+  var p = DIET_INDEX[dishId];
+  if (!p) return "";
+  if (p.unknown.length){
+    return "<div class='dietbox bad'><p class='mono lbl'>Cannot be declared</p>" +
+      "<p>" + esc(p.unknown.join(", ")) + " has not been classified, so nothing here is " +
+      "trustworthy for this dish. Fix the ingredient table before serving it to anyone " +
+      "with an allergy.</p></div>";
+  }
+  var al = p.allergens.length
+    ? p.allergens.map(function(a){ return "<span class='alg'>" + esc(a) + "</span>"; }).join("")
+    : "<span class='muted'>none declared</span>";
+  var suits = p.suits.length
+    ? p.suits.map(function(d){ return "<span class='suit'>" + esc(dietLabel(d)) + "</span>"; }).join("")
+    : "<span class='muted'>nothing on the list</span>";
+  return "<div class='dietbox'>" +
+    "<p class='mono lbl'>Contains</p><p>" + al + "</p>" +
+    "<p class='mono lbl' style='margin-top:9px'>Suits</p><p>" + suits + "</p>" +
+    "</div>";
+}
+
 function renderRecipes(){
   var hits = RECIPES.filter(recipeMatches);
   document.getElementById("recCount").innerHTML =
@@ -1210,6 +1461,7 @@ function renderRecipes(){
           }).join("") + "</ol></div>" +
       "</div>" +
 
+      dietaryPanel(d.id) +
       "<div style='margin-top:16px;border-top:1px solid var(--line);padding-top:14px'>" +
         "<div class='kv'><dt>Make ahead</dt><dd>" + esc(r.makeAhead) + "</dd></div>" +
         "<div class='kv'><dt>Holds</dt><dd>" + esc(r.holds) + "</dd></div>" +
@@ -1260,7 +1512,7 @@ function matchesEvent(d, f){
   return true;
 }
 
-var evtId = null, flav = [], flavMode = "any", fmts = [];
+var evtId = null, flav = [], flavMode = "any", fmts = [], diets = [];
 
 document.getElementById("evtGrid").innerHTML = EVENTS.map(function(e){
   return "<button class='pick' data-evt='" + e.id + "' aria-pressed='false'>" +
@@ -1271,6 +1523,14 @@ document.getElementById("evtGrid").innerHTML = EVENTS.map(function(e){
 document.getElementById("evtGrid").addEventListener("click", function(e){
   var b = e.target.closest("[data-evt]"); if (!b) return;
   evtId = (evtId === b.dataset.evt) ? null : b.dataset.evt;
+  renderFind();
+});
+
+document.getElementById("dietChips").addEventListener("click", function(e){
+  var b = e.target.closest("[data-diet]");
+  if (!b || b.disabled) return;
+  var i = diets.indexOf(b.dataset.diet);
+  if (i > -1) diets.splice(i, 1); else diets.push(b.dataset.diet);
   renderFind();
 });
 
@@ -1312,7 +1572,7 @@ document.addEventListener("input", function(e){
 });
 
 document.addEventListener("click", function(e){
-  if (e.target && e.target.id === "clearFind"){ evtId = null; flav = []; fmts = []; renderFind(); }
+  if (e.target && e.target.id === "clearFind"){ evtId = null; flav = []; fmts = []; diets = []; renderFind(); }
 });
 
 // --- the palate compass ---------------------------------------------------
@@ -1431,6 +1691,7 @@ function renderFind(){
   // Flavour counts must respect the format axis, or the compass lies.
   var base = fmts.length ? eventBase.filter(function(d){ return fmts.indexOf(d.format) > -1; }) : eventBase;
   var out = base;
+  if (diets.length) out = out.filter(function(d){ return suitsAll(d.id, diets); });
   if (flav.length){
     out = out.filter(function(d){
       var f = FLAV[d.id] || [];
@@ -1453,6 +1714,18 @@ function renderFind(){
       " \u00b7 tap to switch</button>"
     : "<span class='muted mono' style='font-size:11px'>" +
       (flav.length ? "one flavour selected" : "no flavour selected \u2014 showing everything") + "</span>";
+
+  document.getElementById("dietChips").innerHTML = DIETS.map(function(d){
+    var id = d[0];
+    var n = base.filter(function(x){ return suitsAll(x.id, [id]); }).length;
+    var on = diets.indexOf(id) > -1;
+    return "<button class='chip' data-diet='" + id + "' aria-pressed='" + on + "'" +
+      (n === 0 && !on ? " disabled" : "") + ">" + esc(d[1]) +
+      " <span class='mono tnum' style='font-size:11px;opacity:.65'>" + n + "</span></button>";
+  }).join("");
+  document.getElementById("dietNote").innerHTML = diets.length
+    ? diets.map(function(id){ return "<strong>" + esc(dietLabel(id)) + ".</strong> " + esc(dietNote(id)); }).join("<br>")
+    : "";
 
   document.getElementById("fmtChips").innerHTML = Object.keys(FORMATS).map(function(f){
     var n = eventBase.filter(function(d){ return d.format === f; }).length;
@@ -2227,6 +2500,7 @@ guestsEl.addEventListener("input", function(){
 
 // Venue state. Defaults to a San Isidro hotel at peak - the commonest job,
 // and the one the old flat figure happened to over-charge for.
+var eventMonth = new Date().getMonth() + 1;
 var distIdx = Math.max(0, DISTRICTS.findIndex(function(d){ return d.id === "san-isidro"; }));
 var venueIdx = Math.max(0, VENUES.findIndex(function(v){ return v.id === "hotel"; }));
 var atPeak = true;
@@ -2238,6 +2512,13 @@ document.getElementById("distSel").innerHTML = DISTRICTS.map(function(d,i){
 document.getElementById("venueSel").innerHTML = VENUES.map(function(v,i){
   return "<option value='" + i + "'" + (i===venueIdx?" selected":"") + ">" + esc(v.name) + "</option>";
 }).join("");
+
+document.getElementById("monthSel").innerHTML = MONTHS.map(function(m, i){
+  return "<option value='" + (i+1) + "'" + (i+1 === eventMonth ? " selected" : "") + ">" + m + "</option>";
+}).join("");
+document.getElementById("monthSel").addEventListener("change", function(e){
+  eventMonth = Number(e.target.value); render();
+});
 
 document.getElementById("distSel").addEventListener("change", function(e){
   distIdx = Number(e.target.value); render();
@@ -2293,6 +2574,7 @@ function render(){
   document.getElementById("venueNote").textContent = VENUES[venueIdx].note;
   var q = buildQuote(selected, guests, tier, venueCtx());
   renderShop(selected, guests, tier);
+  renderLegal(selected, eventMonth);
   var box = document.getElementById("quote");
   if (!q){
     box.innerHTML = "<h3>Your quote</h3><p class='muted' style='font-size:.9rem;margin-top:8px'>" +

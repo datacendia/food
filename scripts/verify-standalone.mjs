@@ -534,6 +534,69 @@ if (!backOk) failures++;
 console.log(`toggling back to English restores the source: ${backOk ? "✓" : "✗"}`);
 await esPage.close();
 
+// --- Dietary: the page must answer exactly what lib/dietary.ts answers -----
+const { RECIPES: TS_REC } = await import("../.verify-recipes.mjs");
+await page.getByRole("tab", { name: "Find dishes" }).click();
+await page.waitForTimeout(700);
+
+const dietChips = await page.locator("[data-diet]").count();
+const dietOk = dietChips === 11;
+if (!dietOk) failures++;
+console.log(`\ndiet filters offered: ${dietChips} ${dietOk ? "✓" : "✗ expected 11"}`);
+
+// Counts on the chips must match what the page itself computes, and the
+// filter must actually narrow to them.
+for (const diet of ["vegan", "gluten-free", "kid-friendly", "soft-texture"]) {
+  const expected = await page.evaluate(
+    (d) => Object.values(window.__dietIndex || {}).filter((p) => p.suits.includes(d)).length,
+    diet
+  );
+  await page.locator(`[data-diet="${diet}"]`).click();
+  await page.waitForTimeout(350);
+  const shown = Number((await page.locator("#findCount b").innerText()).trim());
+  const ok = expected > 0 && shown === expected;
+  if (!ok) failures++;
+  console.log(`  ${diet.padEnd(14)} ${String(shown).padStart(3)} ${ok ? "✓" : "✗ expected " + expected}`);
+  await page.locator(`[data-diet="${diet}"]`).click();
+  await page.waitForTimeout(250);
+}
+
+// Every recipe declares something, and an unclassified one says so loudly.
+await page.getByRole("tab", { name: "Recipes" }).click();
+await page.waitForTimeout(400);
+// An earlier check left "lucuma" in the search box, which would count 13
+// panels and look like a bug in the panel rather than in the probe.
+await page.fill("#recSearch", "");
+await page.waitForTimeout(700);
+const panels = await page.locator(".dietbox").count();
+const panelsOk = panels === TS_REC.length;
+if (!panelsOk) failures++;
+console.log(`recipes carrying a dietary panel: ${panels} ${panelsOk ? "✓" : "✗ expected " + TS_REC.length}`);
+const undeclarable = await page.locator(".dietbox.bad").count();
+if (undeclarable > 0) failures++;
+console.log(`recipes that cannot be declared: ${undeclarable} ${undeclarable === 0 ? "✓" : "✗"}`);
+
+// --- Vedas: a closed season blocks, and says it is the law -----------------
+await page.getByRole("tab", { name: "Build a menu" }).click();
+await page.waitForTimeout(500);
+await page.selectOption("#monthSel", "4");          // April: nothing closed
+await page.waitForTimeout(400);
+const aprilBoxes = await page.locator(".vedabox").count();
+
+await page.selectOption("#monthSel", "9");
+await page.waitForTimeout(400);
+await page.getByRole("button", { name: /Corvina al Pil-Pil/ }).first().click();
+await page.waitForTimeout(600);
+const septBoxes = await page.locator(".vedabox").count();
+const vedaOk = aprilBoxes === 0 && septBoxes > 0;
+if (!vedaOk) failures++;
+console.log(`\nveda blocker: April ${aprilBoxes}, September with corvina ${septBoxes} ${vedaOk ? "✓" : "✗"}`);
+
+const vedaText = await page.locator(".vedabox").first().innerText();
+const wordingOk = /offence/i.test(vedaText) && /resoluci/i.test(vedaText);
+if (!wordingOk) failures++;
+console.log(`veda wording says offence, not risk: ${wordingOk ? "✓" : "✗"}`);
+
 // --- The two canonicalisers must agree, or the shop asks for the wrong thing
 // The browser has its own port of canonicalIngredient. When it drifted,
 // "lamb or beef stock" became "lamb" and the shopping list asked a butcher
