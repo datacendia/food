@@ -162,7 +162,15 @@ dripping.
 
 `__tests__/matrix.test.ts` holds that block to at least twenty dishes across
 four categories, and requires every entry to actually name its European move.
-Scottish stays the spine at 77 of 150.
+
+**The ratio rule changed, deliberately.** It used to be "Scottish above half".
+That was written when the matrix ran one direction only, and it is
+arithmetically incompatible with a real Peruvian-base presence: holding 50%
+while taking Peruvian to a third needs a 220-dish menu, which is a business
+problem rather than a feature. What the brand thesis needs is that Scottish
+*leads*, so that is what is asserted now — the largest single line, at least
+double any line other than Peruvian, and above 40%. Scottish 86 of 191 (45%),
+Peruvian 44 (23%). If you disagree, the test names the line to change back.
 
 ## The standalone build
 

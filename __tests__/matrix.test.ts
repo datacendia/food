@@ -75,9 +75,44 @@ describe("the matrix", () => {
     if (sticky) expect(sticky.contested).toBe(true);
   });
 
-  it("keeps the Scottish spine above half the matrix", () => {
-    const scottish = DISHES.filter((d) => d.subOrigin.startsWith("Scottish")).length;
-    expect(scottish / DISHES.length).toBeGreaterThan(0.5);
+  it("keeps Scottish the largest single line, by a clear margin", () => {
+    /*
+     * THIS RULE CHANGED, DELIBERATELY.
+     *
+     * It used to be "Scottish above half the matrix", written when the matrix
+     * ran one direction only - a British dish rebuilt with Peruvian produce.
+     * Under that shape, Scottish-above-half and a real Peruvian-base presence
+     * are arithmetically incompatible: holding 50% while taking Peruvian to a
+     * third would need a 220-dish menu, which is a business problem rather
+     * than a feature.
+     *
+     * What the brand thesis actually needs is that Scottish leads. So that is
+     * what is asserted: the largest line, and at least double the next
+     * non-Peruvian one. Peruvian is allowed to be the clear second, because
+     * the buyers are Peruvian and a Lima client wants their own food treated
+     * as a base rather than as a pantry.
+     *
+     * If you disagree, this is the line to change back.
+     */
+    const byLine = new Map<string, number>();
+    for (const d of DISHES) {
+      const line = d.subOrigin.startsWith("Scottish") ? "Scottish" : d.subOrigin;
+      byLine.set(line, (byLine.get(line) ?? 0) + 1);
+    }
+    const scottish = byLine.get("Scottish") ?? 0;
+    const others = [...byLine.entries()].filter(([k]) => k !== "Scottish");
+
+    for (const [line, n] of others) {
+      expect(scottish).toBeGreaterThan(n);
+      // Peruvian may be a strong second; nothing else may come close.
+      if (line !== "Peruvian") expect(scottish).toBeGreaterThanOrEqual(n * 2);
+    }
+    expect(scottish / DISHES.length).toBeGreaterThan(0.4);
+  });
+
+  it("gives the Peruvian base enough of the menu to be a real half of the fusion", () => {
+    const peruvian = DISHES.filter((d) => d.subOrigin === "Peruvian").length;
+    expect(peruvian / DISHES.length).toBeGreaterThan(0.18);
   });
 
   it("leaves most of the matrix sellable without a liquor licence", () => {

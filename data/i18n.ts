@@ -630,6 +630,47 @@ export const ES: Record<string, string> = {
   "Steamed in a cloth like the original; chancaca for the treacle and aguaymanto for the currants. Keeps a fortnight and slices cold.":
     "Al vapor en un paño como el original; chancaca por la melaza y aguaymanto por las pasas. Dura quince días y se corta frío.",
 
+  "Peruvian base, Scottish move: haggis inside the potato instead of the usual beef picadillo. Fried to order, and the shell is the same.":
+    "Base peruana, giro escocés: haggis dentro de la papa en vez del picadillo de carne de siempre. Frita al momento, y la cáscara es la misma.",
+  "Peruvian base, Scottish move: queso paria in the wonton with a whisky and chancaca dip rather than guacamole.":
+    "Base peruana, giro escocés: queso paria en la masa wantán con un dip de whisky y chancaca en lugar de guacamole.",
+  "Peruvian base, Scottish move: the street-corner choclo with a wholegrain mustard butter melted over it.":
+    "Base peruana, giro escocés: el choclo de esquina con una mantequilla de mostaza en grano derretida encima.",
+  "Peruvian base, Scottish move: watercress carries the Arequipa salad where the habas run out. Vegan as built.":
+    "Base peruana, giro escocés: los berros sostienen la ensalada arequipeña donde se acaban las habas. Vegano tal como está.",
+  "Peruvian base, Scottish move: mushrooms instead of tripe, oats to thicken instead of potato alone. Vegan, and it does not read as a compromise.":
+    "Base peruana, giro escocés: hongos en vez de mondongo, y avena para espesar en lugar de solo papa. Vegano, y no se siente como una concesión.",
+  "Peruvian base, Scottish move: stout in the braise where chicha de jora usually goes. Culantro stays; it is the whole dish.":
+    "Base peruana, giro escocés: cerveza negra en el guiso donde normalmente va la chicha de jora. El culantro se queda; es el plato entero.",
+  "Peruvian base, Scottish move: Scotch ale in place of the chicha. A Sunday-morning dish sold as a Sunday-lunch centrepiece.":
+    "Base peruana, giro escocés: cerveza ale escocesa en lugar de la chicha. Un plato de domingo por la mañana vendido como el fondo de un almuerzo dominical.",
+  "Peruvian base, Scottish move: morcilla folded through the rice and bean cake and crisped in the same pan.":
+    "Base peruana, giro escocés: morcilla integrada al tacu tacu y dorada en la misma sartén.",
+  "Peruvian base, Scottish move: pinhead oats carry the body where the noodles usually do. Faster and it holds far better.":
+    "Base peruana, giro escocés: la avena entera da el cuerpo que normalmente dan los fideos. Más rápida y aguanta mucho mejor.",
+  "Peruvian base, Scottish move: squash chupe finished with toasted oatmeal instead of cheese and egg. Vegan and it still eats rich.":
+    "Base peruana, giro escocés: chupe de zapallo terminado con avena tostada en vez de queso y huevo. Vegano y sigue comiéndose untuoso.",
+  "Peruvian base, Scottish move: watercress and a mustard-lime dressing under the avocado. Vegan, and the cheapest green on the sheet.":
+    "Base peruana, giro escocés: berros y una vinagreta de mostaza y limón bajo la palta. Vegano, y el verde más barato de la carta.",
+  "Peruvian base, Scottish move: mature cheddar carries the sauce alongside the queso fresco. Sharper, and it sets firmer for a buffet.":
+    "Base peruana, giro escocés: el cheddar maduro sostiene la salsa junto al queso fresco. Más punzante, y cuaja más firme para un bufé.",
+  "Peruvian base, Scottish move: muna in the huancaina, which pushes it towards a herb sauce rather than a cheese one.":
+    "Base peruana, giro escocés: muña en la huancaína, lo que la empuja hacia una salsa de hierbas más que de queso.",
+  "Peruvian base, Scottish move: field mushrooms in the panca marinade with muna. Vegan, and it outsells the beef heart with a mixed table.":
+    "Base peruana, giro escocés: hongos en el adobo de panca con muña. Vegano, y en una mesa mixta vende más que el de corazón.",
+  "Peruvian base, Scottish move: the saltado goes into a bridie-style shortcrust rather than the usual empanada dough.":
+    "Base peruana, giro escocés: el saltado va en una masa quebrada estilo bridie en vez de la masa de empanada de siempre.",
+  "Peruvian base, Scottish move: the Cusco bread served the way a Scottish table serves a bannock, with a whipped herb butter.":
+    "Base peruana, giro escocés: el pan cusqueño servido como una mesa escocesa sirve un bannock, con mantequilla batida de hierbas.",
+  "Peruvian base, Scottish move: an oat crumble scattered over at the last second. Vegan, and the crumble is what stops it being one texture.":
+    "Base peruana, giro escocés: un crumble de avena esparcido al último segundo. Vegano, y el crumble es lo que evita que sea una sola textura.",
+  "Peruvian base, Scottish move: whisky and a burnt-sugar top. Served cold in pots, it is the easiest dessert here to scale.":
+    "Base peruana, giro escocés: whisky y azúcar quemada encima. Servido frío en potes, es el postre más fácil de escalar de esta carta.",
+  "Peruvian base, Scottish move: shortbread-proportion biscuit layers with lucuma manjar. Firmer than the Lambayeque original and it boxes.":
+    "Base peruana, giro escocés: capas de galleta con proporciones de shortbread y manjar de lúcuma. Más firme que el original lambayecano y se encaja bien.",
+  "Peruvian base, Scottish move: oats in the champus alongside the maiz morado. Vegan, served warm, and it is a winter product.":
+    "Base peruana, giro escocés: avena en el champús junto al maíz morado. Vegano, servido tibio, y es un producto de invierno.",
+
   // ---- flavour axes ----
   "sweet": "dulce", "savoury": "salado", "rich": "untuoso",
   "tart": "ácido", "smoky": "ahumado", "spiced": "picante", "fresh": "fresco"

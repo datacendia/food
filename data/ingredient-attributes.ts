@@ -212,6 +212,8 @@ export const INGREDIENT_ATTRS: Record<string, IngredientAttrs> = {
   "irn bru": { sugary: true },
 
   // Cocoa powder is plain cacao; the chocolate bars carry the lecithin.
+  "wonton wrapper": { allergens: ["gluten", "eggs"], vegan: false },
+  "scotch ale": { allergens: ["alcohol", "gluten"] },
   "cocoa powder": {},
   "coconut oil": {},
   "coconut milk": {},
@@ -293,7 +295,7 @@ export const PLANT_PLAIN = [
   "turnip and zapallo loche", "vanilla pod", "vegetable oil", "warm water",
   "water", "white pepper", "white peppercorn", "whole clove", "wild garlic leaf",
   "yuca", "zapallo macre", "anise seed", "baking powder", "bay leaf",
-  "bicarbonate of soda", "black pepper", "black peppercorn", "chicha morada", "strong coffee", "very ripe banana"
+  "bicarbonate of soda", "black pepper", "black peppercorn", "chicha morada", "strong coffee", "very ripe banana", "avocado"
 ] as const;
 
 /**

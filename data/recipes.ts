@@ -4471,5 +4471,507 @@ export const RECIPES: Recipe[] = [
     makeAhead: "Steam a fortnight ahead. It keeps like a Christmas pudding and improves the whole time.",
     holds: "Weeks wrapped. Slices cold, fries in butter for breakfast the next morning.",
     scaling: "One pot takes one dumpling. Four dumplings means four pots and a full hob for an afternoon."
+  },
+  {
+    dishId: 172,
+    yields: "60 pieces",
+    prepMin: 70,
+    cookMin: 40,
+    ingredients: [
+      { qty: "6 kg", item: "papa amarilla" },
+      { qty: "2 kg", item: "haggis mix, cooked" },
+      { qty: "600 g", item: "onions, finely diced" },
+      { qty: "3 tbsp", item: "aji panca paste" },
+      { qty: "8", item: "eggs" },
+      { qty: "500 g", item: "plain flour" },
+      { qty: "3 L", item: "frying oil" }
+    ],
+    method: [
+      "Boil the papa amarilla whole, peel hot and rice it, then spread it out to dry off the steam.",
+      "Season the potato hard and knead it briefly — it has to hold a shell without a binder.",
+      "Cook the haggis mix with the onion and aji panca until it is dry enough to hold a shape.",
+      "Cool both completely. Warm potato around warm filling collapses in the fryer every time.",
+      "Take 100 g of potato, flatten it in a wet palm, load 30 g of filling and close it into a lemon shape.",
+      "Flour, egg, and fry at 175 °C for 4 minutes until the shell is dark gold and set hard."
+    ],
+    makeAhead: "Shape and chill the day before, or freeze them. Fry from chilled, never from warm.",
+    holds: "Fry to order. Fifteen minutes on a rack and the shell softens from the inside.",
+    scaling: "Shaping is the cost: about 40 seconds each. Budget an hour of labour per 90 pieces."
+  },
+  {
+    dishId: 173,
+    yields: "80 tequenos",
+    prepMin: 60,
+    cookMin: 25,
+    ingredients: [
+      { qty: "2.5 kg", item: "queso paria" },
+      { qty: "80", item: "wonton wrappers" },
+      { qty: "2", item: "eggs, for sealing" },
+      { qty: "400 g", item: "chancaca" },
+      { qty: "150 ml", item: "whisky" },
+      { qty: "200 ml", item: "double cream" },
+      { qty: "3 L", item: "frying oil" }
+    ],
+    method: [
+      "Cut the paria into batons about 8 cm by 1.5 cm — thicker and the pastry burns before the cheese melts.",
+      "Lay a wrapper on the diagonal, set the baton across the near corner and roll it once.",
+      "Fold both sides in tight and keep rolling, sealing the last corner with egg. Air trapped inside bursts the roll.",
+      "Chill the rolled tequenos 30 minutes so the pastry firms and holds its seal.",
+      "Melt the chancaca with a splash of water, add the cream, then stir the whisky in off the heat.",
+      "Fry at 180 °C for 2 to 3 minutes until blistered and gold, and serve the dip warm alongside."
+    ],
+    makeAhead: "Roll and freeze. Fry from frozen at 170 °C for 4 minutes. The dip keeps a week.",
+    holds: "Ten minutes. The cheese sets back to rubber as it cools, so fire them in rounds."
+  },
+  {
+    dishId: 174,
+    yields: "20 portions",
+    prepMin: 20,
+    cookMin: 25,
+    ingredients: [
+      { qty: "20", item: "choclo cobs" },
+      { qty: "1.2 kg", item: "queso fresco" },
+      { qty: "500 g", item: "butter, softened" },
+      { qty: "150 g", item: "wholegrain mustard" },
+      { qty: "1 bunch", item: "chives" },
+      { qty: "15 g", item: "flaked salt" }
+    ],
+    method: [
+      "Boil the choclo in unsalted water with a little sugar and an anise seed, 20 minutes.",
+      "Salting the water toughens the kernels, which is why the sugar goes in and the salt does not.",
+      "Beat the butter with the mustard, chopped chives and a pinch of salt into a rough compound.",
+      "Cut each cob into three and thread a slab of queso fresco onto the side of each piece.",
+      "Melt a spoon of the mustard butter over the hot corn so it runs into the kernels.",
+      "Finish with flaked salt and serve immediately; cold choclo is a different and worse thing."
+    ],
+    makeAhead: "The butter keeps two weeks. Boil the choclo on the day — it goes starchy overnight.",
+    holds: "Forty minutes in a covered tray. This is a dish that wants to be eaten hot."
+  },
+  {
+    dishId: 175,
+    yields: "20 portions",
+    prepMin: 30,
+    cookMin: 20,
+    ingredients: [
+      { qty: "1.2 kg", item: "quinoa" },
+      { qty: "4 bunches", item: "berros" },
+      { qty: "600 g", item: "Tacna olives" },
+      { qty: "4", item: "rocoto, deseeded and diced" },
+      { qty: "1 kg", item: "tomato" },
+      { qty: "600 g", item: "red onion" },
+      { qty: "200 ml", item: "olive oil" }
+    ],
+    method: [
+      "Rinse the quinoa in three changes of water or it will be bitter, then cook it 14 minutes and cool it flat.",
+      "Slice the onion thin and rinse it under cold water for a minute to take the raw edge off.",
+      "Deseed the rocoto and dice it fine — the seeds carry heat that overwhelms a salad.",
+      "Pick the watercress into short sprigs and keep it dry and cold until the last moment.",
+      "Dress the quinoa, tomato, onion, olives and rocoto with oil, lime and salt.",
+      "Fold the watercress through as it goes out, never before; it wilts within ten minutes of dressing."
+    ],
+    makeAhead: "Cook the quinoa and cut the vegetables the day before. Dress and add the cress at the venue.",
+    holds: "One hour dressed. Vegan as built, and one of the few that is."
+  },
+  {
+    dishId: 176,
+    yields: "20 portions",
+    prepMin: 35,
+    cookMin: 45,
+    ingredients: [
+      { qty: "3 kg", item: "mushrooms" },
+      { qty: "3 kg", item: "papa amarilla" },
+      { qty: "6 tbsp", item: "aji amarillo paste" },
+      { qty: "1 bunch", item: "hierbabuena" },
+      { qty: "400 g", item: "rolled oats" },
+      { qty: "1 kg", item: "onion" },
+      { qty: "200 ml", item: "vegetable oil" }
+    ],
+    method: [
+      "Tear the mushrooms rather than slicing them; a torn edge holds sauce the way tripe does.",
+      "Dry-fry them hard in batches until they squeak and colour, then set them aside.",
+      "Build the aderezo: onion, garlic and aji amarillo cooked slowly in oil until it is almost jammy.",
+      "Add the diced potato and just enough water to cover, and simmer until the potato is nearly done.",
+      "Stir the oats in for the last 8 minutes; they thicken it where a cau cau usually leans on the potato alone.",
+      "Return the mushrooms, fold the hierbabuena through off the heat, and check the salt twice."
+    ],
+    makeAhead: "Better the next day. Make it whole and reheat gently, adding a little water.",
+    holds: "Three hours in a chafing dish. Vegan, and it does not read as a compromise."
+  },
+  {
+    dishId: 177,
+    yields: "20 portions",
+    prepMin: 40,
+    cookMin: 120,
+    ingredients: [
+      { qty: "6 kg", item: "lamb shoulder, in large chunks" },
+      { qty: "6 bunches", item: "culantro" },
+      { qty: "1 L", item: "stout" },
+      { qty: "1.5 kg", item: "onion" },
+      { qty: "4 tbsp", item: "aji amarillo paste" },
+      { qty: "2 kg", item: "beans, soaked overnight" },
+      { qty: "1 kg", item: "papa amarilla" }
+    ],
+    method: [
+      "Brown the lamb hard in batches. A seco built on pale meat is a stew, not a seco.",
+      "Blitz the culantro with a little water to a bright green liquor and keep it back until the end.",
+      "Cook the onion, garlic and aji amarillo down to a dark aderezo in the lamb fat.",
+      "Return the lamb, pour in the stout, and braise covered for 90 minutes until it gives to a spoon.",
+      "Add the potato for the last 20 minutes so it takes on the sauce without collapsing.",
+      "Fork the culantro liquor through off the heat — cooked in, it turns brown and tastes of nothing."
+    ],
+    makeAhead: "Braise the day before and hold back the culantro. It reheats better than almost anything.",
+    holds: "Three hours in a chafing dish, but add the culantro only when it goes out."
+  },
+  {
+    dishId: 178,
+    yields: "20 portions",
+    prepMin: 40,
+    cookMin: 150,
+    ingredients: [
+      { qty: "6 kg", item: "pork shoulder, in thick slices" },
+      { qty: "8 tbsp", item: "aji panca paste" },
+      { qty: "1.5 L", item: "Scotch ale" },
+      { qty: "300 ml", item: "red wine vinegar" },
+      { qty: "1.5 kg", item: "red onion, in thick wedges" },
+      { qty: "3", item: "rocoto, sliced" },
+      { qty: "30 g", item: "dried oregano" }
+    ],
+    method: [
+      "Marinate the pork overnight in the aji panca, vinegar, oregano, garlic and plenty of salt.",
+      "The overnight is the dish. Adobo made same-day tastes of raw paste and nothing else.",
+      "Bring the pork and its marinade to a bare simmer in a heavy pot with the ale poured over.",
+      "Cook covered and barely moving for two hours; a hard boil makes the pork stringy.",
+      "Add the onion wedges and rocoto for the last 25 minutes so they soften without dissolving.",
+      "Rest it off the heat for 20 minutes before service — the sauce thickens as it settles."
+    ],
+    makeAhead: "Marinate two days ahead, cook the day before. It is a better dish reheated.",
+    holds: "Three hours held gently. Traditionally a Sunday-morning dish; sell it as a Sunday lunch."
+  },
+  {
+    dishId: 179,
+    yields: "20 portions",
+    prepMin: 35,
+    cookMin: 40,
+    ingredients: [
+      { qty: "2 kg", item: "long-grain rice, cooked and cooled" },
+      { qty: "1.5 kg", item: "beans, cooked" },
+      { qty: "1.2 kg", item: "morcilla" },
+      { qty: "4 tbsp", item: "aji amarillo paste" },
+      { qty: "800 g", item: "red onion" },
+      { qty: "200 ml", item: "vegetable oil" },
+      { qty: "15 g", item: "dried oregano" }
+    ],
+    method: [
+      "Use rice cooked the day before. Fresh rice is too wet and the cake will never crisp.",
+      "Mash a third of the beans and leave the rest whole so the cake has both body and texture.",
+      "Build the aderezo with onion and aji amarillo, then fold rice and beans through it off the heat.",
+      "Crumble the morcilla and fry it separately until the fat runs and the edges catch.",
+      "Fold the morcilla through, then form the mixture into an oval in a hot, well-oiled pan.",
+      "Press it flat and leave it alone for four minutes a side; the crust is the entire point."
+    ],
+    makeAhead: "Cook the rice and beans a day ahead. The cake itself is formed and crisped to order.",
+    holds: "Serve within ten minutes of the pan. Held, the crust softens and it becomes rice and beans.",
+    scaling: "One pan makes four portions. Above 40 guests you need a plancha, not a bigger pan."
+  },
+  {
+    dishId: 180,
+    yields: "20 portions",
+    prepMin: 25,
+    cookMin: 35,
+    ingredients: [
+      { qty: "2 kg", item: "beef sirloin, sliced thin" },
+      { qty: "600 g", item: "pinhead oats" },
+      { qty: "2 L", item: "evaporated milk" },
+      { qty: "4 tbsp", item: "aji panca paste" },
+      { qty: "1 kg", item: "onion" },
+      { qty: "20", item: "eggs" },
+      { qty: "3 L", item: "beef stock" }
+    ],
+    method: [
+      "Toast the oats dry until they smell of biscuit; untoasted they turn the soup to porridge.",
+      "Sear the sliced beef fast and hard in a wide pan, then lift it out while it is still rare.",
+      "Build the aderezo with onion, garlic and aji panca in the same pan until it darkens.",
+      "Add the stock and the oats and simmer 15 minutes, until the oats are soft but still separate.",
+      "Pour in the evaporated milk and hold it below a simmer — boiled, it will split.",
+      "Return the beef, then poach the eggs directly in the soup for the last 4 minutes."
+    ],
+    makeAhead: "Make the base a day ahead. Beef and eggs go in during the last five minutes, on site.",
+    holds: "Ninety minutes below a simmer. The oats keep swelling, so hold back a litre of stock to loosen it."
+  },
+  {
+    dishId: 181,
+    yields: "20 portions",
+    prepMin: 25,
+    cookMin: 40,
+    ingredients: [
+      { qty: "4 kg", item: "zapallo macre" },
+      { qty: "2 kg", item: "papa amarilla" },
+      { qty: "500 g", item: "medium oatmeal" },
+      { qty: "1 bunch", item: "huacatay" },
+      { qty: "4 tbsp", item: "aji amarillo paste" },
+      { qty: "1 kg", item: "onion" },
+      { qty: "200 ml", item: "vegetable oil" }
+    ],
+    method: [
+      "Roast the squash rather than boiling it — boiled zapallo gives you a watery chupe.",
+      "Toast the oatmeal in a dry pan until it colours, which is what makes this taste rich without dairy.",
+      "Build the aderezo with onion, garlic and aji amarillo cooked slowly in oil.",
+      "Add the squash, the potato and water to cover, and simmer until everything is soft.",
+      "Blend half and leave half in pieces; a fully smooth chupe reads as soup, not as a bowl.",
+      "Stir the toasted oatmeal in for the last five minutes and finish with torn huacatay."
+    ],
+    makeAhead: "Make it two days ahead. It thickens overnight, so keep stock back to loosen it.",
+    holds: "Three hours in a chafing dish. Vegan, and it still eats rich."
+  },
+  {
+    dishId: 182,
+    yields: "20 portions",
+    prepMin: 25,
+    cookMin: 0,
+    ingredients: [
+      { qty: "20", item: "avocados" },
+      { qty: "5 bunches", item: "berros" },
+      { qty: "12", item: "limes" },
+      { qty: "150 g", item: "wholegrain mustard" },
+      { qty: "200 ml", item: "olive oil" },
+      { qty: "600 g", item: "red onion" },
+      { qty: "15 g", item: "flaked salt" }
+    ],
+    method: [
+      "Buy the avocados three days out and let them ripen on the bench; a hard palta cannot be rescued.",
+      "Whisk the mustard, lime juice and oil into a dressing that is sharper than feels right on the spoon.",
+      "Slice the onion paper-thin and soak it in lime juice for ten minutes to soften its edge.",
+      "Pick the watercress into sprigs and keep it dry — wet cress will not hold a dressing.",
+      "Cut the avocado only as the trays go out; it browns within twenty minutes however much lime is on it.",
+      "Dress the cress separately, then build in layers so the avocado is not crushed by mixing."
+    ],
+    makeAhead: "Dressing keeps three days. Everything else is a same-day job and the avocado is a last-minute one.",
+    holds: "Twenty minutes cut. Vegan, and the cheapest green on the sheet."
+  },
+  {
+    dishId: 183,
+    yields: "20 portions",
+    prepMin: 25,
+    cookMin: 30,
+    ingredients: [
+      { qty: "4 kg", item: "papa amarilla" },
+      { qty: "800 g", item: "queso fresco" },
+      { qty: "600 g", item: "mature cheddar" },
+      { qty: "6 tbsp", item: "aji amarillo paste" },
+      { qty: "600 ml", item: "evaporated milk" },
+      { qty: "200 g", item: "soda crackers" },
+      { qty: "300 g", item: "Tacna olives" }
+    ],
+    method: [
+      "Boil the potatoes whole and unpeeled, then peel and slice them thick while still warm.",
+      "Fry the aji amarillo paste in oil for five minutes until it darkens and loses its raw edge.",
+      "Let the paste cool before blending or the heat will split the cheese sauce.",
+      "Blend both cheeses with the crackers, the evaporated milk and the cooled aji until it pours slowly.",
+      "The cheddar is what makes this set firmer than a classic huancaina, which is why it suits a buffet.",
+      "Nap the potatoes rather than drowning them, and finish with olives and a hard-boiled egg."
+    ],
+    makeAhead: "The sauce keeps two days and thickens, so slacken it with milk before serving.",
+    holds: "Three hours at room temperature. Cover it — the surface skins within twenty minutes."
+  },
+  {
+    dishId: 184,
+    yields: "20 portions",
+    prepMin: 25,
+    cookMin: 30,
+    ingredients: [
+      { qty: "5 kg", item: "yuca" },
+      { qty: "6 tbsp", item: "aji amarillo paste" },
+      { qty: "40 g", item: "muna, dried" },
+      { qty: "700 g", item: "queso fresco" },
+      { qty: "400 ml", item: "evaporated milk" },
+      { qty: "3 L", item: "frying oil" },
+      { qty: "150 g", item: "soda crackers" }
+    ],
+    method: [
+      "Peel the yuca and pull out the woody cord down the centre; it never softens and nobody wants it.",
+      "Boil it in salted water until a knife goes in easily but before it starts to fall apart.",
+      "Drain and steam-dry it, then cool completely — wet yuca in hot oil is dangerous as well as soggy.",
+      "Steep the muna in the warm evaporated milk for ten minutes, then strain it out.",
+      "Blend the muna milk with the aji amarillo, queso fresco and crackers into a pourable sauce.",
+      "Fry the yuca at 180 °C until blistered and gold, salt it immediately, and serve the sauce alongside."
+    ],
+    makeAhead: "Boil and cool the yuca the day before. The sauce keeps two days.",
+    holds: "Fry to order. Yuca goes leathery within fifteen minutes of leaving the oil."
+  },
+  {
+    dishId: 185,
+    yields: "60 skewers",
+    prepMin: 35,
+    cookMin: 15,
+    ingredients: [
+      { qty: "4 kg", item: "mushrooms" },
+      { qty: "8 tbsp", item: "aji panca paste" },
+      { qty: "40 g", item: "muna, dried" },
+      { qty: "300 ml", item: "red wine vinegar" },
+      { qty: "10", item: "garlic cloves" },
+      { qty: "200 ml", item: "vegetable oil" },
+      { qty: "60", item: "wooden skewers, soaked" }
+    ],
+    method: [
+      "Choose mushrooms the size of a walnut and leave them whole; sliced, they steam instead of charring.",
+      "Blitz the aji panca, muna, garlic, vinegar, cumin and oil into a marinade thick enough to cling.",
+      "Marinate at least four hours. Mushrooms take up marinade faster than meat but need the time to season through.",
+      "Thread three to a skewer, leaving a little space between so the heat gets round each one.",
+      "Grill on a very hot plancha, three minutes a side, basting with the leftover marinade as you turn.",
+      "They are done when the edges char and the centres give — undercooked, they are squeaky."
+    ],
+    makeAhead: "Marinate and skewer the day before. Grilling is a venue job.",
+    holds: "Grill to order. Vegan, and on a mixed table it outsells the beef heart.",
+    scaling: "About 80 skewers an hour off a 1 m plancha, the same as the lamb."
+  },
+  {
+    dishId: 186,
+    yields: "60 empanadas",
+    prepMin: 80,
+    cookMin: 25,
+    ingredients: [
+      { qty: "2 kg", item: "plain flour" },
+      { qty: "800 g", item: "butter, cold and diced" },
+      { qty: "2 kg", item: "beef sirloin, in strips" },
+      { qty: "1.5 kg", item: "red onion, in wedges" },
+      { qty: "1 kg", item: "tomato, in wedges" },
+      { qty: "200 ml", item: "sillao" },
+      { qty: "3", item: "eggs, for glazing" }
+    ],
+    method: [
+      "Make a shortcrust rather than an empanada dough — this is the bridie idea applied to a saltado.",
+      "Rest the pastry an hour in the fridge and roll it to 3 mm.",
+      "Sear the beef in a ferociously hot pan in small batches and pull it while it is still rare.",
+      "Fry the onion 30 seconds, add tomato, deglaze with sillao and vinegar, and take it off immediately.",
+      "Drain the filling in a colander and cool it fully; a saltado carries far too much liquid for pastry.",
+      "Fill, crimp, chill 20 minutes, egg-wash and bake at 200 °C for 22 minutes."
+    ],
+    makeAhead: "Freeze filled and crimped. Bake from frozen at 190 °C for 28 minutes.",
+    holds: "Two hours warm, four at room temperature. The drained filling is what makes that possible."
+  },
+  {
+    dishId: 187,
+    yields: "40 pieces",
+    prepMin: 50,
+    cookMin: 35,
+    ingredients: [
+      { qty: "2.5 kg", item: "plain flour" },
+      { qty: "40 g", item: "anise seed" },
+      { qty: "600 g", item: "butter" },
+      { qty: "300 g", item: "caster sugar" },
+      { qty: "30 g", item: "dried yeast" },
+      { qty: "40 g", item: "muna, dried" },
+      { qty: "1 L", item: "warm milk" }
+    ],
+    method: [
+      "Steep the anise in a little of the warm milk for 15 minutes; that infusion is the bread's signature.",
+      "Mix, knead 10 minutes to a smooth dough, and prove until doubled.",
+      "Knock back, shape into flat rounds about 2 cm thick, and prove again for 40 minutes.",
+      "Bake at 190 °C for 30 to 35 minutes until the base sounds hollow.",
+      "Crush the dried muna to a powder and beat it into softened butter with a little salt.",
+      "Serve the bread warm with the muna butter, the way a Scottish table serves a bannock."
+    ],
+    makeAhead: "Bake a day ahead; the butter keeps two weeks. Refresh the bread 5 minutes at 180 °C.",
+    holds: "A day wrapped. Better warm, and it is worth the oven time at the venue."
+  },
+  {
+    dishId: 188,
+    yields: "20 portions",
+    prepMin: 30,
+    cookMin: 45,
+    ingredients: [
+      { qty: "2 kg", item: "maiz morado" },
+      { qty: "3", item: "quinces" },
+      { qty: "1", item: "pineapple, with skin" },
+      { qty: "600 g", item: "caster sugar" },
+      { qty: "300 g", item: "cornflour" },
+      { qty: "500 g", item: "rolled oats" },
+      { qty: "250 g", item: "soft brown sugar" }
+    ],
+    method: [
+      "Boil the maiz morado with pineapple skin, quince, cinnamon and clove for 40 minutes.",
+      "Strain it and keep the quince and pineapple flesh; they go back in diced.",
+      "Slake the cornflour in cold liquid before it goes near the pot, or you will be picking out lumps.",
+      "Thicken over a low heat, stirring constantly, until it coats a spoon and holds a line.",
+      "Sharpen it with lime — an unsharpened mazamorra is one flat sweet note.",
+      "Rub the oats with brown sugar and a little oil, bake until crisp, and scatter it on at the venue."
+    ],
+    makeAhead: "Make the mazamorra two days ahead; the crumble keeps a week in a tin.",
+    holds: "All day chilled. Vegan, and the crumble is what stops it being one texture."
+  },
+  {
+    dishId: 189,
+    yields: "40 pots",
+    prepMin: 20,
+    cookMin: 50,
+    ingredients: [
+      { qty: "1.2 kg", item: "long-grain rice" },
+      { qty: "3 L", item: "whole milk" },
+      { qty: "1.2 L", item: "condensed milk" },
+      { qty: "6", item: "cinnamon sticks" },
+      { qty: "200 ml", item: "whisky" },
+      { qty: "300 g", item: "caster sugar" },
+      { qty: "4", item: "lemons, zest only" }
+    ],
+    method: [
+      "Boil the rice briefly in water with the cinnamon and lemon zest before any milk goes in.",
+      "That first boil is what stops the milk catching on the base of the pan later.",
+      "Add the milk and cook slowly, stirring often, for 35 minutes until the grains are soft and swollen.",
+      "Stir in the condensed milk and cook another 10 minutes; it will thicken a great deal as it cools.",
+      "Take it off the heat and stir the whisky through so the spirit stays in the dish.",
+      "Pot it while warm, chill, and burn a sugar top at the venue rather than in the kitchen."
+    ],
+    makeAhead: "Make it two days ahead. It sets firm, so beat in a little milk before potting.",
+    holds: "Needs refrigeration; two hours out. The easiest dessert here to scale to a big number."
+  },
+  {
+    dishId: 190,
+    yields: "48 bars",
+    prepMin: 70,
+    cookMin: 30,
+    ingredients: [
+      { qty: "1.6 kg", item: "plain flour" },
+      { qty: "900 g", item: "butter" },
+      { qty: "400 g", item: "icing sugar" },
+      { qty: "10", item: "egg yolks" },
+      { qty: "1.8 kg", item: "manjar blanco" },
+      { qty: "700 g", item: "lucuma pulp" },
+      { qty: "400 g", item: "aguaymanto preserve" }
+    ],
+    method: [
+      "Make the biscuit to shortbread proportions — more butter, less sugar than a Lambayeque original.",
+      "Roll it thin and bake the sheets at 170 °C for 12 minutes until barely coloured.",
+      "Cool the sheets completely flat; a warm sheet bends and the layers will not sit true.",
+      "Beat the lucuma pulp into two-thirds of the manjar blanco until it is thick enough to hold a line.",
+      "Layer biscuit, lucuma manjar, biscuit, aguaymanto preserve, biscuit, finishing with plain manjar.",
+      "Press under a light weight overnight, then cut into bars with a hot knife wiped between cuts."
+    ],
+    makeAhead: "Build two days ahead. The pressing is what makes it cut cleanly rather than shatter.",
+    holds: "A week wrapped. Firmer than the original, and it boxes without falling apart."
+  },
+  {
+    dishId: 191,
+    yields: "20 portions",
+    prepMin: 30,
+    cookMin: 50,
+    ingredients: [
+      { qty: "1.5 kg", item: "maiz morado" },
+      { qty: "6", item: "chirimoya" },
+      { qty: "3", item: "quinces" },
+      { qty: "400 g", item: "rolled oats" },
+      { qty: "500 g", item: "chancaca" },
+      { qty: "4", item: "cinnamon sticks" },
+      { qty: "1", item: "pineapple, with skin" }
+    ],
+    method: [
+      "Boil the maiz morado with the pineapple skin, quince, cinnamon and clove for 40 minutes, then strain.",
+      "Cook the oats in the purple liquor for 20 minutes until they swell and thicken it.",
+      "Sweeten with chancaca rather than sugar; it is what makes this taste of somewhere.",
+      "Dice the cooked quince and pineapple and fold them back in whole.",
+      "Scoop the chirimoya at the last moment, picking out every seed, and fold it through off the heat.",
+      "Serve warm. Champus is a cold-night drink-and-pudding and it loses the point chilled."
+    ],
+    makeAhead: "Make the base two days ahead. Chirimoya goes in at the venue or it browns.",
+    holds: "Two hours held warm. Vegan, and a winter product rather than a year-round one."
   }
 ];
