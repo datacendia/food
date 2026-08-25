@@ -44,6 +44,7 @@ const ES = loadData("i18n.ts", "ES");
 const ES_RECIPES = loadData("i18n-recipes.ts", "ES_RECIPES");
 Object.assign(ES, ES_RECIPES);
 const ES_INGREDIENTS = loadData("i18n-ingredients.ts", "ES_INGREDIENTS");
+const ES_PREP = loadData("i18n-prep.ts", "ES_PREP");
 
 // `npm run book -- --lang es` prints the kitchen edition. The ingredient
 // names are the ones a Lima market uses, which is the half of this a cook
@@ -80,14 +81,16 @@ function canonIng(item) {
     .join(" ").trim();
 }
 
-/** The market name, with the prep note kept: the name is the shop, the note is the job. */
+/** The market name and the prep note: the name is the shop, the note is the job. */
 function ingName(item) {
   if (!es) return item;
   const key = canonIng(item);
   const name = ES_INGREDIENTS[key];
   if (!name) return item;
   const comma = String(item).indexOf(",");
-  return comma > -1 ? name + String(item).slice(comma) : name;
+  if (comma === -1) return name;
+  const tail = String(item).slice(comma + 1).trim();
+  return `${name}, ${ES_PREP[tail] || tail}`;
 }
 
 const CATEGORY_LABEL_EN = {
@@ -126,16 +129,19 @@ function recipeHtml(r) {
       <p class="num">${String(d.id).padStart(3, "0")} · ${esc(CATEGORY_LABEL[d.category])}</p>
       <h3>${esc(d.name)}</h3>
       <p class="lineage"><span class="uk">${esc(d.origin)}</span> → <span class="pe">${esc(d.subOrigin)}</span></p>
-      <p class="meta">${esc(r.yields)} · prep ${r.prepMin} min · cook ${r.cookMin} min ·
-        ${esc(FORMAT[d.format])}${d.veg ? " · vegetarian" : ""}${d.needsLicence ? " · needs the licence" : ""}</p>
-      ${d.allergens.length ? `<p class="allergens">Allergens: ${d.allergens.map(esc).join(", ")}</p>` : ""}
+      <p class="meta">${esc(t(r.yields))} · ${es ? "preparación" : "prep"} ${r.prepMin} min · ${
+        es ? "cocción" : "cook"} ${r.cookMin} min ·
+        ${esc(FORMAT[d.format])}${d.veg ? ` · ${esc(t("vegetarian"))}` : ""}${
+        d.needsLicence ? ` · ${esc(t("needs the licence"))}` : ""}</p>
+      ${d.allergens.length ? `<p class="allergens">${esc(t("Allergens:"))} ${
+        d.allergens.map((a) => esc(t(a))).join(", ")}</p>` : ""}
     </header>
     <div class="cols">
       <section>
         <h4>${esc(t("Ingredients"))}</h4>
         <table class="ing">${r.ingredients.map((i) => `
           <tr><td class="q">${esc(i.qty)}</td><td>${esc(ingName(i.item))}${
-            i.note ? `<span class="inote">${esc(i.note)}</span>` : ""}</td></tr>`).join("")}
+            i.note ? `<span class="inote">${esc(t(i.note))}</span>` : ""}</td></tr>`).join("")}
         </table>
       </section>
       <section>

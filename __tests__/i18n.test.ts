@@ -1,6 +1,7 @@
 import { RECIPES } from "@/data/recipes";
 import { ES_INGREDIENTS } from "@/data/i18n-ingredients";
 import { ES, ES_PATTERNS } from "@/data/i18n";
+import { ES_PREP } from "@/data/i18n-prep";
 import { DISHES } from "@/data/dishes";
 import { canonicalIngredient } from "@/lib/ingredient-key";
 
@@ -65,5 +66,33 @@ describe("the interface dictionary", () => {
       }
       expect(() => compiled.test("anything")).not.toThrow();
     }
+  });
+});
+
+describe("the prep notes", () => {
+  it("translates every note a recipe puts after the comma", () => {
+    // "mantequilla, softened" is worse than either language on its own, so a
+    // new prep note has to fail here rather than ship half-translated.
+    const missing = new Set<string>();
+    for (const r of RECIPES) {
+      for (const i of r.ingredients) {
+        const comma = i.item.indexOf(",");
+        if (comma === -1) continue;
+        const tail = i.item.slice(comma + 1).trim();
+        if (!ES_PREP[tail]) missing.add(tail);
+      }
+    }
+    expect([...missing]).toEqual([]);
+  });
+
+  it("carries no notes no recipe uses", () => {
+    const used = new Set<string>();
+    for (const r of RECIPES) {
+      for (const i of r.ingredients) {
+        const comma = i.item.indexOf(",");
+        if (comma > -1) used.add(i.item.slice(comma + 1).trim());
+      }
+    }
+    expect(Object.keys(ES_PREP).filter((k) => !used.has(k))).toEqual([]);
   });
 });

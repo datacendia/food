@@ -670,6 +670,103 @@ export const ES: Record<string, string> = {
     "Base peruana, giro escocés: capas de galleta con proporciones de shortbread y manjar de lúcuma. Más firme que el original lambayecano y se encaja bien.",
   "Peruvian base, Scottish move: oats in the champus alongside the maiz morado. Vegan, served warm, and it is a winter product.":
     "Base peruana, giro escocés: avena en el champús junto al maíz morado. Vegano, servido tibio, y es un producto de invierno.",
+  "Quantities are batch quantities, not domestic ones. Cross-check them against the run sheet in Build a menu before a real service.":
+    "Las cantidades son de tanda, no domésticas. Contrástelas con la hoja de servicio en Armar el menú antes de un servicio real.",
+
+  // ---- allergen names, as the kitchen book and the diet panel print them ----
+  "gluten": "gluten",
+  "crustaceans": "crustáceos",
+  "eggs": "huevo",
+  "fish": "pescado",
+  "peanuts": "maní",
+  "soya": "soya",
+  "milk": "leche",
+  "nuts": "frutos secos",
+  "celery": "apio",
+  "mustard": "mostaza",
+  "sesame": "ajonjolí",
+  "sulphites": "sulfitos",
+  "lupin": "altramuz",
+  "molluscs": "moluscos",
+  "pork": "cerdo",
+  "alcohol": "alcohol",
+  "Allergens:": "Alérgenos:",
+  "vegetarian": "vegetariano",
+  "needs the licence": "requiere licencia de licores",
+  // ---- composed lines, split into their own nodes so they translate ----
+  "Derived from every ingredient in the recipe, including sub-preparations — not from the dish description. Still not a legal allergen audit: confirm against the products you actually buy.":
+    "Derivado de cada ingrediente de la receta, incluidas las subpreparaciones — no de la descripción del plato. Aun así no es una auditoría legal de alérgenos: confirme contra los productos que realmente compra.",
+  "dish out of window in":
+    "plato fuera de temporada en",
+  "dishes out of window in":
+    "platos fuera de temporada en",
+  "Buyable, but poor and dear — see Season for what to swap in.":
+    "Se consiguen, pero de mala calidad y caros — vea Temporada para saber qué poner en su lugar.",
+  "Stove":
+    "Cocina",
+  "Plancha":
+    "Plancha",
+  // ---- the fifteen dietary filters ----
+  "Vegetarian":
+    "Vegetariano",
+  "No meat, fish or shellfish. Dairy and eggs are fine.":
+    "Sin carne, pescado ni mariscos. Los lácteos y los huevos están permitidos.",
+  "Vegan":
+    "Vegano",
+  "No animal product at all, including honey, gelatine and dairy.":
+    "Ningún producto de origen animal, incluidos la miel, la gelatina y los lácteos.",
+  "Pescatarian":
+    "Pescetariano",
+  "Fish and shellfish are fine; no meat.":
+    "Pescado y mariscos sí; carne no.",
+  "Coeliac / gluten-free":
+    "Celíaco / sin gluten",
+  "For coeliac disease, not a preference. Oats are excluded unless certified.":
+    "Para la enfermedad celíaca, no una preferencia. La avena queda excluida salvo que esté certificada.",
+  "Lactose / dairy-free":
+    "Sin lactosa / sin lácteos",
+  "Covers lactose intolerance and milk allergy.":
+    "Cubre la intolerancia a la lactosa y la alergia a la leche.",
+  "Nut-free":
+    "Sin frutos secos",
+  "Tree nuts and peanuts.":
+    "Frutos secos de árbol y maní.",
+  "No pork":
+    "Sin cerdo",
+  "Pork, bacon, morcilla, lard.":
+    "Cerdo, tocino, morcilla, manteca.",
+  "No alcohol":
+    "Sin alcohol",
+  "Cooking burns off less than people think.":
+    "La cocción evapora menos alcohol de lo que la gente cree.",
+  "Halal — ingredients only":
+    "Halal — solo ingredientes",
+  "No pork and no alcohol — the half of halal that is about ingredients. It says NOTHING about whether the meat was slaughtered halal, which is the part that actually matters. Do not describe a dish as halal on this basis alone.":
+    "Sin cerdo y sin alcohol — la mitad del halal que trata de los ingredientes. No dice NADA sobre si la carne fue sacrificada según el rito halal, que es la parte que de verdad importa. No describa un plato como halal solo por esto.",
+  "Kosher — ingredients only":
+    "Kosher — solo ingredientes",
+  "No pork, no shellfish, no meat and dairy in one dish. Kosher also needs certified supply and a supervised kitchen, neither of which this app can see.":
+    "Sin cerdo, sin mariscos y sin carne y lácteos en un mismo plato. El kosher también exige proveedores certificados y una cocina supervisada, y esta aplicación no ve ninguna de las dos cosas.",
+  "Low FODMAP":
+    "Bajo en FODMAP",
+  "No onion, garlic, wheat or legumes. The list is short because the aderezo under half the Peruvian dishes is onion and garlic. Portion size matters and this cannot model it.":
+    "Sin cebolla, ajo, trigo ni legumbres. La lista es corta porque el aderezo que sostiene la mitad de los platos peruanos es cebolla y ajo. El tamaño de la porción importa y esto no lo puede modelar.",
+  "Lower carb / keto-leaning":
+    "Bajo en carbohidratos / tendencia keto",
+  "Not built on flour, sugar, rice, potato or oats. A filter, not a nutrition panel — it does not count grams.":
+    "No construido sobre harina, azúcar, arroz, papa ni avena. Es un filtro, no una tabla nutricional — no cuenta gramos.",
+  "Lower sugar":
+    "Bajo en azúcar",
+  "A guide for guests managing blood sugar, not a medical claim.":
+    "Una guía para invitados que controlan su glucosa, no una afirmación médica.",
+  "Children":
+    "Niños",
+  "Nothing hot, boozy, skewered or on the bone.":
+    "Nada picante, con alcohol, en brocheta ni con hueso.",
+  "Soft texture":
+    "Textura suave",
+  "For guests who cannot chew easily. Not an IDDSI assessment.":
+    "Para invitados que no pueden masticar con facilidad. No es una evaluación IDDSI.",
   // ---- dish descriptions added with dishes 192-223 ----
   "Hot-smoked Andean trout stands in for the Arbroath smokie - the same hard smoke, from a fish that reaches Lima fresh. Rocoto in the butter is the heat the original never had.":
     "La trucha andina ahumada en caliente reemplaza al Arbroath smokie: el mismo ahumado fuerte, con un pescado que llega fresco a Lima. El rocoto en la mantequilla es el picante que el original nunca tuvo.",
@@ -782,5 +879,9 @@ export const ES_PATTERNS: [string, string][] = [
   ["^(\\d+) bites per guest$", "$1 bocados por invitado"],
   // Place names need no translation, and "min" reads the same in both. The
   // identity rule records that this shape was reviewed rather than missed.
+  // The recipe card's header is split into one span per label so the walker
+  // can see each one. These are the two fragments that are not labels.
+  ["^prep (\\d+) min$", "preparación $1 min"],
+  ["^cook (\\d+) min$", "cocción $1 min"],
   ["^(.+) · (\\d+) min$", "$1 · $2 min"]
 ];

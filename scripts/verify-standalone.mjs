@@ -450,6 +450,30 @@ const anyCosted = shownReal.filter((r) => r[1] > 0).length >= TS_RECIPES.length 
 if (!anyCosted) failures++;
 console.log(`  at least 95% carry a computed cost ${anyCosted ? "✓" : "✗"}`);
 
+// The standalone keeps its own copy of the category labels. It once kept them
+// pre-escaped for innerHTML ("Canapés &amp; bites"), which silently stopped two
+// of the seven ever matching the Spanish dictionary. Hold the copy to the
+// TypeScript so that cannot happen again.
+// Read as text rather than imported: lib/dishes.ts uses the "@/" alias, which
+// plain Node cannot resolve, and this check only cares about the strings.
+const { readFileSync } = await import("node:fs");
+const labelSrc = readFileSync(new URL("../lib/dishes.ts", import.meta.url), "utf8");
+const labelBlock = labelSrc.slice(
+  labelSrc.indexOf("CATEGORY_LABEL"),
+  labelSrc.indexOf("};", labelSrc.indexOf("CATEGORY_LABEL"))
+);
+const CATEGORY_LABEL = Object.fromEntries(
+  [...labelBlock.matchAll(/(\w+):\s*"([^"]*)"/g)].map((m) => [m[1], m[2]])
+);
+const pageLabels = await page.evaluate(() =>
+  JSON.parse(document.getElementById("data").textContent).labels
+);
+const labelDrift = Object.keys(CATEGORY_LABEL).filter((k) => pageLabels[k] !== CATEGORY_LABEL[k]);
+if (labelDrift.length) failures++;
+console.log(
+  `\ncategory labels match lib/dishes.ts: ${labelDrift.length ? "✗ " + labelDrift.join(", ") : "✓"}`
+);
+
 // --- Spanish: the toggle works, and coverage is reported honestly ---------
 const esPage = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
 await esPage.addInitScript(() => {
@@ -510,8 +534,11 @@ for (const [id, label] of PANES) {
       // in both languages and would flatter the figure.
       if (!s || s.split(" ").length < 4) continue;
       // Dish names are deliberately untranslated - "Haggis Bonbons" is the
-      // product - so counting them would understate real coverage.
+      // product - so counting them would understate real coverage. A menu is
+      // often printed as a list of them, which is still all names.
       if (names.has(s)) continue;
+      const parts = s.replace(/\([^)]*\)/g, "").split(/[,;]/).map((x) => x.trim()).filter(Boolean);
+      if (parts.length > 1 && parts.every((x) => names.has(x.replace(/\s*\.$/, "").trim()))) continue;
       if (values.has(s) || applied[s]) t++; else u++;
     }
     return { t, u };

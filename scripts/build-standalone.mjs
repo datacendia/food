@@ -56,6 +56,7 @@ const ES = loadData("i18n.ts", "ES");
 const ES_RECIPES = loadData("i18n-recipes.ts", "ES_RECIPES");
 Object.assign(ES, ES_RECIPES);
 const ES_INGREDIENTS = loadData("i18n-ingredients.ts", "ES_INGREDIENTS");
+const ES_PREP = loadData("i18n-prep.ts", "ES_PREP");
 const INGREDIENT_ATTRS = loadData("ingredient-attributes.ts", "INGREDIENT_ATTRS");
 const PLANT_PLAIN = loadData("ingredient-attributes.ts", "PLANT_PLAIN");
 const HARD_TEXTURE_DISHES = loadData("ingredient-attributes.ts", "HARD_TEXTURE_DISHES");
@@ -108,11 +109,15 @@ const TIERS = {
 
 const CONST = { IGV: 0.18, STAFF: 100, CHEF: 180, FC_MIN: 0.25, FC_MAX: 0.3 };
 
+// Plain text, exactly as lib/dishes.ts has it. These were once written with
+// "&amp;" baked in, ready for innerHTML — which meant the Spanish dictionary
+// key never matched and two categories stayed English on every page.
+// Escaping belongs at the render site, not in the data.
 const CATEGORY_LABEL = {
-  canape: "Canapés &amp; bites",
+  canape: "Canapés & bites",
   main: "Mains",
   bowl: "Bowls",
-  side: "Sides &amp; breads",
+  side: "Sides & breads",
   breakfast: "Breakfast",
   bakery: "Bakery",
   dessert: "Desserts"
@@ -125,7 +130,7 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
   ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: RECIPES,
   districts: DISTRICTS, venues: VENUE_TYPES,
-  es: ES, esPatterns: ES_PATTERNS, esIng: ES_INGREDIENTS,
+  es: ES, esPatterns: ES_PATTERNS, esIng: ES_INGREDIENTS, esPrep: ES_PREP,
   attrs: INGREDIENT_ATTRS, plain: PLANT_PLAIN,
   hardDishes: HARD_TEXTURE_DISHES, notForKids: NOT_FOR_CHILDREN, vedas: VEDAS,
   fodmap: HIGH_FODMAP, carb: HIGH_CARB,
@@ -641,7 +646,7 @@ var DISTRICTS = D.districts, VENUES = D.venues, TRIP = D.trip;
 var ATTRS = D.attrs || {}, PLAIN = D.plain || [], DIETS = D.diets || [];
 var HARD_DISHES = D.hardDishes || [], NO_KIDS = D.notForKids || [], VEDAS = D.vedas || [];
 var FODMAP = D.fodmap || [], CARB = D.carb || [];
-var ES = D.es, ES_ING = D.esIng || {};
+var ES = D.es, ES_ING = D.esIng || {}, ES_PREP = D.esPrep || {};
 // Compiled once: the page re-translates on every render and recompiling these
 // per text node would be the slowest thing on the page.
 var ES_RX = (D.esPatterns || []).map(function(p){ return [new RegExp(p[0]), p[1]]; });
@@ -708,10 +713,14 @@ function renderLegal(menu, month){
   });
   var off = menu.filter(function(d){ return blocked[d.id]; });
   sbox.innerHTML = off.length
-    ? "<p class='muted' style='font-size:.86rem;margin:10px 0 0'><strong>" + off.length +
-      " dish" + (off.length === 1 ? "" : "es") + " out of window in " + esc(monthName) + ":</strong> " +
+    // Split so each translatable phrase is its own text node: the dish names
+    // in the middle stay English on purpose, and gluing them to the sentence
+    // made the whole paragraph untranslatable.
+    ? "<p class='muted' style='font-size:.86rem;margin:10px 0 0'><strong>" + off.length + " " +
+      "<span>" + (off.length === 1 ? "dish out of window in" : "dishes out of window in") + "</span> " +
+      "<span>" + esc(monthName) + "</span>:</strong> " +
       off.map(function(d){ return esc(d.name) + " (" + esc(blocked[d.id].join(", ")) + ")"; }).join("; ") +
-      ". Buyable, but poor and dear \u2014 see Season for what to swap in.</p>"
+      ". <span>Buyable, but poor and dear \u2014 see Season for what to swap in.</span></p>"
     : "";
 }
 
@@ -1578,7 +1587,8 @@ tabs.forEach(function(t){ t.addEventListener("click", function(){ show(t.dataset
 // --- home ----------------------------------------------------------------
 document.getElementById("homeStats").innerHTML = ORDER.map(function(c){
   var n = DISHES.filter(function(d){ return d.category === c; }).length;
-  return "<span>" + LABELS[c] + " <b class='tnum'>" + n + "</b></span>";
+  // The label gets its own node so the translator can see it whole.
+  return "<span><span>" + esc(LABELS[c]) + "</span> <b class='tnum'>" + n + "</b></span>";
 }).join("");
 
 document.getElementById("homeTiers").innerHTML = Object.keys(TIERS).map(function(k){
@@ -1611,7 +1621,7 @@ document.getElementById("homeSigs").innerHTML = DISHES.slice()
 // --- the hundred ---------------------------------------------------------
 document.getElementById("menuBody").innerHTML = ORDER.map(function(cat){
   var rows = DISHES.filter(function(d){ return d.category === cat; });
-  return "<div class='sec-head'><h2>" + LABELS[cat] + "</h2>" +
+  return "<div class='sec-head'><h2>" + esc(LABELS[cat]) + "</h2>" +
     "<span class='pill-count tnum'>" + rows.length + "</span></div>" +
     "<div class='tscroll'><table><thead><tr>" +
       "<th>#</th><th>Dish</th><th style='text-align:right'>Est. cost</th>" +
@@ -1666,7 +1676,7 @@ function renderRecCats(){
     }).length;
     if (!n) return "";
     return "<button class='chip" + (recCat === c ? " on" : "") + "' data-rcat='" + c + "'>" +
-      LABELS[c] + "<span class='tnum'> " + n + "</span></button>";
+      esc(LABELS[c]) + "<span class='tnum'> " + n + "</span></button>";
   }).join("");
   document.getElementById("recCats").innerHTML = html;
   [].forEach.call(document.querySelectorAll("[data-rcat]"), function(b){
@@ -1687,7 +1697,19 @@ function recipeItem(item){
   var es = ES_ING[key];
   if (!es) return item;
   var comma = item.indexOf(",");
-  return comma > -1 ? es + item.slice(comma) : es;
+  var out = es;
+  if (comma > -1){
+    // "butter, softened" is an ingredient AND an instruction. Translating
+    // only the first half produced "mantequilla, softened", which is worse
+    // than leaving the whole line in English.
+    var tail = item.slice(comma + 1).trim();
+    out = es + ", " + (ES_PREP[tail] || tail);
+  }
+  // Recorded so the coverage figure counts these as translated. They are
+  // produced here rather than by the dictionary walker, and without this
+  // every ingredient line was reported as still English.
+  APPLIED[out.replace(/\s+/g, " ").trim()] = 1;
+  return out;
 }
 
 /** What a recipe declares, and what it suits. Read off its own ingredients. */
@@ -1728,15 +1750,19 @@ function renderRecipes(){
     var d = DISH_BY_ID[r.dishId];
     var total = r.prepMin + r.cookMin;
     return "<div class='card' style='margin-bottom:18px'>" +
-      "<p class='dish-n'>" + String(d.id).padStart(3,"0") + " &middot; " + LABELS[d.category] + "</p>" +
+      "<p class='dish-n'>" + String(d.id).padStart(3,"0") + " &middot; <span>" +
+        esc(LABELS[d.category]) + "</span></p>" +
       "<h3 style='margin:3px 0 6px'>" + esc(d.name) + "</h3>" +
       "<p class='dna' style='margin:0 0 10px'><span class='u'>" + esc(d.origin) +
         "</span> <span style='color:var(--ink-3)'>&rarr;</span> <span class='p'>" +
         esc(d.subOrigin) + "</span></p>" +
-      "<p class='src' style='margin:0 0 16px'>" + esc(r.yields) +
-        " &middot; prep " + r.prepMin + " min &middot; cook " + r.cookMin + " min" +
-        " &middot; <span class='tnum'>" + total + " min</span> total" +
-        " &middot; " + esc(FORMATS[d.format]) + "</p>" +
+      // Each label in its own span: the translator works on whole text nodes,
+      // so a composed line is one long string it can never match.
+      "<p class='src' style='margin:0 0 16px'><span>" + esc(r.yields) + "</span>" +
+        " &middot; <span>prep " + r.prepMin + " min</span>" +
+        " &middot; <span>cook " + r.cookMin + " min</span>" +
+        " &middot; <span class='tnum'>" + total + " min</span> <span>total</span>" +
+        " &middot; <span>" + esc(FORMATS[d.format]) + "</span></p>" +
 
       "<div class='grid' style='grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px'>" +
         "<div><h4 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;" +
@@ -2044,7 +2070,7 @@ function renderFind(){
     var rows = out.filter(function(d){ return d.category === cat; });
     if (!rows.length) return "";
     return "<section style='margin-bottom:26px'>" +
-      "<h3 class='mono grouphead'>" + LABELS[cat] + " &middot; " + rows.length + "</h3>" +
+      "<h3 class='mono grouphead'><span>" + esc(LABELS[cat]) + "</span> &middot; " + rows.length + "</h3>" +
       "<div class='grid g3'>" + rows.map(function(d, i){
         // Cap the stagger: past a dozen cards the delay stops reading as
         // rhythm and starts reading as lag.
@@ -2852,7 +2878,7 @@ function render(){
     var rows = available.filter(function(d){ return d.category === cat; });
     if (!rows.length) return "";
     return "<section style='margin-bottom:26px'><h3 class='src' style=\"font-family:'IBM Plex Mono',monospace;" +
-      "letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px\">" + LABELS[cat] + "</h3>" +
+      "letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px\">" + esc(LABELS[cat]) + "</h3>" +
       "<div class='picks'>" + rows.map(function(d){
         return "<button class='pick' data-id='" + d.id + "' aria-pressed='" +
           (picked.indexOf(d.id) > -1) + "'>" +
@@ -2922,8 +2948,8 @@ function render(){
         return "<li style='display:flex;gap:9px;margin-bottom:8px'>" +
           "<span class='mono tnum' style='font-size:11px;font-weight:600;color:var(--aji);flex-shrink:0'>" +
           st.clock + "</span><span style='min-width:0'>" +
-          "<span class='mono grouphead' style='display:block;margin:0'>" + esc(st.station) +
-          (st.offset >= 1440 ? " &middot; day before" : "") + "</span>" +
+          "<span class='mono grouphead' style='display:block;margin:0'><span>" + esc(st.station) +
+          "</span>" + (st.offset >= 1440 ? " &middot; <span>day before</span>" : "") + "</span>" +
           "<span style='display:block;font-size:11px;color:var(--ink-2)'>" + esc(st.label) + "</span>" +
           (st.dishes.length ? "<span style='display:block;font-size:11px;color:var(--ink-3)'>" +
             st.dishes.map(esc).join(", ") + "</span>" : "") +
