@@ -258,13 +258,40 @@ The dates encoded are the usual shape of the year and nothing more. They move
 by resolución ministerial, sometimes twice in a year, and scallop vedas are
 set bank by bank. `verified: false` on every row means nobody has checked.
 
+## The market run
+
+```
+npm run market-run        # market-run.html
+npm run market-run:es     # market-run-es.html, with the stall names
+```
+
+152 of 223 dishes are more than 40% away from their claimed cost, and checking
+380 ingredients alphabetically is a wasted morning — a third of them are a
+spoon of spice and move the answer by pennies.
+
+So the sheet ranks by **exposure**: what the matrix would spend on an
+ingredient if it cooked one batch of every dish that uses it. Butter is first
+because it is in 86 dishes; corvina is second because it is dear. The printed
+sheet covers the top 80% of spend in 88 lines, with the current estimate, the
+name to ask for at the stall, and a blank to write the real price in. There is
+a rule under row 30: verify that much and the portfolio figure stops being a
+guess.
+
+It costs through `lib/costing.ts` rather than its own copy of the unit rules.
+The first draft had its own, which was stricter than the real thing: it read
+"600 g berros" against a per-bunch price, reported nineteen honest recipe
+lines as broken, and ranked watercress first. `scripts/ts-alias.mjs` is what
+lets a plain Node script import the app's TypeScript, so there is one costing
+implementation rather than two.
+
 ## Still to do
 
 Everything left needs somebody in Lima. None of it can be done from a laptop.
 
-- Verify all 223 costs against real Lima suppliers — start with the dishes
-  `costVariance()` puts furthest from their claimed figure. It reports 152 of
-  223 more than 40% out, and the gap runs mostly one way.
+- Verify all 223 costs against real Lima suppliers. `npm run market-run`
+  prints the order to do it in — the 88 ingredient lines that carry 80% of the
+  spend, butter first. `costVariance()` reports 152 of 223 dishes more than
+  40% out, and the gap runs mostly one way.
 - Replace the estimates in `data/prices.ts` with real invoice prices
 - Time the drive to the districts you actually work in, and replace the
   estimates in `data/venues.ts`

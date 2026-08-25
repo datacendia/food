@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compra de mercado — Aye, Si, Cena</title>
+<style>
+:root{--ink:#16171A;--ink2:#4A4D55;--ink3:#83868F;--line:#D8DAD5;--bg:#fff;--aji:#B47B18}
+*{box-sizing:border-box}
+body{margin:0;padding:26px 20px 60px;background:var(--bg);color:var(--ink);
+  font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  max-width:1000px;margin-inline:auto}
+h1{font-size:26px;margin:0 0 3px;letter-spacing:-.01em}
+.sub{color:var(--ink3);margin:0 0 16px;font-size:13.5px}
+.lead{font-size:13.5px;color:var(--ink2);max-width:62ch;margin:0 0 20px}
+.warn{border-left:3px solid var(--aji);background:#FBF6EC;padding:10px 13px;font-size:12.5px;
+  color:var(--ink2);margin:0 0 22px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{text-align:left;font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);font-weight:600;border-bottom:1px solid var(--line);padding:0 8px 7px}
+td{border-bottom:1px solid var(--line);padding:8px;vertical-align:top}
+tr:nth-child(30) td{border-bottom:2px solid var(--aji)}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.write{width:88px;border-bottom:1px solid var(--ink3)}
+.ask{color:var(--aji);font-weight:600}
+.small{color:var(--ink3);font-size:11px}
+tfoot td{border:0;padding-top:16px;color:var(--ink3);font-size:11.5px}
+@media print{body{padding:0;font-size:11px} .warn{break-inside:avoid} tr{break-inside:avoid}}
+</style></head><body>
+<h1>Compra de mercado</h1>
+<p class="sub">Los insumos que mueven el dinero, en orden</p>
+<p class="lead">Verificados los primeros treinta, la cifra de la cartera deja de ser una adivinanza. Están ordenados por exposición: lo que la matriz gastaría en ese insumo si cocinara una tanda de cada plato que lo usa.</p>
+<div class="warn">Todos los precios de esta hoja son estimados sin verificar. Escriba el precio real, actualice data/prices.ts y vuelva a correr las pruebas.</div>
+<table><thead><tr>
+  <th class="num">#</th><th>Insumo</th><th>Cómo pedirlo</th>
+  <th class="num">Estimado</th><th>Unidad</th>
+  <th class="num">Precio real</th><th class="num">Platos</th>
+  <th class="num">% del gasto</th>
+</tr></thead><tbody>
+<tr>
+  <td class="num small">1</td>
+  <td><strong>butter</strong></td>
+  <td class="ask">mantequilla</td>
+  <td class="num">S/ 32.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">86 platos</td>
+  <td class="num small">5.6%<br><span class="small">6% acumulado</span></td>
+</tr><tr>
+  <td class="num small">2</td>
+  <td><strong>corvina fillet</strong></td>
+  <td class="ask">filete de corvina</td>
+  <td class="num">S/ 42.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">4.9%<br><span class="small">10% acumulado</span></td>
+</tr><tr>
+  <td class="num small">3</td>
+  <td><strong>double cream</strong></td>
+  <td class="ask">crema de leche espesa</td>
+  <td class="num">S/ 22.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">32 platos</td>
+  <td class="num small">2.9%<br><span class="small">13% acumulado</span></td>
+</tr><tr>
+  <td class="num small">4</td>
+  <td><strong>queso paria</strong></td>
+  <td class="ask">queso paria</td>
+  <td class="num">S/ 34.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">13 platos</td>
+  <td class="num small">2.4%<br><span class="small">16% acumulado</span></td>
+</tr><tr>
+  <td class="num small">5</td>
+  <td><strong>lamb shoulder</strong></td>
+  <td class="ask">paleta de cordero</td>
+  <td class="num">S/ 32.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">5 platos</td>
+  <td class="num small">2.2%<br><span class="small">18% acumulado</span></td>
+</tr><tr>
+  <td class="num small">6</td>
+  <td><strong>lamb leg</strong></td>
+  <td class="ask">pierna de cordero</td>
+  <td class="num">S/ 34.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">2.2%<br><span class="small">20% acumulado</span></td>
+</tr><tr>
+  <td class="num small">7</td>
+  <td><strong>beef sirloin</strong></td>
+  <td class="ask">bistec de cadera</td>
+  <td class="num">S/ 42.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">2.1%<br><span class="small">22% acumulado</span></td>
+</tr><tr>
+  <td class="num small">8</td>
+  <td><strong>chita</strong></td>
+  <td class="ask">chita</td>
+  <td class="num">S/ 34.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">2.1%<br><span class="small">24% acumulado</span></td>
+</tr><tr>
+  <td class="num small">9</td>
+  <td><strong>alpaca</strong><br><span class="small">lomo or shoulder; Magdalena and the Andean butchers, not Makro</span></td>
+  <td class="ask">lomo o pierna de alpaca</td>
+  <td class="num">S/ 42.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">2.1%<br><span class="small">26% acumulado</span></td>
+</tr><tr>
+  <td class="num small">10</td>
+  <td><strong>whole salmon</strong><br><span class="small">imported Chilean; the single dearest line on the sheet</span></td>
+  <td class="ask">salmón entero (importado)</td>
+  <td class="num">S/ 46.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">1.9%<br><span class="small">28% acumulado</span></td>
+</tr><tr>
+  <td class="num small">11</td>
+  <td><strong>whisky</strong></td>
+  <td class="ask">whisky</td>
+  <td class="num">S/ 120.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">17 platos</td>
+  <td class="num small">1.8%<br><span class="small">30% acumulado</span></td>
+</tr><tr>
+  <td class="num small">12</td>
+  <td><strong>70% peruvian dark chocolate</strong></td>
+  <td class="ask">chocolate peruano amargo 70%</td>
+  <td class="num">S/ 55.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">6 platos</td>
+  <td class="num small">1.6%<br><span class="small">32% acumulado</span></td>
+</tr><tr>
+  <td class="num small">13</td>
+  <td><strong>pork shoulder</strong></td>
+  <td class="ask">paleta de cerdo</td>
+  <td class="num">S/ 18.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">1.5%<br><span class="small">33% acumulado</span></td>
+</tr><tr>
+  <td class="num small">14</td>
+  <td><strong>papa amarilla</strong></td>
+  <td class="ask">papa amarilla</td>
+  <td class="num">S/ 5.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">25 platos</td>
+  <td class="num small">1.5%<br><span class="small">35% acumulado</span></td>
+</tr><tr>
+  <td class="num small">15</td>
+  <td><strong>whole duck</strong></td>
+  <td class="ask">pato entero</td>
+  <td class="num">S/ 75.00</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">1.5%<br><span class="small">36% acumulado</span></td>
+</tr><tr>
+  <td class="num small">16</td>
+  <td><strong>crab meat</strong><br><span class="small">picked. Buying whole crab is cheaper per kilo and much dearer in labour</span></td>
+  <td class="ask">carne de cangrejo desmenuzada</td>
+  <td class="num">S/ 55.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">1.4%<br><span class="small">38% acumulado</span></td>
+</tr><tr>
+  <td class="num small">17</td>
+  <td><strong>papa nativa</strong></td>
+  <td class="ask">papa nativa</td>
+  <td class="num">S/ 6.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">14 platos</td>
+  <td class="num small">1.4%<br><span class="small">39% acumulado</span></td>
+</tr><tr>
+  <td class="num small">18</td>
+  <td><strong>egg</strong></td>
+  <td class="ask">huevos</td>
+  <td class="num">S/ 0.50</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">61 platos</td>
+  <td class="num small">1.4%<br><span class="small">40% acumulado</span></td>
+</tr><tr>
+  <td class="num small">19</td>
+  <td><strong>hot-smoked andean trout</strong></td>
+  <td class="ask">trucha andina ahumada en caliente</td>
+  <td class="num">S/ 65.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">1.3%<br><span class="small">42% acumulado</span></td>
+</tr><tr>
+  <td class="num small">20</td>
+  <td><strong>small whole trout</strong></td>
+  <td class="ask">trucha entera chica, unos 300 g</td>
+  <td class="num">S/ 8.00</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">1.2%<br><span class="small">43% acumulado</span></td>
+</tr><tr>
+  <td class="num small">21</td>
+  <td><strong>aguaymanto</strong></td>
+  <td class="ask">aguaymanto</td>
+  <td class="num">S/ 14.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">11 platos</td>
+  <td class="num small">1.2%<br><span class="small">44% acumulado</span></td>
+</tr><tr>
+  <td class="num small">22</td>
+  <td><strong>hot-smoked trout</strong></td>
+  <td class="ask">trucha ahumada en caliente</td>
+  <td class="num">S/ 65.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">1.1%<br><span class="small">45% acumulado</span></td>
+</tr><tr>
+  <td class="num small">23</td>
+  <td><strong>whole chicken</strong></td>
+  <td class="ask">pollo entero</td>
+  <td class="num">S/ 32.00</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">1.1%<br><span class="small">46% acumulado</span></td>
+</tr><tr>
+  <td class="num small">24</td>
+  <td><strong>pecan</strong></td>
+  <td class="ask">pecanas</td>
+  <td class="num">S/ 60.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">9 platos</td>
+  <td class="num small">1.1%<br><span class="small">47% acumulado</span></td>
+</tr><tr>
+  <td class="num small">25</td>
+  <td><strong>frying oil</strong></td>
+  <td class="ask">aceite para freír</td>
+  <td class="num">S/ 9.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">7 platos</td>
+  <td class="num small">0.9%<br><span class="small">48% acumulado</span></td>
+</tr><tr>
+  <td class="num small">26</td>
+  <td><strong>mushroom</strong></td>
+  <td class="ask">champiñones</td>
+  <td class="num">S/ 14.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">5 platos</td>
+  <td class="num small">0.9%<br><span class="small">49% acumulado</span></td>
+</tr><tr>
+  <td class="num small">27</td>
+  <td><strong>chirimoya</strong></td>
+  <td class="ask">chirimoya</td>
+  <td class="num">S/ 12.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">5 platos</td>
+  <td class="num small">0.9%<br><span class="small">50% acumulado</span></td>
+</tr><tr>
+  <td class="num small">28</td>
+  <td><strong>single malt whisky</strong></td>
+  <td class="ask">whisky de malta</td>
+  <td class="num">S/ 260.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">0.8%<br><span class="small">51% acumulado</span></td>
+</tr><tr>
+  <td class="num small">29</td>
+  <td><strong>plain flour</strong></td>
+  <td class="ask">harina sin preparar</td>
+  <td class="num">S/ 4.50</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">45 platos</td>
+  <td class="num small">0.8%<br><span class="small">52% acumulado</span></td>
+</tr><tr>
+  <td class="num small">30</td>
+  <td><strong>whole milk</strong></td>
+  <td class="ask">leche entera</td>
+  <td class="num">S/ 5.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">20 platos</td>
+  <td class="num small">0.8%<br><span class="small">52% acumulado</span></td>
+</tr><tr>
+  <td class="num small">31</td>
+  <td><strong>smoked corvina</strong></td>
+  <td class="ask">corvina ahumada</td>
+  <td class="num">S/ 52.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.8%<br><span class="small">53% acumulado</span></td>
+</tr><tr>
+  <td class="num small">32</td>
+  <td><strong>morcilla</strong></td>
+  <td class="ask">morcilla</td>
+  <td class="num">S/ 22.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">9 platos</td>
+  <td class="num small">0.8%<br><span class="small">54% acumulado</span></td>
+</tr><tr>
+  <td class="num small">33</td>
+  <td><strong>pork leg</strong></td>
+  <td class="ask">pierna de cerdo</td>
+  <td class="num">S/ 18.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.7%<br><span class="small">55% acumulado</span></td>
+</tr><tr>
+  <td class="num small">34</td>
+  <td><strong>paiche</strong></td>
+  <td class="ask">paiche</td>
+  <td class="num">S/ 48.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.7%<br><span class="small">55% acumulado</span></td>
+</tr><tr>
+  <td class="num small">35</td>
+  <td><strong>beef mince</strong></td>
+  <td class="ask">carne molida de res</td>
+  <td class="num">S/ 22.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">4 platos</td>
+  <td class="num small">0.7%<br><span class="small">56% acumulado</span></td>
+</tr><tr>
+  <td class="num small">36</td>
+  <td><strong>beef tenderloin</strong></td>
+  <td class="ask">lomo fino</td>
+  <td class="num">S/ 55.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.7%<br><span class="small">57% acumulado</span></td>
+</tr><tr>
+  <td class="num small">37</td>
+  <td><strong>chicken thigh</strong></td>
+  <td class="ask">pierna y encuentro de pollo</td>
+  <td class="num">S/ 13.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">5 platos</td>
+  <td class="num small">0.7%<br><span class="small">58% acumulado</span></td>
+</tr><tr>
+  <td class="num small">38</td>
+  <td><strong>smoked paiche</strong></td>
+  <td class="ask">paiche ahumado</td>
+  <td class="num">S/ 60.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.6%<br><span class="small">58% acumulado</span></td>
+</tr><tr>
+  <td class="num small">39</td>
+  <td><strong>queso fresco</strong></td>
+  <td class="ask">queso fresco</td>
+  <td class="num">S/ 22.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">8 platos</td>
+  <td class="num small">0.6%<br><span class="small">59% acumulado</span></td>
+</tr><tr>
+  <td class="num small">40</td>
+  <td><strong>asado de tira</strong></td>
+  <td class="ask">asado de tira</td>
+  <td class="num">S/ 28.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.6%<br><span class="small">59% acumulado</span></td>
+</tr><tr>
+  <td class="num small">41</td>
+  <td><strong>olive oil</strong></td>
+  <td class="ask">aceite de oliva</td>
+  <td class="num">S/ 32.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">19 platos</td>
+  <td class="num small">0.6%<br><span class="small">60% acumulado</span></td>
+</tr><tr>
+  <td class="num small">42</td>
+  <td><strong>lamb</strong></td>
+  <td class="ask">cordero</td>
+  <td class="num">S/ 30.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.6%<br><span class="small">61% acumulado</span></td>
+</tr><tr>
+  <td class="num small">43</td>
+  <td><strong>lomo fino</strong></td>
+  <td class="ask">lomo fino</td>
+  <td class="num">S/ 48.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.6%<br><span class="small">61% acumulado</span></td>
+</tr><tr>
+  <td class="num small">44</td>
+  <td><strong>mature cheddar</strong><br><span class="small">imported; the priciest cheese on the sheet</span></td>
+  <td class="ask">queso cheddar maduro</td>
+  <td class="num">S/ 48.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">0.6%<br><span class="small">62% acumulado</span></td>
+</tr><tr>
+  <td class="num small">45</td>
+  <td><strong>trout fillet</strong></td>
+  <td class="ask">filete de trucha</td>
+  <td class="num">S/ 42.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.6%<br><span class="small">62% acumulado</span></td>
+</tr><tr>
+  <td class="num small">46</td>
+  <td><strong>choclo cob</strong></td>
+  <td class="ask">choclo en mazorca</td>
+  <td class="num">S/ 1.50</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">10 platos</td>
+  <td class="num small">0.6%<br><span class="small">63% acumulado</span></td>
+</tr><tr>
+  <td class="num small">47</td>
+  <td><strong>lucuma pulp</strong></td>
+  <td class="ask">pulpa de lúcuma</td>
+  <td class="num">S/ 18.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">13 platos</td>
+  <td class="num small">0.6%<br><span class="small">64% acumulado</span></td>
+</tr><tr>
+  <td class="num small">48</td>
+  <td><strong>caster sugar</strong></td>
+  <td class="ask">azúcar blanca fina</td>
+  <td class="num">S/ 4.50</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">39 platos</td>
+  <td class="num small">0.6%<br><span class="small">64% acumulado</span></td>
+</tr><tr>
+  <td class="num small">49</td>
+  <td><strong>pork belly</strong></td>
+  <td class="ask">panceta de cerdo</td>
+  <td class="num">S/ 20.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">0.5%<br><span class="small">65% acumulado</span></td>
+</tr><tr>
+  <td class="num small">50</td>
+  <td><strong>duck breast</strong></td>
+  <td class="ask">pechuga de pato</td>
+  <td class="num">S/ 55.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.5%<br><span class="small">65% acumulado</span></td>
+</tr><tr>
+  <td class="num small">51</td>
+  <td><strong>baby squid</strong></td>
+  <td class="ask">calamarcitos</td>
+  <td class="num">S/ 26.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.5%<br><span class="small">66% acumulado</span></td>
+</tr><tr>
+  <td class="num small">52</td>
+  <td><strong>puff pastry</strong></td>
+  <td class="ask">masa de hojaldre</td>
+  <td class="num">S/ 16.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">5 platos</td>
+  <td class="num small">0.5%<br><span class="small">66% acumulado</span></td>
+</tr><tr>
+  <td class="num small">53</td>
+  <td><strong>algarrobina</strong></td>
+  <td class="ask">algarrobina</td>
+  <td class="num">S/ 40.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">9 platos</td>
+  <td class="num small">0.5%<br><span class="small">67% acumulado</span></td>
+</tr><tr>
+  <td class="num small">54</td>
+  <td><strong>evaporated milk</strong></td>
+  <td class="ask">leche evaporada</td>
+  <td class="num">S/ 9.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">10 platos</td>
+  <td class="num small">0.5%<br><span class="small">67% acumulado</span></td>
+</tr><tr>
+  <td class="num small">55</td>
+  <td><strong>beef topside</strong><br><span class="small">asked for in slices and beaten thin, for beef olives</span></td>
+  <td class="ask">bistec de tapa (para enrollar)</td>
+  <td class="num">S/ 28.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.5%<br><span class="small">68% acumulado</span></td>
+</tr><tr>
+  <td class="num small">56</td>
+  <td><strong>chancaca</strong></td>
+  <td class="ask">chancaca</td>
+  <td class="num">S/ 9.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">24 platos</td>
+  <td class="num small">0.5%<br><span class="small">68% acumulado</span></td>
+</tr><tr>
+  <td class="num small">57</td>
+  <td><strong>onion</strong></td>
+  <td class="ask">cebolla roja</td>
+  <td class="num">S/ 3.50</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">45 platos</td>
+  <td class="num small">0.5%<br><span class="small">69% acumulado</span></td>
+</tr><tr>
+  <td class="num small">58</td>
+  <td><strong>flatbread</strong></td>
+  <td class="ask">pan pita / pan plano</td>
+  <td class="num">S/ 1.20</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">0.5%<br><span class="small">69% acumulado</span></td>
+</tr><tr>
+  <td class="num small">59</td>
+  <td><strong>morning roll</strong></td>
+  <td class="ask">pan francés / pan de yema</td>
+  <td class="num">S/ 0.80</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">4 platos</td>
+  <td class="num small">0.5%<br><span class="small">70% acumulado</span></td>
+</tr><tr>
+  <td class="num small">60</td>
+  <td><strong>streaky bacon</strong></td>
+  <td class="ask">tocino entreverado</td>
+  <td class="num">S/ 28.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">4 platos</td>
+  <td class="num small">0.5%<br><span class="small">70% acumulado</span></td>
+</tr><tr>
+  <td class="num small">61</td>
+  <td><strong>manjar blanco</strong></td>
+  <td class="ask">manjar blanco</td>
+  <td class="num">S/ 16.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">4 platos</td>
+  <td class="num small">0.5%<br><span class="small">71% acumulado</span></td>
+</tr><tr>
+  <td class="num small">62</td>
+  <td><strong>chicken breast</strong></td>
+  <td class="ask">pechuga de pollo</td>
+  <td class="num">S/ 20.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.4%<br><span class="small">71% acumulado</span></td>
+</tr><tr>
+  <td class="num small">63</td>
+  <td><strong>beef stock</strong></td>
+  <td class="ask">caldo de res</td>
+  <td class="num">S/ 6.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">12 platos</td>
+  <td class="num small">0.4%<br><span class="small">71% acumulado</span></td>
+</tr><tr>
+  <td class="num small">64</td>
+  <td><strong>cream cheese</strong></td>
+  <td class="ask">queso crema</td>
+  <td class="num">S/ 26.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.4%<br><span class="small">72% acumulado</span></td>
+</tr><tr>
+  <td class="num small">65</td>
+  <td><strong>peruvian dark chocolate</strong></td>
+  <td class="ask">chocolate peruano amargo</td>
+  <td class="num">S/ 55.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.4%<br><span class="small">72% acumulado</span></td>
+</tr><tr>
+  <td class="num small">66</td>
+  <td><strong>lorne sausage square</strong></td>
+  <td class="ask">salchicha Lorne (cuadrada)</td>
+  <td class="num">S/ 2.00</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.4%<br><span class="small">73% acumulado</span></td>
+</tr><tr>
+  <td class="num small">67</td>
+  <td><strong>haggis</strong><br><span class="small">made to brief by the butcher; dearer than building it in-house</span></td>
+  <td class="ask">haggis (encargado al carnicero)</td>
+  <td class="num">S/ 26.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.4%<br><span class="small">73% acumulado</span></td>
+</tr><tr>
+  <td class="num small">68</td>
+  <td><strong>small brioche</strong></td>
+  <td class="ask">brioche pequeño</td>
+  <td class="num">S/ 1.50</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.4%<br><span class="small">73% acumulado</span></td>
+</tr><tr>
+  <td class="num small">69</td>
+  <td><strong>artisanal chorizo-style sausage</strong></td>
+  <td class="ask">chorizo artesanal</td>
+  <td class="num">S/ 30.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.4%<br><span class="small">74% acumulado</span></td>
+</tr><tr>
+  <td class="num small">70</td>
+  <td><strong>artisanal pork sausage</strong></td>
+  <td class="ask">chorizo artesanal de cerdo</td>
+  <td class="num">S/ 26.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.4%<br><span class="small">74% acumulado</span></td>
+</tr><tr>
+  <td class="num small">71</td>
+  <td><strong>whole trout</strong></td>
+  <td class="ask">trucha entera</td>
+  <td class="num">S/ 24.00</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.4%<br><span class="small">75% acumulado</span></td>
+</tr><tr>
+  <td class="num small">72</td>
+  <td><strong>haggis mix</strong></td>
+  <td class="ask">mezcla de haggis</td>
+  <td class="num">S/ 18.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.4%<br><span class="small">75% acumulado</span></td>
+</tr><tr>
+  <td class="num small">73</td>
+  <td><strong>bacon</strong></td>
+  <td class="ask">tocino</td>
+  <td class="num">S/ 28.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.4%<br><span class="small">75% acumulado</span></td>
+</tr><tr>
+  <td class="num small">74</td>
+  <td><strong>pisco</strong></td>
+  <td class="ask">pisco</td>
+  <td class="num">S/ 60.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">7 platos</td>
+  <td class="num small">0.3%<br><span class="small">76% acumulado</span></td>
+</tr><tr>
+  <td class="num small">75</td>
+  <td><strong>condensed milk</strong></td>
+  <td class="ask">leche condensada</td>
+  <td class="num">S/ 12.00</td>
+  <td class="small">L</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">6 platos</td>
+  <td class="num small">0.3%<br><span class="small">76% acumulado</span></td>
+</tr><tr>
+  <td class="num small">76</td>
+  <td><strong>bonito loin</strong></td>
+  <td class="ask">lomo de bonito</td>
+  <td class="num">S/ 22.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.3%<br><span class="small">76% acumulado</span></td>
+</tr><tr>
+  <td class="num small">77</td>
+  <td><strong>maiz morado</strong></td>
+  <td class="ask">maíz morado</td>
+  <td class="num">S/ 12.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">0.3%<br><span class="small">77% acumulado</span></td>
+</tr><tr>
+  <td class="num small">78</td>
+  <td><strong>tattie scone</strong></td>
+  <td class="ask">scone de papa</td>
+  <td class="num">S/ 1.00</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">0.3%<br><span class="small">77% acumulado</span></td>
+</tr><tr>
+  <td class="num small">79</td>
+  <td><strong>dill</strong></td>
+  <td class="ask">eneldo</td>
+  <td class="num">S/ 3.00</td>
+  <td class="small">bunch</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">11 platos</td>
+  <td class="num small">0.3%<br><span class="small">77% acumulado</span></td>
+</tr><tr>
+  <td class="num small">80</td>
+  <td><strong>ground almond</strong></td>
+  <td class="ask">almendra molida</td>
+  <td class="num">S/ 52.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">0.3%<br><span class="small">78% acumulado</span></td>
+</tr><tr>
+  <td class="num small">81</td>
+  <td><strong>kale</strong></td>
+  <td class="ask">kale</td>
+  <td class="num">S/ 8.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">4 platos</td>
+  <td class="num small">0.3%<br><span class="small">78% acumulado</span></td>
+</tr><tr>
+  <td class="num small">82</td>
+  <td><strong>lime</strong></td>
+  <td class="ask">limón</td>
+  <td class="num">S/ 0.40</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">22 platos</td>
+  <td class="num small">0.3%<br><span class="small">78% acumulado</span></td>
+</tr><tr>
+  <td class="num small">83</td>
+  <td><strong>filo pastry</strong><br><span class="small">imported - the cost variable in the baklava</span></td>
+  <td class="ask">masa filo</td>
+  <td class="num">S/ 30.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">3 platos</td>
+  <td class="num small">0.3%<br><span class="small">78% acumulado</span></td>
+</tr><tr>
+  <td class="num small">84</td>
+  <td><strong>egg yolk</strong></td>
+  <td class="ask">yemas de huevo</td>
+  <td class="num">S/ 0.50</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">12 platos</td>
+  <td class="num small">0.3%<br><span class="small">79% acumulado</span></td>
+</tr><tr>
+  <td class="num small">85</td>
+  <td><strong>artisanal ham</strong></td>
+  <td class="ask">jamón del país</td>
+  <td class="num">S/ 38.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.3%<br><span class="small">79% acumulado</span></td>
+</tr><tr>
+  <td class="num small">86</td>
+  <td><strong>corvina</strong></td>
+  <td class="ask">corvina</td>
+  <td class="num">S/ 38.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">1 plato</td>
+  <td class="num small">0.3%<br><span class="small">79% acumulado</span></td>
+</tr><tr>
+  <td class="num small">87</td>
+  <td><strong>rye and kiwicha crispbread</strong></td>
+  <td class="ask">pan crocante de centeno y kiwicha</td>
+  <td class="num">S/ 0.70</td>
+  <td class="small">each</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.3%<br><span class="small">80% acumulado</span></td>
+</tr><tr>
+  <td class="num small">88</td>
+  <td><strong>lamb mince</strong></td>
+  <td class="ask">cordero molido</td>
+  <td class="num">S/ 28.00</td>
+  <td class="small">kg</td>
+  <td class="num"><span class="write">&nbsp;</span></td>
+  <td class="num small">2 platos</td>
+  <td class="num small">0.3%<br><span class="small">80% acumulado</span></td>
+</tr>
+</tbody><tfoot><tr><td colspan="8">Aye, Si, Cena · hoja de compra · 88 de 348 ·
+  2026-08-25</td></tr></tfoot></table>
+
+</body></html>
