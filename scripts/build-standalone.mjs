@@ -51,6 +51,7 @@ const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
 const MOMENTS = loadData("moments.ts", "MOMENTS");
 const RECIPES = loadData("recipes.ts", "RECIPES");
 const ES = loadData("i18n.ts", "ES");
+const ES_INGREDIENTS = loadData("i18n-ingredients.ts", "ES_INGREDIENTS");
 const ES_PATTERNS = loadData("i18n.ts", "ES_PATTERNS");
 const PRICES = loadData("prices.ts", "PRICES");
 const SUB_RECIPE_OF = loadData("prices.ts", "SUB_RECIPE_OF");
@@ -113,7 +114,7 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
   ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: RECIPES,
   districts: DISTRICTS, venues: VENUE_TYPES,
-  es: ES, esPatterns: ES_PATTERNS,
+  es: ES, esPatterns: ES_PATTERNS, esIng: ES_INGREDIENTS,
   prices: PRICES, subOf: SUB_RECIPE_OF, subPrices: SUB_PREP_PRICES,
   sundryPrices: NON_FOOD_PRICES, alias: COMPOUND_ALIAS, sundries: NON_FOOD,
   trip: { vanHourly: 45, perKm: 1.8, crewHourly: 18, generator: 280,
@@ -551,7 +552,7 @@ var MOMENTS = D.moments, FORMATS = D.formats, CAP = D.cap, LEAD = D.lead;
 var ORDER = D.order;
 var RECIPES = D.recipes;
 var DISTRICTS = D.districts, VENUES = D.venues, TRIP = D.trip;
-var ES = D.es;
+var ES = D.es, ES_ING = D.esIng || {};
 // Compiled once: the page re-translates on every render and recompiling these
 // per text node would be the slowest thing on the page.
 var ES_RX = (D.esPatterns || []).map(function(p){ return [new RegExp(p[0]), p[1]]; });
@@ -570,6 +571,17 @@ function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
 function ratio(d){ return d.cost / d.price; }
 function flag(d){ var r = ratio(d); return r > K.FC_MAX ? "over" : (r < K.FC_MIN ? "under" : "ok"); }
 
+/** What to ask for at the stall, in the language the stall speaks. */
+function marketName(key){
+  if (LANG !== "es") return key;
+  return ES_ING[key] || key;
+}
+
+// Exposed so verify-standalone can hold this port to the TypeScript in
+// lib/ingredient-key.ts. They drifted once and the shop asked a butcher for
+// two litres of lamb.
+window.__canonIng = canonIng;
+
 function renderShop(menu, guests, tierId){
   var el = document.getElementById("shopBody");
   if (!menu.length || !(guests > 0)){ el.innerHTML = ""; return; }
@@ -586,7 +598,7 @@ function renderShop(menu, guests, tierId){
       "<th>Ingredient</th><th style='text-align:right'>Buy</th>" +
       "<th style='text-align:right'>Cost</th><th>For</th>" +
     "</tr></thead><tbody>" + s.list.map(function(r){
-      return "<tr><td class='cap'>" + esc(r.key) + "</td>" +
+      return "<tr><td class='cap'>" + esc(marketName(r.key)) + "</td>" +
         "<td class='money tnum' style='font-weight:600'>" + esc(r.display) + "</td>" +
         "<td class='money tnum muted'>" + soles(r.soles) + "</td>" +
         "<td class='src'>" + esc(r.dishes.join(", ")) + "</td></tr>";
@@ -632,8 +644,15 @@ function singular(w){
   if (w.length > 3 && w.charAt(w.length-1) === "s" && w.slice(-2) !== "ss") return w.slice(0,-1);
   return w;
 }
+// Mirrors OR_OVERRIDE in lib/ingredient-key.ts. Without it, "lamb or beef
+// stock" canonicalised to "lamb" here while the TypeScript said "lamb stock",
+// and the shopping list asked the butcher for two litres of cordero.
+var OR_OVERRIDE = { "lamb or beef stock": "lamb stock", "fish or light chicken stock": "fish stock" };
+
 function canonIng(item){
   var t = String(item == null ? "" : item).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+  var head = t.split(",")[0].trim().replace(/\s+/g, " ");
+  if (OR_OVERRIDE[head]) return OR_OVERRIDE[head];
   t = t.split(",")[0].replace(/\([^)]*\)/g," ").split(/\bor\b/)[0].replace(/[^a-z0-9%\s-]/g," ");
   return t.split(/\s+/).filter(Boolean)
     .filter(function(w){ return PREP_WORDS.indexOf(w) === -1; })
@@ -1138,6 +1157,19 @@ function renderRecCats(){
   });
 }
 
+/**
+ * A recipe line in Spanish keeps its prep note - "cebolla roja, en cubos
+ * finos" - because the note is the instruction and the name is the shop.
+ */
+function recipeItem(item){
+  if (LANG !== "es") return item;
+  var key = canonIng(item);
+  var es = ES_ING[key];
+  if (!es) return item;
+  var comma = item.indexOf(",");
+  return comma > -1 ? es + item.slice(comma) : es;
+}
+
 function renderRecipes(){
   var hits = RECIPES.filter(recipeMatches);
   document.getElementById("recCount").innerHTML =
@@ -1168,7 +1200,7 @@ function renderRecipes(){
         "<div><h4 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;" +
           "text-transform:uppercase;color:var(--ink-3)'>Ingredients</h4><dl style='margin:0'>" +
           r.ingredients.map(function(i){
-            return "<div class='kv'><dt>" + esc(i.item) + "</dt>" +
+            return "<div class='kv'><dt>" + esc(recipeItem(i.item)) + "</dt>" +
               "<dd class='tnum'>" + esc(i.qty) + "</dd></div>";
           }).join("") + "</dl></div>" +
         "<div><h4 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;" +

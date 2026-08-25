@@ -534,6 +534,38 @@ if (!backOk) failures++;
 console.log(`toggling back to English restores the source: ${backOk ? "✓" : "✗"}`);
 await esPage.close();
 
+// --- The two canonicalisers must agree, or the shop asks for the wrong thing
+// The browser has its own port of canonicalIngredient. When it drifted,
+// "lamb or beef stock" became "lamb" and the shopping list asked a butcher
+// for two litres of cordero. Its own page, because the language toggle
+// reloads and a reload mid-check reads an empty window.
+const canonPage = await browser.newPage();
+await canonPage.goto("file://" + FILE);
+await canonPage.waitForTimeout(900);
+
+const { RECIPES: TS_R } = await import("../.verify-recipes.mjs");
+const { canonicalIngredient } = await import("../.verify-canon.mjs");
+const sample = [...new Set(TS_R.flatMap((r) => r.ingredients.map((i) => i.item)))].slice(0, 500);
+const browserKeys = await canonPage.evaluate(
+  (items) => (window.__canonIng ? items.map((it) => window.__canonIng(it)) : null),
+  sample
+);
+await canonPage.close();
+
+if (!browserKeys) {
+  failures++;
+  console.log("\ncanonicaliser parity: ✗ the page does not expose canonIng");
+} else {
+  const bad = sample
+    .map((it, i) => [it, canonicalIngredient(it), browserKeys[i]])
+    .filter(([, a, b]) => a !== b);
+  if (bad.length) failures++;
+  console.log(
+    `\ncanonicaliser parity across ${sample.length} ingredients: ` +
+    (bad.length ? `✗ ${bad.length} disagree — first ${JSON.stringify(bad[0])}` : "✓")
+  );
+}
+
 await browser.close();
 
 console.log(failures === 0 ? "\nALL CHECKS PASSED" : `\n${failures} CHECK(S) FAILED`);
