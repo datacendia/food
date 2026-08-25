@@ -60,6 +60,8 @@ const INGREDIENT_ATTRS = loadData("ingredient-attributes.ts", "INGREDIENT_ATTRS"
 const PLANT_PLAIN = loadData("ingredient-attributes.ts", "PLANT_PLAIN");
 const HARD_TEXTURE_DISHES = loadData("ingredient-attributes.ts", "HARD_TEXTURE_DISHES");
 const NOT_FOR_CHILDREN = loadData("ingredient-attributes.ts", "NOT_FOR_CHILDREN");
+const HIGH_FODMAP = loadData("ingredient-attributes.ts", "HIGH_FODMAP");
+const HIGH_CARB = loadData("ingredient-attributes.ts", "HIGH_CARB");
 const VEDAS = loadData("vedas.ts", "VEDAS");
 const ES_PATTERNS = loadData("i18n.ts", "ES_PATTERNS");
 const PRICES = loadData("prices.ts", "PRICES");
@@ -126,6 +128,7 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
   es: ES, esPatterns: ES_PATTERNS, esIng: ES_INGREDIENTS,
   attrs: INGREDIENT_ATTRS, plain: PLANT_PLAIN,
   hardDishes: HARD_TEXTURE_DISHES, notForKids: NOT_FOR_CHILDREN, vedas: VEDAS,
+  fodmap: HIGH_FODMAP, carb: HIGH_CARB,
   diets: [
     ["vegetarian","Vegetarian","No meat, fish or shellfish. Dairy and eggs are fine."],
     ["vegan","Vegan","No animal product at all, including honey, gelatine and dairy."],
@@ -135,6 +138,10 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
     ["nut-free","Nut-free","Tree nuts and peanuts."],
     ["no-pork","No pork","Pork, bacon, morcilla, lard."],
     ["no-alcohol","No alcohol","Cooking burns off less than people think."],
+    ["halal-ingredients","Halal — ingredients only","No pork and no alcohol — the half of halal that is about ingredients. It says NOTHING about whether the meat was slaughtered halal, which is the part that actually matters. Do not describe a dish as halal on this basis alone."],
+    ["kosher-ingredients","Kosher — ingredients only","No pork, no shellfish, no meat and dairy in one dish. Kosher also needs certified supply and a supervised kitchen, neither of which this app can see."],
+    ["low-fodmap","Low FODMAP","No onion, garlic, wheat or legumes. The list is short because the aderezo under half the Peruvian dishes is onion and garlic. Portion size matters and this cannot model it."],
+    ["lower-carb","Lower carb / keto-leaning","Not built on flour, sugar, rice, potato or oats. A filter, not a nutrition panel — it does not count grams."],
     ["lower-sugar","Lower sugar","A guide for guests managing blood sugar, not a medical claim."],
     ["kid-friendly","Children","Nothing hot, boozy, skewered or on the bone."],
     ["soft-texture","Soft texture","For guests who cannot chew easily. Not an IDDSI assessment."]
@@ -633,6 +640,7 @@ var RECIPES = D.recipes;
 var DISTRICTS = D.districts, VENUES = D.venues, TRIP = D.trip;
 var ATTRS = D.attrs || {}, PLAIN = D.plain || [], DIETS = D.diets || [];
 var HARD_DISHES = D.hardDishes || [], NO_KIDS = D.notForKids || [], VEDAS = D.vedas || [];
+var FODMAP = D.fodmap || [], CARB = D.carb || [];
 var ES = D.es, ES_ING = D.esIng || {};
 // Compiled once: the page re-translates on every render and recompiling these
 // per text node would be the slowest thing on the page.
@@ -1032,6 +1040,27 @@ function dishDietary(recipe){
     if (a.hardTexture) blame("soft-texture", key);
   });
 
+  // Kosher forbids meat and dairy together, which is a property of the
+  // combination rather than of any one ingredient.
+  var hasFlesh = got.keys.some(function(k){
+    var a = attrsFor(k);
+    if (!a || (a.vegetarian === undefined ? true : a.vegetarian)) return false;
+    var al = a.allergens || [];
+    return al.indexOf("fish") === -1 && al.indexOf("crustaceans") === -1 && al.indexOf("molluscs") === -1;
+  });
+  var hasDairy = got.keys.some(function(k){
+    return ((attrsFor(k) || {}).allergens || []).indexOf("milk") > -1;
+  });
+  if (hasFlesh && hasDairy) blame("kosher-ingredients", "meat and dairy in one dish");
+  got.keys.forEach(function(k){
+    var al = ((attrsFor(k) || {}).allergens) || [];
+    if (al.indexOf("pork") > -1){ blame("halal-ingredients", k); blame("kosher-ingredients", k); }
+    if (al.indexOf("alcohol") > -1) blame("halal-ingredients", k);
+    if (al.indexOf("crustaceans") > -1 || al.indexOf("molluscs") > -1) blame("kosher-ingredients", k);
+    if (FODMAP.indexOf(k) > -1) blame("low-fodmap", k);
+    if (CARB.indexOf(k) > -1) blame("lower-carb", k);
+  });
+
   if (HARD_DISHES.indexOf(recipe.dishId) > -1) blame("soft-texture", "hard or crisp as served");
   if (NO_KIDS.indexOf(recipe.dishId) > -1) blame("kid-friendly", "skewered, boned or offal");
   if (because["no-alcohol"]) because["no-alcohol"].forEach(function(k){ blame("kid-friendly", k); });
@@ -1041,8 +1070,9 @@ function dishDietary(recipe){
   if (vegetarian) suits.push("vegetarian");
   if (vegan && vegetarian) suits.push("vegan");
   if (!hasMeat) suits.push("pescatarian");
-  ["gluten-free","dairy-free","nut-free","no-pork","no-alcohol","lower-sugar",
-   "kid-friendly","soft-texture"].forEach(function(d){ if (ok(d)) suits.push(d); });
+  ["gluten-free","dairy-free","nut-free","no-pork","no-alcohol",
+   "halal-ingredients","kosher-ingredients","low-fodmap","lower-carb",
+   "lower-sugar","kid-friendly","soft-texture"].forEach(function(d){ if (ok(d)) suits.push(d); });
 
   return {
     dishId: recipe.dishId,

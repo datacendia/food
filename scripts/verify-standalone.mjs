@@ -540,13 +540,13 @@ await page.getByRole("tab", { name: "Find dishes" }).click();
 await page.waitForTimeout(700);
 
 const dietChips = await page.locator("[data-diet]").count();
-const dietOk = dietChips === 11;
+const dietOk = dietChips === 15;
 if (!dietOk) failures++;
-console.log(`\ndiet filters offered: ${dietChips} ${dietOk ? "✓" : "✗ expected 11"}`);
+console.log(`\ndiet filters offered: ${dietChips} ${dietOk ? "✓" : "✗ expected 15"}`);
 
 // Counts on the chips must match what the page itself computes, and the
 // filter must actually narrow to them.
-for (const diet of ["vegan", "gluten-free", "kid-friendly", "soft-texture"]) {
+for (const diet of ["vegan", "gluten-free", "halal-ingredients", "kosher-ingredients", "low-fodmap", "lower-carb"]) {
   const expected = await page.evaluate(
     (d) => Object.values(window.__dietIndex || {}).filter((p) => p.suits.includes(d)).length,
     diet

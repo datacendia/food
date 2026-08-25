@@ -320,3 +320,63 @@ export const HARD_TEXTURE_DISHES: number[] = [
 export const NOT_FOR_CHILDREN: number[] = [
   1, 13, 16, 21, 26, 41, 42, 43, 44, 74, 118, 123, 124, 128, 133, 135
 ];
+
+/**
+ * FODMAPs: short-chain carbohydrates that a sensitive gut cannot absorb.
+ *
+ * This is a real ingredient-level fact, unlike most of what people call an
+ * intolerance. The big offenders in this matrix are onion and garlic, which
+ * are in the aderezo under half the Peruvian dishes - so the low-FODMAP list
+ * is short by construction, and that is the honest answer rather than a
+ * flattering one.
+ *
+ * Portion matters and this cannot model it: a low-FODMAP diet allows small
+ * amounts of many of these. Treat it as a shortlist to discuss with the
+ * guest, not as a clinical instrument.
+ */
+export const HIGH_FODMAP = [
+  "onion", "red onion", "spring onion", "shallot", "garlic clove", "head garlic",
+  "leek", "wild garlic leaf", "plain flour", "flour", "strong white flour",
+  "self-raising flour", "wholemeal flour", "rye flour", "breadcrumb", "panko",
+  "fine rusk", "morning roll", "small soft roll", "crusty roll", "baguette",
+  "sourdough", "dense rye bread", "rye bread", "stale bread", "stale white bread",
+  "flatbread", "brioche loaf", "small brioche", "day-old butterie", "plain sponge",
+  "milk", "whole milk", "warm milk", "evaporated milk", "condensed milk",
+  "manjar blanco", "queso fresco", "cream cheese", "buttermilk",
+  "bean", "dried split pea", "apple", "manzana israel", "pineapple", "prune",
+  "dried fig", "raisin", "sultana", "currant", "raisin and currant", "date",
+  "mushroom", "cauliflower", "honey", "golden syrup", "chirimoya", "quince",
+  "aguaymanto", "dried aguaymanto", "camote", "yuca", "choclo cob", "choclo kernel",
+  "mango chutney", "tomato ketchup", "beetroot"
+];
+
+/**
+ * Carbohydrate-dense ingredients, for the keto and low-carb question.
+ *
+ * A caterer cannot count net carbs off a recipe - portion sizes and
+ * substitutions move it too far - so this flags the dishes BUILT on carbs
+ * rather than claiming a gram figure. It is a filter, not a nutrition panel.
+ */
+export const HIGH_CARB = [
+  "plain flour", "flour", "strong white flour", "self-raising flour",
+  "wholemeal flour", "rye flour", "rice flour", "quinoa flour", "cornflour",
+  "fine semolina", "panko", "breadcrumb", "fine rusk", "soda cracker",
+  "pinhead oat", "pinhead oatmeal", "rolled oat", "medium oatmeal", "oatmeal",
+  "oat", "extra oat", "toasted oat", "quinoa", "tri-colour quinoa", "kiwicha",
+  "long-grain rice", "maiz morado", "papa amarilla", "papa nativa", "papa blanca",
+  "camote", "yuca", "choclo cob", "choclo kernel", "green plantain",
+  "sugar", "caster sugar", "granulated sugar", "icing sugar", "soft brown sugar",
+  "demerara", "demerara sugar", "chancaca", "algarrobina", "honey", "golden syrup",
+  "condensed milk", "manjar blanco", "orange marmalade", "bitter orange marmalade",
+  "lucuma marmalade", "lucuma pulp", "aguaymanto preserve", "maracuya curd",
+  "morning roll", "small soft roll", "crusty roll", "baguette", "sourdough",
+  "dense rye bread", "rye bread", "stale bread", "stale white bread", "flatbread",
+  "brioche loaf", "small brioche", "day-old butterie", "plain sponge", "oatcake",
+  "tattie scone", "rye and kiwicha crispbread", "thin crepe", "puff pastry", "puff",
+  "shortcrust pastry", "sweet shortcrust pastry", "cacao shortcrust pastry",
+  "filo pastry", "empanada dough", "shortbread base", "wholemeal shortbread base",
+  "wonton wrapper", "bean", "dried split pea", "raisin", "sultana", "currant",
+  "raisin and currant", "date", "dried fig", "prune", "glace cherry", "mixed peel",
+  "70% dark chocolate", "70% peruvian dark chocolate", "peruvian dark chocolate",
+  "irn bru", "chicha morada", "chicha de jora", "very ripe banana"
+];

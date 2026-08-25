@@ -17,7 +17,8 @@
  */
 
 import {
-  INGREDIENT_ATTRS, PLANT_PLAIN, HARD_TEXTURE_DISHES, NOT_FOR_CHILDREN
+  INGREDIENT_ATTRS, PLANT_PLAIN, HARD_TEXTURE_DISHES, NOT_FOR_CHILDREN,
+  HIGH_FODMAP, HIGH_CARB
 } from "@/data/ingredient-attributes";
 import { canonicalIngredient } from "./ingredient-key";
 import { SUB_RECIPE_OF } from "@/data/prices";
@@ -45,7 +46,8 @@ export const ALLERGEN_LABEL: Record<Allergen, string> = {
  */
 export const DIETS = [
   "vegetarian", "vegan", "pescatarian", "gluten-free", "dairy-free",
-  "nut-free", "no-pork", "no-alcohol", "lower-sugar", "kid-friendly", "soft-texture"
+  "nut-free", "no-pork", "no-alcohol", "halal-ingredients", "kosher-ingredients",
+  "low-fodmap", "lower-carb", "lower-sugar", "kid-friendly", "soft-texture"
 ] as const;
 export type Diet = (typeof DIETS)[number];
 
@@ -58,6 +60,10 @@ export const DIET_LABEL: Record<Diet, string> = {
   "nut-free": "Nut-free",
   "no-pork": "No pork",
   "no-alcohol": "No alcohol",
+  "halal-ingredients": "Halal — ingredients only",
+  "kosher-ingredients": "Kosher — ingredients only",
+  "low-fodmap": "Low FODMAP",
+  "lower-carb": "Lower carb / keto-leaning",
   "lower-sugar": "Lower sugar",
   "kid-friendly": "Children",
   "soft-texture": "Soft texture"
@@ -76,6 +82,14 @@ export const DIET_NOTE: Record<Diet, string> = {
   "no-alcohol": "Cooking burns off less than people think. Treat any alcohol in a recipe as present.",
   "lower-sugar":
     "A guide for guests managing blood sugar, not a medical claim. It flags dishes built on added sugar — it does not count carbohydrate.",
+  "halal-ingredients":
+    "No pork and no alcohol — the half of halal that is about ingredients. It says NOTHING about whether the meat was slaughtered halal, which is a sourcing question and the part that actually matters. Do not describe a dish as halal on this basis alone.",
+  "kosher-ingredients":
+    "No pork, no shellfish, and no meat and dairy in the same dish. That is the ingredient half only. Kosher also requires certified supply and a supervised kitchen, neither of which this app can see.",
+  "low-fodmap":
+    "No onion, garlic, wheat, legumes or the high-FODMAP fruits. The list is short because the aderezo under half the Peruvian dishes is onion and garlic. Portion size matters and this cannot model it — a shortlist to discuss, not a clinical tool.",
+  "lower-carb":
+    "Not built on flour, sugar, rice, potato or oats. A filter, not a nutrition panel: it flags dishes whose structure is carbohydrate, and does not count grams.",
   "kid-friendly": "Nothing hot, nothing boozy, nothing that needs a knife or hides a bone.",
   "soft-texture":
     "For guests who cannot chew easily — after surgery, with dysphagia, or elderly. Excludes hard, crisp and chewy items. Not a substitute for an IDDSI assessment."
@@ -96,6 +110,8 @@ export interface IngredientAttrs {
 }
 
 const PLAIN = new Set<string>(PLANT_PLAIN);
+const FODMAP = new Set<string>(HIGH_FODMAP);
+const CARB = new Set<string>(HIGH_CARB);
 
 /** True when an ingredient has been classified. Unknown is an error, never "fine". */
 export function isClassified(key: string): boolean {
@@ -187,6 +203,25 @@ export function dishDietary(recipe: Recipe): DishDietary {
 
   // Texture and child-suitability are properties of the finished dish, which
   // no ingredient list can tell you. An oatcake is hard; oatmeal is not.
+  // Kosher forbids meat and dairy in one dish, which is a property of the
+  // combination rather than of any single ingredient.
+  const hasMeatFlesh = keys.some((k) => {
+    const a = attrsFor(k);
+    if (!a || (a.vegetarian ?? true)) return false;
+    const al = a.allergens ?? [];
+    return !al.includes("fish") && !al.includes("crustaceans") && !al.includes("molluscs");
+  });
+  const hasDairy = keys.some((k) => (attrsFor(k)?.allergens ?? []).includes("milk"));
+  if (hasMeatFlesh && hasDairy) blame("kosher-ingredients", "meat and dairy in one dish");
+  for (const k of keys) {
+    const al = attrsFor(k)?.allergens ?? [];
+    if (al.includes("pork")) { blame("halal-ingredients", k); blame("kosher-ingredients", k); }
+    if (al.includes("alcohol")) blame("halal-ingredients", k);
+    if (al.includes("crustaceans") || al.includes("molluscs")) blame("kosher-ingredients", k);
+    if (FODMAP.has(k)) blame("low-fodmap", k);
+    if (CARB.has(k)) blame("lower-carb", k);
+  }
+
   if (HARD_TEXTURE_DISHES.includes(recipe.dishId)) {
     blame("soft-texture", "the dish is hard or crisp as served");
   }
@@ -204,6 +239,10 @@ export function dishDietary(recipe: Recipe): DishDietary {
   if (vegan && vegetarian) suits.push("vegan");
   if (!hasMeat) suits.push("pescatarian");
   if (ok("gluten-free")) suits.push("gluten-free");
+  if (ok("halal-ingredients")) suits.push("halal-ingredients");
+  if (ok("kosher-ingredients")) suits.push("kosher-ingredients");
+  if (ok("low-fodmap")) suits.push("low-fodmap");
+  if (ok("lower-carb")) suits.push("lower-carb");
   if (ok("dairy-free")) suits.push("dairy-free");
   if (ok("nut-free")) suits.push("nut-free");
   if (ok("no-pork")) suits.push("no-pork");

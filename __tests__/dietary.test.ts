@@ -148,3 +148,68 @@ describe("the diets are described honestly", () => {
     expect(DIET_NOTE["soft-texture"]).toMatch(/IDDSI/);
   });
 });
+
+describe("the restrictions this app can only half answer", () => {
+  it("says plainly that halal here is ingredients only, not slaughter", () => {
+    // The part that actually matters for halal is how the animal was killed,
+    // which is a sourcing question. Claiming halal off an ingredient list is
+    // the kind of mistake that ends a relationship with a community.
+    expect(DIET_LABEL["halal-ingredients"]).toMatch(/ingredients only/i);
+    expect(DIET_NOTE["halal-ingredients"]).toMatch(/slaughter/i);
+    expect(DIET_NOTE["halal-ingredients"]).toMatch(/Do not describe a dish as halal/i);
+  });
+
+  it("says plainly that kosher needs certification and a supervised kitchen", () => {
+    expect(DIET_LABEL["kosher-ingredients"]).toMatch(/ingredients only/i);
+    expect(DIET_NOTE["kosher-ingredients"]).toMatch(/certified|supervis/i);
+  });
+
+  it("keeps pork and alcohol out of anything called halal by ingredients", () => {
+    for (const p of index.values()) {
+      if (!p.suits.includes("halal-ingredients")) continue;
+      expect(p.allergens).not.toContain("pork");
+      expect(p.allergens).not.toContain("alcohol");
+    }
+  });
+
+  it("keeps pork, shellfish and meat-with-dairy out of the kosher list", () => {
+    for (const p of index.values()) {
+      if (!p.suits.includes("kosher-ingredients")) continue;
+      expect(p.allergens).not.toContain("pork");
+      expect(p.allergens).not.toContain("crustaceans");
+      expect(p.allergens).not.toContain("molluscs");
+    }
+  });
+
+  it("catches meat and dairy together even though no single ingredient is wrong", () => {
+    // Chicken Balmoral is chicken, bacon and a cream sauce. Nothing in it is
+    // individually non-kosher except the bacon; the combination is the point.
+    const p = dishDietary(recipe(27));
+    expect(p.suits).not.toContain("kosher-ingredients");
+  });
+
+  it("admits low-FODMAP is short, because onion and garlic are in everything", () => {
+    const n = dishesFor(DISHES, index, ["low-fodmap"]).length;
+    expect(n).toBeGreaterThan(0);
+    expect(n).toBeLessThan(DISHES.length / 2);
+    expect(DIET_NOTE["low-fodmap"]).toMatch(/Portion size matters/i);
+  });
+
+  it("flags lower-carb as a filter and not a nutrition panel", () => {
+    expect(DIET_NOTE["lower-carb"]).toMatch(/not a nutrition panel/i);
+    expect(DIET_NOTE["lower-carb"]).toMatch(/does not count grams/i);
+    // Nothing built on flour, sugar or potato can be on it.
+    for (const p of index.values()) {
+      if (!p.suits.includes("lower-carb")) continue;
+      expect(p.because["lower-carb"]).toBeUndefined();
+    }
+  });
+
+  it("covers all fourteen EU declarable allergens, whether or not any dish uses them", () => {
+    // Peanuts and lupin declare zero dishes. That is correct and the category
+    // still has to exist, so a recipe that adds them is caught.
+    const eu = ["gluten", "crustaceans", "eggs", "fish", "peanuts", "soya", "milk",
+      "nuts", "celery", "mustard", "sesame", "sulphites", "lupin", "molluscs"];
+    for (const a of eu) expect(ALLERGENS).toContain(a);
+  });
+});
