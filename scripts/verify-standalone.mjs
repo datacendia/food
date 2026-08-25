@@ -519,15 +519,21 @@ console.log(`dish names left in English: ${namesOk ? "✓" : "✗"} (${matrixEs}
 // Coverage, reported per pane. One number for the whole page is useless:
 // the recipes are 4,000 strings of kitchen English and swamp everything the
 // client actually reads.
-const PANES = [
-  ["home", "Inicio"], ["matrix", "La matriz"], ["find", "Buscar platos"],
-  ["compare", "Comparar"], ["packages", "Paquetes"], ["builder", "Armar el menú"],
-  ["recipes", "Recetas"]
-];
+// Every pane, not a subset. This list once held seven of the eleven, so the
+// evening, the season, the ingredient graph and the day were never measured
+// at all and the headline figure was reporting a number for most of the app.
+// Every pane, not a subset. This list once held seven of the eleven, so the
+// evening, the season, the ingredient graph and the day were never measured
+// at all and the headline figure was reporting a number for most of the app.
+// Addressed by data-pane rather than by label, so a tab whose own name is
+// still English cannot make the check unrunnable.
+const PANES = ["home", "moments", "find", "menu", "seasonal", "compare",
+               "graph", "recipes", "day", "packages", "builder"];
+const paneMisses = {};
 console.log("Spanish coverage by pane");
 let clientT = 0, clientU = 0;
-for (const [id, label] of PANES) {
-  await esPage.getByRole("tab", { name: label }).click();
+for (const id of PANES) {
+  await esPage.locator(`.tab[data-pane="${id}"]`).click();
   await esPage.waitForTimeout(500);
   const c = await esPage.evaluate(() => {
     const data = JSON.parse(document.getElementById("data").textContent);
@@ -535,11 +541,23 @@ for (const [id, label] of PANES) {
     const values = new Set(Object.values(dict));
     // Untranslated by policy, not by omission: dish names are the product,
     // the British original is a name too, and suppliers are proper nouns.
+    // Proper nouns, all of them: the dish, the British original it comes from,
+    // the supplier, the ingredient and the district. "Papas nativas" and
+    // "Magdalena del Mar" are already the Spanish, and counting them as
+    // untranslated English understated the figure by a whole pane.
     const names = new Set([
       ...data.dishes.map((d) => d.name),
       ...data.dishes.map((d) => d.origin),
       ...data.dishes.map((d) => d.source),
-      ...data.dishes.map((d) => d.keyIngredients)
+      ...data.dishes.map((d) => d.keyIngredients),
+      ...data.ingredients.map((i) => i.name),
+      ...data.districts.map((d) => d.name),
+      ...Object.values(data.tiers).map((t) => t.name),
+      // The key-ingredient column is a comma-separated list of them.
+      // Both cases: the graph and the run sheet lowercase them.
+      ...data.dishes.flatMap((d) => d.keyIngredients.split(",").flatMap((x) =>
+        [x.trim(), x.trim().toLowerCase()])),
+      "Aye, Si, Cena."
     ]);
     // The page records every string it produced, so coverage is measured
     // against what actually happened rather than re-derived from the rules.
@@ -549,13 +567,16 @@ for (const [id, label] of PANES) {
     let t = 0, u = 0, n;
     while ((n = w.nextNode())) {
       const s = n.nodeValue.replace(/\s+/g, " ").trim();
-      // Only prose: a phrase of several words. Names and numbers are the same
-      // in both languages and would flatter the figure.
-      if (!s || s.split(" ").length < 4) continue;
+      // Two words, not four. The old floor of four hid a whole pane of labels
+      // — "Arrival", "Late night", every month in the date picker — and made
+      // the figure read 100% while the date picker was in English.
+      if (!s || s.split(" ").length < 2) continue;
+      // A bare number, a price or a clock time is the same in both.
+      if (!/[a-zA-Z]{3}/.test(s)) continue;
       // Dish names are deliberately untranslated - "Haggis Bonbons" is the
       // product - so counting them would understate real coverage. A menu is
       // often printed as a list of them, which is still all names.
-      if (names.has(s)) continue;
+      if (names.has(s) || names.has(s.toLowerCase())) continue;
       const parts = s.replace(/\([^)]*\)/g, "").split(/[,;]/).map((x) => x.trim()).filter(Boolean);
       if (parts.length > 1 && parts.every((x) => names.has(x.replace(/\s*\.$/, "").trim()))) continue;
       if (values.has(s) || applied[s]) t++; else u++;
@@ -564,12 +585,23 @@ for (const [id, label] of PANES) {
   });
   const pct = c.t + c.u ? (c.t / (c.t + c.u)) * 100 : 100;
   if (id !== "recipes") { clientT += c.t; clientU += c.u; }
+  paneMisses[id] = c.u;
   console.log(`  ${id.padEnd(9)} ${pct.toFixed(0).padStart(3)}%  (${c.u} strings still English)`);
 }
 const clientPct = (clientT / (clientT + clientU)) * 100;
-const clientOk = clientPct >= 80;
+// The floor was 80% while the figure was only measuring seven panes at a
+// four-word minimum. Both of those are fixed, so the floor can be where it
+// belongs: a pane that slips shows up as a failure, not as a rounding.
+const clientOk = clientPct >= 99;
+const worstPane = Object.entries(paneMisses).sort((a, b) => b[1] - a[1])[0];
+const paneOk = worstPane[1] <= 2;
 if (!clientOk) failures++;
-console.log(`client-facing panes: ${clientPct.toFixed(0)}% ${clientOk ? "✓" : "✗ expected at least 80%"}`);
+if (!paneOk) failures++;
+console.log(`client-facing panes: ${clientPct.toFixed(0)}% ${clientOk ? "✓" : "✗ expected at least 99%"}`);
+console.log(
+  `worst pane: ${worstPane[0]} with ${worstPane[1]} untranslated ` +
+  `${paneOk ? "✓" : "✗ expected at most 2"}`
+);
 
 // Switching back to English must restore the source text, not a translation.
 await esPage.locator("#langBtn").click();

@@ -260,13 +260,24 @@ body{margin:0;background:var(--bg);color:var(--ink);
 :focus-visible{outline:2px solid var(--aji);outline-offset:2px}
 
 header.bar{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:30}
-.bar-in{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;
+.bar-in{display:flex;gap:12px;align-items:center;
   max-width:1120px;margin:0 auto;padding:14px 20px}
 .brand{font-family:Fraunces,Georgia,serif;font-size:1.5rem;font-weight:600;letter-spacing:-.01em}
 .brand em{font-style:normal;color:var(--aji)}
-nav{display:flex;gap:6px;flex-wrap:wrap}
+/* One row that scrolls, never four rows that wrap. Wrapping cost 470px of an
+   844px phone screen — more than half the fold spent on navigation. */
+nav{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;flex:1 1 auto;min-width:0;
+  scrollbar-width:none;-ms-overflow-style:none;scroll-padding-inline:20px}
+nav::-webkit-scrollbar{display:none}
 .tab{font:inherit;font-size:.875rem;background:none;border:1px solid transparent;
-  color:var(--ink-2);padding:6px 12px;border-radius:99px;cursor:pointer}
+  color:var(--ink-2);padding:6px 12px;border-radius:99px;cursor:pointer;
+  white-space:nowrap;flex:0 0 auto}
+#langBtn{flex:0 0 auto}
+@media (max-width:640px){
+  .bar-in{flex-wrap:wrap;gap:8px;padding:11px 16px}
+  .brand{font-size:1.25rem}
+  nav{order:3;flex-basis:100%}
+}
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
 
@@ -313,8 +324,14 @@ tbody tr:hover{background:var(--raised)}
 .dna{display:block;font-size:12px;margin-top:5px}
 .dna .u{color:var(--thistle);font-weight:700}
 .dna .p{color:var(--aji);font-weight:700}
+/* The same two colours, inline. Prose reached for .dna to get the colour and
+   inherited its display:block, which broke the matrix lede into three lines
+   with "purple" and "gold" stranded as headings. */
+.cu{color:var(--thistle);font-weight:700}
+.cp{color:var(--aji);font-weight:700}
 .money{font-family:"IBM Plex Mono",ui-monospace,monospace;text-align:right;white-space:nowrap;font-size:13px}
 .src{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;color:var(--ink-3);white-space:nowrap}
+.src.wrap-ok{white-space:normal}
 .fc{font-family:"IBM Plex Mono",ui-monospace,monospace;text-align:right;font-size:11.5px;white-space:nowrap}
 .fc.ok{color:var(--good)}.fc.under{color:var(--warn)}.fc.over{color:var(--bad)}
 
@@ -325,9 +342,16 @@ tbody tr:hover{background:var(--raised)}
 /* builder */
 .build{display:grid;gap:26px;grid-template-columns:1fr}
 @media(min-width:1000px){.build{grid-template-columns:1fr 330px}}
+/* A grid item's automatic minimum is min-content, and a <select> takes the
+   width of its longest option. "Magdalena del Mar · 5 min" was therefore
+   forcing the builder column to 732px inside a 390px phone, and the whole
+   page scrolled sideways. Both halves of that need saying out loud. */
+.build>*{min-width:0}
+select{max-width:100%}
 fieldset{border:0;padding:0;margin:0 0 22px}
 legend{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
   letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px;padding:0}
+fieldset{min-width:0}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{font:inherit;font-size:.875rem;padding:9px 16px;border-radius:99px;cursor:pointer;
   background:transparent;color:var(--ink-2);border:1px solid var(--line)}
@@ -381,9 +405,9 @@ footer p{margin:0 0 7px;max-width:70ch}
       <button class="tab" role="tab" data-pane="day" aria-selected="false">The day</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
-      <button id="langBtn" class="tab" type="button" aria-label="Cambiar idioma"
-        style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px"></button>
     </nav>
+    <button id="langBtn" class="tab" type="button" aria-label="Cambiar idioma"
+      style="font-family:'IBM Plex Mono',monospace;font-size:11px"></button>
   </div>
 </header>
 
@@ -486,8 +510,8 @@ footer p{margin:0 0 7px;max-width:70ch}
   <section class="pane" id="pane-menu" hidden>
     <h1>The matrix</h1>
     <p class="lede">Every dish with its lineage, its food cost and its menu value. The
-      <span class="dna"><span class="u">purple</span></span> half is the British original; the
-      <span class="dna"><span class="p">gold</span></span> half is what Peru does to it.</p>
+      <span class="cu">purple</span> half is the British original; the
+      <span class="cp">gold</span> half is what Peru does to it.</p>
     <p class="lede" style="font-size:.92rem;color:var(--ink-3);margin-top:10px">FC% is food cost as a
       share of menu value. Above 30% is flagged — it is eating margin.</p>
     <p class="lede" style="font-size:.92rem;margin-top:8px"><strong>From recipe</strong> is what the
@@ -664,6 +688,24 @@ function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 function ratio(d){ return d.cost / d.price; }
 function flag(d){ var r = ratio(d); return r > K.FC_MAX ? "over" : (r < K.FC_MIN ? "under" : "ok"); }
+
+/**
+ * A direct dictionary lookup, for a label the renderer glues into a longer
+ * string before the DOM walker can see it.
+ */
+function L(s){ return LANG === "es" && ES[s] !== undefined ? ES[s] : s; }
+
+/**
+ * Record a string this layer composed in the viewer's language.
+ *
+ * The walker translates whole text nodes and records what it produced. A
+ * string built here never passes through it, so without this the coverage
+ * figure reports finished Spanish as untranslated English.
+ */
+function mark(s){
+  if (LANG === "es") APPLIED[String(s).replace(/\s+/g, " ").trim()] = 1;
+  return s;
+}
 
 /** What to ask for at the stall, in the language the stall speaks. */
 function marketName(key){
@@ -1152,8 +1194,8 @@ function renderSubs(offIds, month){
   el.innerHTML =
     "<div class='sec-head'><h2>What to put there instead</h2>" +
       "<span class='pill-count tnum'>" + rows.length + "</span></div>" +
-    "<p class='lede' style='margin-top:6px;font-size:.94rem'>" + rows.length + " dishes are out of " +
-      "window in " + esc(MONTHS[month-1]) + ", and <strong>" + stuck.length + "</strong> of them have " +
+    "<p class='lede' style='margin-top:6px;font-size:.94rem'>" + rows.length + " <span>dishes are out of " +
+      "window in</span> <span>" + esc(MONTHS[month-1]) + "</span>, and <strong>" + stuck.length + "</strong> <span>of them have " +
       "nothing that can stand in. Those are the ones worth your morning. A substitute has to taste " +
       "like the original, be in season now, cost about the same, and need no more service than the " +
       "dish it replaces &mdash; so where there is no answer, it says so rather than inventing one.</p>" +
@@ -1163,12 +1205,13 @@ function renderSubs(offIds, month){
       var opts = r.options.length
         ? r.options.map(function(o){
             return "<div style='margin-bottom:6px'><strong>" + esc(o.dish.name) + "</strong> " +
-              "<span class='mono muted' style='font-size:10.5px'>" + esc(o.reasons.join(" \u00b7 ")) +
+              "<span class='mono muted' style='font-size:10.5px'>" + esc(mark(o.reasons.join(" \u00b7 "))) +
               "</span></div>";
           }).join("")
         : "<span class='fc over'>nothing fits &mdash; cook something new or drop the course</span>";
       return "<tr><td><strong>" + esc(r.dish.name) + "</strong><br>" +
-        "<span class='src'>" + esc(LABELS[r.dish.category]) + " \u00b7 " + soles(r.dish.price) + "</span></td>" +
+        "<span class='src'><span>" + esc(LABELS[r.dish.category]) + "</span> \u00b7 " +
+          soles(r.dish.price) + "</span></td>" +
         "<td class='src'>" + esc(r.because.join(", ")) + "</td>" +
         "<td>" + opts + "</td></tr>";
     }).join("") + "</tbody></table></div>";
@@ -1220,18 +1263,26 @@ function clashesForDay(bookings){
       if (!(wins[i].out < wins[j].back && wins[j].out < wins[i].back)) continue;
       if ((a.live ? 1 : 0) + (b2.live ? 1 : 0) > KIT.planchas){
         clashes.push({ kind: "equipment", ids: [a.id, b2.id],
-          detail: "Both need the plancha and you own " + KIT.planchas + ". Their windows overlap." });
+          detail: mark(LANG === "es"
+            ? "Ambos necesitan la plancha y usted tiene " + KIT.planchas + ". Sus ventanas se superponen."
+            : "Both need the plancha and you own " + KIT.planchas + ". Their windows overlap.") });
       }
       var need = crewNeeded(a) + crewNeeded(b2);
       if (need > KIT.crew){
         clashes.push({ kind: "crew", ids: [a.id, b2.id],
-          detail: need + " people needed across both at once; you have " + KIT.crew +
-            ". Hire " + (need - KIT.crew) + " more or move one booking." });
+          detail: mark(LANG === "es"
+            ? need + " personas necesarias entre ambos a la vez; usted tiene " + KIT.crew +
+              ". Contrate " + (need - KIT.crew) + " más o mueva un evento."
+            : need + " people needed across both at once; you have " + KIT.crew +
+              ". Hire " + (need - KIT.crew) + " more or move one booking.") });
       }
       if (KIT.vans < 2){
         clashes.push({ kind: "van", ids: [a.id, b2.id],
-          detail: "One van cannot load in at " + DISTRICTS[a.distIdx].name + " and " +
-            DISTRICTS[b2.distIdx].name + " in the same window." });
+          detail: mark(LANG === "es"
+            ? "Una sola camioneta no puede montar en " + DISTRICTS[a.distIdx].name + " y " +
+              DISTRICTS[b2.distIdx].name + " en la misma ventana."
+            : "One van cannot load in at " + DISTRICTS[a.distIdx].name + " and " +
+              DISTRICTS[b2.distIdx].name + " in the same window.") });
       }
     }
   }
@@ -1246,14 +1297,14 @@ function clock(mins){
 function renderDay(){
   document.getElementById("kitRow").innerHTML =
     [["planchas","Planchas"],["fryers","Fryers"],["vans","Vans"],["crew","Crew"]].map(function(k){
-      return "<label class='chip' style='cursor:default'>" + k[1] +
+      return "<label class='chip' style='cursor:default'><span>" + esc(L(k[1])) + "</span>" +
         " <input type='number' min='0' max='20' value='" + KIT[k[0]] + "' data-kit='" + k[0] + "' " +
         "style='width:46px;margin-left:6px;border:0;background:transparent;color:inherit;font:inherit'></label>";
     }).join("");
 
   document.getElementById("bookingForms").innerHTML = BOOKINGS.map(function(b, i){
     var w = bookingWindow(b);
-    return "<div class='card'><h3 style='margin:0 0 10px'>Booking " + b.id + "</h3>" +
+    return "<div class='card'><h3 style='margin:0 0 10px'><span>Booking</span> " + b.id + "</h3>" +
       "<div style='display:flex;flex-wrap:wrap;gap:10px'>" +
         "<label class='src'>Service<input type='time' data-bk='" + i + "' data-f='hour' " +
           "value='" + clock(b.hour*60) + "' style='display:block;margin-top:4px'></label>" +
@@ -1268,9 +1319,10 @@ function renderDay(){
         "<label class='src' style='display:flex;align-items:center;gap:6px;margin-top:18px'>" +
           "<input type='checkbox' data-bk='" + i + "' data-f='live'" + (b.live?" checked":"") + "> live station</label>" +
       "</div>" +
-      "<p class='src' style='margin:12px 0 0'>Crew out <strong>" + clock(w.out) + "</strong> · " +
-        "back <strong>" + clock(w.back) + "</strong> · " +
-        ((w.back - w.out)/60).toFixed(1) + " hours · needs " + crewNeeded(b) + " people</p>" +
+      "<p class='src wrap-ok' style='margin:12px 0 0'><span>Crew out</span> <strong>" + clock(w.out) +
+        "</strong> · <span>back</span> <strong>" + clock(w.back) + "</strong> · " +
+        ((w.back - w.out)/60).toFixed(1) + " <span>hours</span> · <span>needs</span> " +
+        crewNeeded(b) + " <span>people</span></p>" +
       "</div>";
   }).join("");
 
@@ -1284,14 +1336,14 @@ function renderDay(){
     return;
   }
   el.innerHTML = "<div class='card' style='border-color:var(--bad)'>" +
-    "<h2 style='margin:0 0 4px;color:var(--bad)'>No — " + clashes.length +
-      " thing" + (clashes.length===1?"":"s") + " stop this day</h2>" +
+    "<h2 style='margin:0 0 4px;color:var(--bad)'><span>No</span> — " + clashes.length + " " +
+      "<span>" + (clashes.length===1 ? "thing stops this day" : "things stop this day") + "</span></h2>" +
     "<p class='lede' style='margin:0 0 12px'>Each of these is physical: kit you do not own, or " +
       "people who cannot be in two places.</p>" +
     clashes.map(function(c){
       return "<div style='border-left:3px solid var(--bad);padding:6px 0 6px 11px;margin-bottom:9px'>" +
         "<p class='mono' style='margin:0;font-size:10px;letter-spacing:.08em;text-transform:uppercase;" +
-        "color:var(--bad)'>" + esc(c.kind) + " · " + esc(c.ids.join(" + ")) + "</p>" +
+        "color:var(--bad)'><span>" + esc(c.kind) + "</span> · " + esc(c.ids.join(" + ")) + "</p>" +
         "<p style='margin:2px 0 0;font-size:.88rem'>" + esc(c.detail) + "</p></div>";
     }).join("") + "</div>";
 }
@@ -1354,12 +1406,21 @@ function substitutesFor(target, month, tolerance, wantDiets, limit){
     var match = jaccard(tf, FLAV[d.id] || []);
     if (match === 0) return;
 
+    // Built from translated parts rather than translated as a sentence: the
+    // flavour axes and the origin are already in the dictionary, and the word
+    // order differs between the two languages.
+    var es = LANG === "es";
     var reasons = [];
     var shared = (FLAV[d.id] || []).filter(function(f){ return tf.indexOf(f) > -1; });
-    if (shared.length) reasons.push("shares " + shared.join(", "));
-    reasons.push(Math.abs(shift) < 0.02 ? "same price"
-      : (shift > 0 ? "+" : "") + Math.round(shift * 100) + "% on the menu price");
-    if (d.subOrigin === target.subOrigin) reasons.push("same " + d.subOrigin + " line");
+    if (shared.length) reasons.push((es ? "comparte " : "shares ") +
+      shared.map(L).join(", "));
+    reasons.push(Math.abs(shift) < 0.02 ? (es ? "mismo precio" : "same price")
+      : (shift > 0 ? "+" : "") + Math.round(shift * 100) + "% " +
+        (es ? "sobre el precio de carta" : "on the menu price"));
+    if (d.subOrigin === target.subOrigin) reasons.push(es
+      ? "misma línea " + L(d.subOrigin).toLowerCase()
+      : "same " + d.subOrigin + " line");
+    reasons.forEach(mark);
 
     out.push({ dish: d, match: match, shift: shift, reasons: reasons,
       score: match * 0.7 + (1 - Math.abs(shift) / tolerance) * 0.25 +
@@ -1463,8 +1524,13 @@ function buildQuote(dishes, guests, tierId, ctx){
 // is applied over the rendered DOM after each paint. A string absent from it
 // stays English and is visibly so - which is what makes the coverage figure
 // below honest rather than assumed.
-var LANG = "es";   // localiseLabels() runs once the dictionary is in scope
+var LANG = "es";
 try { LANG = localStorage.getItem("ayesicena-lang") || "es"; } catch (e) { LANG = "es"; }
+// Before anything renders. This used to run at the very end of the file,
+// after the season card and the ingredient graph had already been built from
+// the English month names — so the season page showed "Mar, Apr, May" in
+// Spanish and nobody could see why.
+localiseLabels();
 
 // Text nodes inside these never get touched: dish names, supplier names and
 // the numbers are the same in both languages.
@@ -1524,6 +1590,7 @@ function localiseLabels(){
   if (LANG !== "es") return;
   Object.keys(LABELS).forEach(function(k){ if (ES[LABELS[k]]) LABELS[k] = ES[LABELS[k]]; });
   Object.keys(FORMATS).forEach(function(k){ if (ES[FORMATS[k]]) FORMATS[k] = ES[FORMATS[k]]; });
+  MONTHS.forEach(function(m, i){ if (ES[m]) MONTHS[i] = ES[m]; });
   AXES.forEach(function(a, i){ if (ES[a]) AXES[i] = AXES[i]; });   // axes keep their ids
 }
 
@@ -1579,6 +1646,9 @@ function show(name){
     document.getElementById("pane-" + p).hidden = (p !== name);
   });
   applyLanguage();
+  // The tab row scrolls now, so the selected tab can be off-screen.
+  var sel = document.querySelector('.tab[aria-selected="true"]');
+  if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: "nearest", inline: "nearest" });
   window.scrollTo(0,0);
 }
 tabs.forEach(function(t){ t.addEventListener("click", function(){ show(t.dataset.pane); }); });
@@ -1760,7 +1830,7 @@ function renderRecipes(){
         esc(d.subOrigin) + "</span></p>" +
       // Each label in its own span: the translator works on whole text nodes,
       // so a composed line is one long string it can never match.
-      "<p class='src' style='margin:0 0 16px'><span>" + esc(r.yields) + "</span>" +
+      "<p class='src wrap-ok' style='margin:0 0 16px'><span>" + esc(r.yields) + "</span>" +
         " &middot; <span>prep " + r.prepMin + " min</span>" +
         " &middot; <span>cook " + r.cookMin + " min</span>" +
         " &middot; <span class='tnum'>" + total + " min</span> <span>total</span>" +
@@ -2130,7 +2200,7 @@ function renderSeason(){
   var outNow   = seasonal.filter(function(i){ return !inSeason(i, month); });
 
   document.getElementById("seasonPanels").innerHTML =
-    "<div class='card'><h3 class='mono grouphead' style='color:var(--good)'>Buying now &middot; " +
+    "<div class='card'><h3 class='mono grouphead' style='color:var(--good)'><span>Buying now</span> &middot; " +
       inNow.length + "</h3>" +
       (inNow.length ? inNow.map(function(i){
         return "<div style='margin-bottom:14px'><span style='font-weight:700;font-size:.9rem'>" +
@@ -2141,13 +2211,13 @@ function renderSeason(){
           i.dishes.length + " dish" + (i.dishes.length === 1 ? "" : "es") + "</span></div>";
       }).join("") : "<p class='muted' style='font-size:.9rem'>Nothing seasonal peaks this month.</p>") +
     "</div>" +
-    "<div class='card'><h3 class='mono grouphead' style='color:var(--warn)'>Out of window &middot; " +
+    "<div class='card'><h3 class='mono grouphead' style='color:var(--warn)'><span>Out of window</span> &middot; " +
       outNow.length + "</h3>" +
       (outNow.length ? outNow.map(function(i){
         return "<div style='margin-bottom:11px'><span class='muted' style='font-weight:700;font-size:.9rem'>" +
           esc(i.name) + "</span>" +
-          "<span class='mono' style='display:block;font-size:11px;color:var(--ink-3)'>back in " +
-          (i.months.length ? i.months.map(function(m){ return MONTHS[m-1].slice(0,3); }).join(", ") : "—") +
+          "<span class='mono' style='display:block;font-size:11px;color:var(--ink-3)'><span>back in</span> " +
+          (i.months.length ? mark(i.months.map(function(m){ return MONTHS[m-1].slice(0,3); }).join(", ")) : "—") +
           "</span></div>";
       }).join("") : "<p class='muted' style='font-size:.9rem'>Everything seasonal is available.</p>") +
     "</div>";
@@ -2179,7 +2249,7 @@ function renderSeason(){
     renderSubs(offIds, month);
 
   document.getElementById("seasonPantry").innerHTML =
-    "<h3 class='mono grouphead'>Available all year &middot; " + pantry.length + "</h3>" +
+    "<h3 class='mono grouphead'><span>Available all year</span> &middot; " + pantry.length + "</h3>" +
     "<div style='display:flex;flex-wrap:wrap;gap:8px'>" + pantry.map(function(i){
       return "<span class='chip' style='cursor:default' title='" + esc(i.note) + "'>" +
         esc(i.name) + "</span>";
@@ -2368,7 +2438,8 @@ function renderCompare(){
         "</span><span class='tnum'>" + v + "</span></div>";
     }
     return "<div class='card'><h3>" + esc(t.name) + "</h3>" +
-      "<p class='mono' style='font-size:11px;color:var(--ink-3);margin:4px 0 0'>min " + t.minGuests + " guests</p>" +
+      "<p class='mono' style='font-size:11px;color:var(--ink-3);margin:4px 0 0'><span>min</span> " +
+        t.minGuests + " <span>guests</span></p>" +
       "<p class='mono tnum' style='font-size:1.9rem;font-weight:600;margin:14px 0 0'>" +
         soles(q.netPerGuest) + "</p>" +
       "<p class='mono' style='font-size:11px;color:var(--ink-3);margin:0'>per guest, net of IGV</p>" +
@@ -2376,7 +2447,7 @@ function renderCompare(){
       "<div style='margin-top:14px'>" +
         row("Food", soles(q.foodCostPerGuest)) +
         row("Service", soles(q.serviceCostPerGuest)) +
-        row("Total &middot; " + guests, soles(q.netTotal), true) +
+        row("<span>Total</span> &middot; " + guests, soles(q.netTotal), true) +
         row("Client pays inc. IGV", soles(q.grossTotal), true) +
       "</div>" +
       "<div style='margin-top:16px;border-top:1px solid var(--line);padding-top:13px'>" +
@@ -2788,7 +2859,7 @@ function renderGraph(){
       if (!d) return "";
       return "<div class='card' style='padding:13px'>" +
         "<span style='font-weight:700;font-size:.875rem'>" + esc(d.name) + "</span>" +
-        "<span class='mono' style='display:block;font-size:11px;color:var(--warn);margin-top:4px'>sole use of " +
+        "<span class='mono' style='display:block;font-size:11px;color:var(--warn);margin-top:4px'><span>sole use of</span> " +
         sole[id].map(esc).join(", ") + "</span></div>";
     }).join("") + "</div>";
 }
@@ -2917,7 +2988,8 @@ function render(){
       return "<div style='border-left:2px solid " + col + ";background:var(--raised);" +
         "border-radius:0 6px 6px 0;padding:9px 11px;margin-top:10px'>" +
         "<p class='mono grouphead' style='margin:0;color:" + col + "'>" +
-        (c.severity === "blocker" ? "Blocker" : "Warning") + " &middot; " + c.kind + "</p>" +
+        "<span>" + (c.severity === "blocker" ? "Blocker" : "Warning") + "</span> &middot; <span>" +
+        esc(c.kind) + "</span></p>" +
         "<p style='margin:2px 0 0;font-size:12px;font-weight:700'>" + esc(c.title) + "</p>" +
         "<p style='margin:2px 0 0;font-size:11px;line-height:1.5;color:var(--ink-2)'>" +
         esc(c.detail) + "</p></div>";
@@ -3023,9 +3095,6 @@ function quoteText(q, selected){
   return text;
 }
 
-// Data labels first, so headings are built in Spanish rather than patched
-// back into it after the fact.
-localiseLabels();
 renderFind();
 renderDay();
 render();

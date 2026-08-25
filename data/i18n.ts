@@ -128,8 +128,13 @@ export const ES: Record<string, string> = {
   // ---- matrix ----
   "Every dish with its lineage, its food cost and its menu value. The":
     "Cada plato con su linaje, su costo de insumos y su valor de carta. La mitad",
-  "half is the British original; the": "morada es el original británico; la mitad",
-  "half is what Peru does to it.": "dorada es lo que el Perú le hace.",
+  // The colour words are their own text nodes so they can carry their own
+  // colour. They have to carry their own translation too, or Spanish reads
+  // "La mitad purple morada" with the English word left in as a duplicate.
+  "purple": "morada",
+  "gold": "dorada",
+  "half is the British original; the": "es el original británico; la mitad",
+  "half is what Peru does to it.": "es lo que el Perú le hace.",
   "FC% is food cost as a share of menu value. Above 30% is flagged — it is eating margin.":
     "CI% es el costo de insumos como porcentaje del valor de carta. Sobre 30% se marca — se está comiendo el margen.",
   "From recipe": "Según receta",
@@ -673,6 +678,172 @@ export const ES: Record<string, string> = {
   "Quantities are batch quantities, not domestic ones. Cross-check them against the run sheet in Build a menu before a real service.":
     "Las cantidades son de tanda, no domésticas. Contrástelas con la hoja de servicio en Armar el menú antes de un servicio real.",
 
+  // ---- lineage, months, and the panes the coverage check used to skip ----
+  "Scottish":
+    "escocesa",
+  "Peruvian":
+    "peruana",
+  "English":
+    "inglesa",
+  "Nordic":
+    "nórdica",
+  "Basque":
+    "vasca",
+  "Greek":
+    "griega",
+  "Scottish (Glasgow)":
+    "escocesa (Glasgow)",
+  "January":
+    "Enero",
+  "February":
+    "Febrero",
+  "March":
+    "Marzo",
+  "April":
+    "Abril",
+  "May":
+    "Mayo",
+  "June":
+    "Junio",
+  "July":
+    "Julio",
+  "August":
+    "Agosto",
+  "September":
+    "Setiembre",
+  "October":
+    "Octubre",
+  "November":
+    "Noviembre",
+  "December":
+    "Diciembre",
+  "The day":
+    "El día",
+  "Arrival":
+    "Llegada",
+  "Passed bites":
+    "Bocaditos paseados",
+  "The table":
+    "La mesa",
+  "Sweet board":
+    "Mesa de dulces",
+  "Late night":
+    "Madrugada",
+  "Coffee":
+    "Café",
+  "Can you take the job?":
+    "¿Puede tomar el trabajo?",
+  "What you own":
+    "Lo que usted tiene",
+  "Booking A":
+    "Evento A",
+  "Booking B":
+    "Evento B",
+  "Crew out":
+    "Salida del equipo",
+  "back":
+    "regreso",
+  "live station":
+    "estación en vivo",
+  "equipment":
+    "equipos",
+  "crew":
+    "personal",
+  "van":
+    "camioneta",
+  "Each of these is physical: kit you do not own, or people who cannot be in two places.":
+    "Cada uno de estos es físico: equipo que usted no tiene, o gente que no puede estar en dos sitios a la vez.",
+  "It says no rather than warning. Taking a second Saturday you cannot staff loses both jobs, not one.":
+    "Dice que no en lugar de advertir. Tomar un segundo sábado que no puede dotar de personal le hace perder los dos trabajos, no uno.",
+  "Two events on one Saturday is one plancha, one van and a crew who cannot be in San Isidro and Asia at the same time. This works in windows — out of the kitchen, load in, serve, load out, drive back — so two bookings clash on kit only when their windows actually overlap, not merely because they share a date.":
+    "Dos eventos un mismo sábado son una plancha, una camioneta y un equipo que no puede estar en San Isidro y en Asia a la vez. Esto funciona por ventanas de tiempo — salida de la cocina, montaje, servicio, desmontaje, regreso — así que dos reservas chocan por equipo solo cuando sus ventanas de verdad se superponen, no solo porque comparten fecha.",
+  "Menu unlocked":
+    "Menú desbloqueado",
+  "sole use of":
+    "único uso de",
+  "Each is the only dish using at least one ingredient. Cook it and you buy something nothing else will use up. Fine for a signature; a poor reason to keep a dish nobody orders.":
+    "Cada uno es el único plato que usa al menos un insumo. Si lo cocina, compra algo que nada más va a terminar. Está bien para un plato insignia; es mala razón para mantener un plato que nadie pide.",
+  // ---- the day, the season and the graph ----
+  "Planchas":
+    "Planchas",
+  "Fryers":
+    "Freidoras",
+  "Vans":
+    "Camionetas",
+  "Crew":
+    "Personal",
+  "Booking":
+    "Evento",
+  "Service":
+    "Servicio",
+  "Tier":
+    "Nivel",
+  "hours":
+    "horas",
+  "needs":
+    "necesita",
+  "people":
+    "personas",
+  "thing stops this day":
+    "cosa impide este día",
+  "things stop this day":
+    "cosas impiden este día",
+  "Yes — the day is deliverable":
+    "Sí — el día se puede entregar",
+  "Both bookings fit the kit you own. Nothing overlaps that cannot overlap.":
+    "Ambos eventos entran en el equipo que usted tiene. Nada se superpone de lo que no puede superponerse.",
+  "Buying now":
+    "Comprando ahora",
+  "Out of window":
+    "Fuera de temporada",
+  "Available all year":
+    "Disponible todo el año",
+  "back in":
+    "vuelve en",
+  "What to put there instead":
+    "Qué poner en su lugar",
+  "Off the menu":
+    "Fuera de carta",
+  "Put this there instead":
+    "Ponga esto en su lugar",
+  "dishes are out of window in":
+    "platos están fuera de temporada en",
+  ", and":
+    ", y",
+  "of them have nothing that can stand in. Those are the ones worth your morning. A substitute has to taste like the original, be in season now, cost about the same, and need no more service than the dish it replaces — so where there is no answer, it says so rather than inventing one.":
+    "de ellos no tienen nada que pueda reemplazarlos. Esos son los que valen su mañana. Un sustituto tiene que saber como el original, estar en temporada ahora, costar más o menos lo mismo y no exigir más servicio que el plato al que reemplaza — así que donde no hay respuesta, lo dice en vez de inventar una.",
+  "of 223 dishes depend on something out of window. Quote around them, or swap the ingredient.":
+    "de 223 platos dependen de algo fuera de temporada. Cotice esquivándolos, o cambie el insumo.",
+  "19 of 19 seasons are unconfirmed.":
+    "19 de 19 temporadas están sin confirmar.",
+  "The dish links are reliable — they come from the matrix. The month windows are estimates and nobody has checked them at a market yet. Confirm before promising a client anything.":
+    "Los vínculos con los platos son confiables — salen de la matriz. Las ventanas por mes son estimados y nadie las ha verificado en un mercado todavía. Confirme antes de prometerle nada a un cliente.",
+  "Short window, and no substitute worth serving. Plan the Cranachan around it.":
+    "Ventana corta, y ningún sustituto que valga la pena servir. Arme el cranachan alrededor de ella.",
+  "Your tart note across five dishes — the jam, the curd, the chutney, the cranachan.":
+    "Su nota ácida en cinco platos — la mermelada, la crema, el chutney, el cranachan.",
+  "The signature teacake lives or dies on this. Freeze-dried powder covers the gap.":
+    "El teacake insignia vive o muere con esto. El polvo liofilizado cubre el bache.",
+  "Two harvests a year rather than one continuous season.":
+    "Dos cosechas al año en lugar de una temporada continua.",
+  "Highland herb, driest months. Dries well; the bread sauce takes dried happily.":
+    "Hierba de altura, los meses más secos. Se seca bien; la salsa de pan la acepta seca sin problema.",
+  "Watercress wants cool water. Bitter and tough in high summer.":
+    "El berro quiere agua fría. Amargo y duro en pleno verano.",
+  "min":
+    "mín",
+  "guests":
+    "invitados",
+  // ---- the last of the composed labels ----
+  "Who is eating?": "¿Quién come?",
+  "When is it?": "¿Cuándo es?",
+  "none declared": "no declara ninguno",
+  "On-site chef shift": "Turno de chef en el local",
+  "Start oven work": "Empezar el trabajo de horno",
+  "allergen": "alérgeno",
+  "Total": "Total",
+  "beef mince": "carne molida de res",
+  "beef/pork mince": "carne molida de res y cerdo",
   // ---- sending the quote out ----
   "Send this quote":
     "Enviar esta cotización",
@@ -890,6 +1061,33 @@ export const ES_PATTERNS: [string, string][] = [
   // identity rule records that this shape was reviewed rather than missed.
   // The recipe card's header is split into one span per label so the walker
   // can see each one. These are the two fragments that are not labels.
+  // Kitchen units. A Lima cook reads cdta and cda, not tsp and tbsp, and a
+  // quantity column that stays English is the one place the translation has
+  // to be right — it is what somebody measures with.
+  ["^([\\d./]+) tsp$", "$1 cdta"],
+  ["^([\\d./]+) tbsp$", "$1 cda"],
+  ["^1 bunch$", "1 manojo"],
+  ["^([\\d./]+) bunch(?:es)?$", "$1 manojos"],
+  ["^1 batch$", "1 tanda"],
+  ["^([\\d./]+) batch(?:es)?$", "$1 tandas"],
+  ["^1 litre$", "1 litro"],
+  ["^([\\d./]+) litres?$", "$1 litros"],
+  ["^1 loaf$", "1 pan"],
+  ["^([\\d./]+) loaves$", "$1 panes"],
+  ["^1 tin$", "1 lata"],
+  ["^([\\d./]+) tins?$", "$1 latas"],
+  ["^1 pack$", "1 paquete"],
+  ["^([\\d./]+) packs?$", "$1 paquetes"],
+  ["^to quantity$", "a gusto"],
+  // Minutes read the same in both; the identity records that it was reviewed.
+  ["^([\\d./]+) min$", "$1 min"],
+  ["^of (\\d+) dishes$", "de $1 platos"],
+  ["^of (\\d+) recipes$", "de $1 recetas"],
+  ["^1 quantity$", "1 cantidad"],
+  ["^(\\d+) dishes?$", "$1 platos"],
+  ["^(\\d+) dish$", "$1 plato"],
+  ["^link at (\\d+)\\+ shared dishes$", "enlace desde $1 platos compartidos"],
+  ["^Wastage liabilities · (\\d+)$", "Riesgos de merma · $1"],
   ["^prep (\\d+) min$", "preparación $1 min"],
   ["^cook (\\d+) min$", "cocción $1 min"],
   ["^(.+) · (\\d+) min$", "$1 · $2 min"]
