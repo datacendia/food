@@ -597,6 +597,50 @@ const wordingOk = /offence/i.test(vedaText) && /resoluci/i.test(vedaText);
 if (!wordingOk) failures++;
 console.log(`veda wording says offence, not risk: ${wordingOk ? "✓" : "✗"}`);
 
+// --- Substitution: the season pane must answer what to do about a gap ------
+await page.getByRole("tab", { name: "Season" }).click();
+await page.waitForTimeout(400);
+await page.locator('[data-month="10"]').click();
+await page.waitForTimeout(800);
+
+const subRows = await page.locator("#seasonSubs tbody tr").count();
+const offCount = Number((await page.locator("#offCount").innerText()).trim());
+const subsOk = subRows === offCount && subRows > 0;
+if (!subsOk) failures++;
+console.log(`\nsubstitution rows: ${subRows} for ${offCount} off-menu dishes ${subsOk ? "✓" : "✗"}`);
+
+// Dishes with no substitute must sort to the top - they are the actual work.
+const firstRow = await page.locator("#seasonSubs tbody tr").first().innerText();
+const stuckFirst = /nothing fits/.test(firstRow);
+if (!stuckFirst) failures++;
+console.log(`dishes with no answer sort first: ${stuckFirst ? "✓" : "✗"}`);
+
+// A substitute must never itself be out of season this month.
+const suggested = await page.$$eval("#seasonSubs tbody tr td:nth-child(3) strong",
+  (els) => els.map((e) => e.textContent.trim()));
+const offNames = await page.$$eval("#seasonOff li, #seasonOff .card",
+  (els) => els.map((e) => e.textContent.trim()));
+const overlap = suggested.filter((n) => offNames.some((o) => o.includes(n)));
+if (overlap.length) failures++;
+console.log(`no substitute is itself off-menu: ${overlap.length === 0 ? "✓" : "✗ " + overlap[0]}`);
+
+// --- Capacity: the day pane says no, and changes its mind when you buy kit -
+await page.getByRole("tab", { name: "The day" }).click();
+await page.waitForTimeout(600);
+const verdictNo = await page.locator("#dayVerdict h2").innerText();
+const saysNo = /^No/.test(verdictNo.trim());
+if (!saysNo) failures++;
+console.log(`\nday verdict with one plancha and four crew: ${saysNo ? "No ✓" : "✗ " + verdictNo}`);
+
+await page.fill('[data-kit="planchas"]', "3");
+await page.fill('[data-kit="vans"]', "2");
+await page.fill('[data-kit="crew"]', "20");
+await page.waitForTimeout(600);
+const verdictYes = await page.locator("#dayVerdict h2").innerText();
+const saysYes = /^Yes/.test(verdictYes.trim());
+if (!saysYes) failures++;
+console.log(`day verdict after buying the kit: ${saysYes ? "Yes ✓" : "✗ " + verdictYes}`);
+
 // --- The two canonicalisers must agree, or the shop asks for the wrong thing
 // The browser has its own port of canonicalIngredient. When it drifted,
 // "lamb or beef stock" became "lamb" and the shopping list asked a butcher

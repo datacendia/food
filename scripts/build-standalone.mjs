@@ -362,6 +362,7 @@ footer p{margin:0 0 7px;max-width:70ch}
       <button class="tab" role="tab" data-pane="compare" aria-selected="false">Compare</button>
       <button class="tab" role="tab" data-pane="graph" aria-selected="false">Ingredients</button>
       <button class="tab" role="tab" data-pane="recipes" aria-selected="false">Recipes</button>
+      <button class="tab" role="tab" data-pane="day" aria-selected="false">The day</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
       <button id="langBtn" class="tab" type="button" aria-label="Cambiar idioma"
@@ -517,7 +518,26 @@ footer p{margin:0 0 7px;max-width:70ch}
     </fieldset>
     <div id="seasonPanels" class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))"></div>
     <div id="seasonOff" style="margin-top:34px"></div>
+    <div id="seasonSubs" style="margin-top:34px;border-top:1px solid var(--line);padding-top:24px"></div>
     <div id="seasonPantry" style="margin-top:38px;border-top:1px solid var(--line);padding-top:24px"></div>
+  </section>
+
+  <section class="pane" id="pane-day" hidden>
+    <h1>Can you take the job?</h1>
+    <p class="lede">Two events on one Saturday is one plancha, one van and a crew who cannot be in
+      San Isidro and Asia at the same time. This works in windows &mdash; out of the kitchen, load
+      in, serve, load out, drive back &mdash; so two bookings clash on kit only when their windows
+      actually overlap, not merely because they share a date.</p>
+    <p class="lede" style="font-size:.92rem;color:var(--ink-3);margin-top:10px">It says no rather
+      than warning. Taking a second Saturday you cannot staff loses both jobs, not one.</p>
+
+    <fieldset style="margin-top:26px">
+      <legend>What you own</legend>
+      <div class="chips" id="kitRow"></div>
+    </fieldset>
+
+    <div class="grid g2" id="bookingForms" style="margin-top:20px;gap:20px"></div>
+    <div id="dayVerdict" style="margin-top:26px"></div>
   </section>
 
   <section class="pane" id="pane-packages" hidden>
@@ -1070,6 +1090,243 @@ function vedaHitsFor(dishes, month){
   return hits;
 }
 
+function renderSubs(offIds, month){
+  var el = document.getElementById("seasonSubs");
+  if (!offIds.length){ el.innerHTML = ""; return; }
+
+  var rows = offIds.map(function(id){
+    var d = DISHES.filter(function(x){ return x.id === id; })[0];
+    if (!d) return null;
+    return { dish: d, because: blockedBecause(month, id), options: substitutesFor(d, month) };
+  }).filter(Boolean);
+
+  // The ones with no answer are the actual work, so they go first.
+  rows.sort(function(a, b){
+    return a.options.length - b.options.length || b.dish.price - a.dish.price;
+  });
+  var stuck = rows.filter(function(r){ return !r.options.length; });
+
+  el.innerHTML =
+    "<div class='sec-head'><h2>What to put there instead</h2>" +
+      "<span class='pill-count tnum'>" + rows.length + "</span></div>" +
+    "<p class='lede' style='margin-top:6px;font-size:.94rem'>" + rows.length + " dishes are out of " +
+      "window in " + esc(MONTHS[month-1]) + ", and <strong>" + stuck.length + "</strong> of them have " +
+      "nothing that can stand in. Those are the ones worth your morning. A substitute has to taste " +
+      "like the original, be in season now, cost about the same, and need no more service than the " +
+      "dish it replaces &mdash; so where there is no answer, it says so rather than inventing one.</p>" +
+    "<div class='tscroll' style='margin-top:16px'><table><thead><tr>" +
+      "<th>Off the menu</th><th>Because</th><th>Put this there instead</th>" +
+    "</tr></thead><tbody>" + rows.map(function(r){
+      var opts = r.options.length
+        ? r.options.map(function(o){
+            return "<div style='margin-bottom:6px'><strong>" + esc(o.dish.name) + "</strong> " +
+              "<span class='mono muted' style='font-size:10.5px'>" + esc(o.reasons.join(" \u00b7 ")) +
+              "</span></div>";
+          }).join("")
+        : "<span class='fc over'>nothing fits &mdash; cook something new or drop the course</span>";
+      return "<tr><td><strong>" + esc(r.dish.name) + "</strong><br>" +
+        "<span class='src'>" + esc(LABELS[r.dish.category]) + " \u00b7 " + soles(r.dish.price) + "</span></td>" +
+        "<td class='src'>" + esc(r.because.join(", ")) + "</td>" +
+        "<td>" + opts + "</td></tr>";
+    }).join("") + "</tbody></table></div>";
+}
+
+// --- capacity, mirroring lib/capacity.ts ----------------------------------
+// conflicts.ts asks whether one menu can be cooked. This asks whether a DAY
+// can be delivered.
+var KIT = { planchas: 1, fryers: 1, ovens: 1, vans: 1, crew: 4, maxShiftMinutes: 12 * 60 };
+
+var BOOKINGS = [
+  { id: "A", hour: 13, durationMinutes: 120, guests: 40, tier: "buffet",
+    distIdx: 1, venueIdx: 0, live: true },
+  { id: "B", hour: 20, durationMinutes: 180, guests: 60, tier: "plated",
+    distIdx: 5, venueIdx: 0, live: true }
+];
+
+function bookingWindow(b){
+  var t = transportCost(b.tier, DISTRICTS[b.distIdx], VENUES[b.venueIdx], true, false);
+  var oneWay = t.driveMinutes / 2;
+  var setup = 60 + VENUES[b.venueIdx].crewMinutes;
+  return {
+    out: b.hour * 60 - oneWay - setup,
+    back: b.hour * 60 + b.durationMinutes + 45 + oneWay
+  };
+}
+function crewNeeded(b){
+  var t = TIERS[b.tier];
+  var waiters = t.guestsPerWaiter > 0 ? Math.ceil(b.guests / t.guestsPerWaiter) : 0;
+  return waiters + t.chefs + TRIP.loadCrew[b.tier];
+}
+function clashesForDay(bookings){
+  var clashes = [];
+  var wins = bookings.map(bookingWindow);
+
+  bookings.forEach(function(b, i){
+    var len = wins[i].back - wins[i].out;
+    if (len > KIT.maxShiftMinutes){
+      clashes.push({ kind: "shift", ids: [b.id],
+        detail: "Booking " + b.id + " runs " + (len/60).toFixed(1) + " hours door to door, past " +
+          "the " + (KIT.maxShiftMinutes/60) + "-hour limit. " + DISTRICTS[b.distIdx].name +
+          " at peak is most of it." });
+    }
+  });
+
+  for (var i = 0; i < bookings.length; i++){
+    for (var j = i + 1; j < bookings.length; j++){
+      var a = bookings[i], b2 = bookings[j];
+      if (!(wins[i].out < wins[j].back && wins[j].out < wins[i].back)) continue;
+      if ((a.live ? 1 : 0) + (b2.live ? 1 : 0) > KIT.planchas){
+        clashes.push({ kind: "equipment", ids: [a.id, b2.id],
+          detail: "Both need the plancha and you own " + KIT.planchas + ". Their windows overlap." });
+      }
+      var need = crewNeeded(a) + crewNeeded(b2);
+      if (need > KIT.crew){
+        clashes.push({ kind: "crew", ids: [a.id, b2.id],
+          detail: need + " people needed across both at once; you have " + KIT.crew +
+            ". Hire " + (need - KIT.crew) + " more or move one booking." });
+      }
+      if (KIT.vans < 2){
+        clashes.push({ kind: "van", ids: [a.id, b2.id],
+          detail: "One van cannot load in at " + DISTRICTS[a.distIdx].name + " and " +
+            DISTRICTS[b2.distIdx].name + " in the same window." });
+      }
+    }
+  }
+  return clashes;
+}
+
+function clock(mins){
+  var m = ((mins % 1440) + 1440) % 1440;
+  return String(Math.floor(m/60)).padStart(2,"0") + ":" + String(Math.round(m%60)).padStart(2,"0");
+}
+
+function renderDay(){
+  document.getElementById("kitRow").innerHTML =
+    [["planchas","Planchas"],["fryers","Fryers"],["vans","Vans"],["crew","Crew"]].map(function(k){
+      return "<label class='chip' style='cursor:default'>" + k[1] +
+        " <input type='number' min='0' max='20' value='" + KIT[k[0]] + "' data-kit='" + k[0] + "' " +
+        "style='width:46px;margin-left:6px;border:0;background:transparent;color:inherit;font:inherit'></label>";
+    }).join("");
+
+  document.getElementById("bookingForms").innerHTML = BOOKINGS.map(function(b, i){
+    var w = bookingWindow(b);
+    return "<div class='card'><h3 style='margin:0 0 10px'>Booking " + b.id + "</h3>" +
+      "<div style='display:flex;flex-wrap:wrap;gap:10px'>" +
+        "<label class='src'>Service<input type='time' data-bk='" + i + "' data-f='hour' " +
+          "value='" + clock(b.hour*60) + "' style='display:block;margin-top:4px'></label>" +
+        "<label class='src'>Guests<input type='number' min='1' max='400' data-bk='" + i + "' " +
+          "data-f='guests' value='" + b.guests + "' style='display:block;margin-top:4px;width:70px'></label>" +
+        "<label class='src'>District<select data-bk='" + i + "' data-f='distIdx' style='display:block;margin-top:4px'>" +
+          DISTRICTS.map(function(d, k){ return "<option value='" + k + "'" + (k===b.distIdx?" selected":"") +
+            ">" + esc(d.name) + "</option>"; }).join("") + "</select></label>" +
+        "<label class='src'>Tier<select data-bk='" + i + "' data-f='tier' style='display:block;margin-top:4px'>" +
+          Object.keys(TIERS).map(function(t){ return "<option value='" + t + "'" + (t===b.tier?" selected":"") +
+            ">" + esc(TIERS[t].name) + "</option>"; }).join("") + "</select></label>" +
+        "<label class='src' style='display:flex;align-items:center;gap:6px;margin-top:18px'>" +
+          "<input type='checkbox' data-bk='" + i + "' data-f='live'" + (b.live?" checked":"") + "> live station</label>" +
+      "</div>" +
+      "<p class='src' style='margin:12px 0 0'>Crew out <strong>" + clock(w.out) + "</strong> · " +
+        "back <strong>" + clock(w.back) + "</strong> · " +
+        ((w.back - w.out)/60).toFixed(1) + " hours · needs " + crewNeeded(b) + " people</p>" +
+      "</div>";
+  }).join("");
+
+  var clashes = clashesForDay(BOOKINGS);
+  var el = document.getElementById("dayVerdict");
+  if (!clashes.length){
+    el.innerHTML = "<div class='card' style='border-color:var(--good)'>" +
+      "<h2 style='margin:0 0 6px;color:var(--good)'>Yes — the day is deliverable</h2>" +
+      "<p class='lede' style='margin:0'>Both bookings fit the kit you own. Nothing overlaps that " +
+      "cannot overlap.</p></div>";
+    return;
+  }
+  el.innerHTML = "<div class='card' style='border-color:var(--bad)'>" +
+    "<h2 style='margin:0 0 4px;color:var(--bad)'>No — " + clashes.length +
+      " thing" + (clashes.length===1?"":"s") + " stop this day</h2>" +
+    "<p class='lede' style='margin:0 0 12px'>Each of these is physical: kit you do not own, or " +
+      "people who cannot be in two places.</p>" +
+    clashes.map(function(c){
+      return "<div style='border-left:3px solid var(--bad);padding:6px 0 6px 11px;margin-bottom:9px'>" +
+        "<p class='mono' style='margin:0;font-size:10px;letter-spacing:.08em;text-transform:uppercase;" +
+        "color:var(--bad)'>" + esc(c.kind) + " · " + esc(c.ids.join(" + ")) + "</p>" +
+        "<p style='margin:2px 0 0;font-size:.88rem'>" + esc(c.detail) + "</p></div>";
+    }).join("") + "</div>";
+}
+
+document.getElementById("kitRow").addEventListener("input", function(e){
+  var f = e.target.dataset.kit; if (!f) return;
+  KIT[f] = Math.max(0, Number(e.target.value) || 0);
+  renderDay();
+});
+document.getElementById("bookingForms").addEventListener("input", function(e){
+  var i = e.target.dataset.bk; if (i === undefined) return;
+  var b = BOOKINGS[Number(i)], f = e.target.dataset.f;
+  if (f === "hour"){ var hm = e.target.value.split(":"); b.hour = Number(hm[0]) + Number(hm[1])/60; }
+  else if (f === "live") b.live = e.target.checked;
+  else if (f === "tier") b.tier = e.target.value;
+  else b[f] = Number(e.target.value);
+  renderDay();
+});
+
+// --- substitution, mirroring lib/substitution.ts --------------------------
+// A substitute has to pass four tests at once: taste like the original, be in
+// season this month, cost about the same, and need no more service than the
+// dish it replaces. Nothing rather than something wrong - a menu hole you can
+// see beats a swap that moves the quote or breaks a diet.
+var FORMAT_DEMAND = { "drop-off": 0, buffet: 1, plated: 2, "live-station": 3 };
+
+function offMenuSet(month){
+  var blocked = {};
+  INGS.forEach(function(i){
+    if (i.yearRound || i.months.indexOf(month) > -1) return;
+    i.dishes.forEach(function(id){ blocked[id] = 1; });
+  });
+  return blocked;
+}
+function blockedBecause(month, dishId){
+  return INGS.filter(function(i){
+    return !i.yearRound && i.months.indexOf(month) === -1 && i.dishes.indexOf(dishId) > -1;
+  }).map(function(i){ return i.name; });
+}
+function jaccard(a, b){
+  if (!a.length && !b.length) return 1;
+  var shared = a.filter(function(x){ return b.indexOf(x) > -1; }).length;
+  var union = a.concat(b.filter(function(x){ return a.indexOf(x) === -1; })).length;
+  return union === 0 ? 0 : shared / union;
+}
+
+function substitutesFor(target, month, tolerance, wantDiets, limit){
+  tolerance = tolerance === undefined ? 0.25 : tolerance;
+  var blocked = offMenuSet(month);
+  var tf = FLAV[target.id] || [];
+  var out = [];
+
+  DISHES.forEach(function(d){
+    if (d.id === target.id || blocked[d.id]) return;
+    if (d.category !== target.category) return;
+    if (FORMAT_DEMAND[d.format] > FORMAT_DEMAND[target.format]) return;
+    var shift = (d.price - target.price) / target.price;
+    if (Math.abs(shift) > tolerance) return;
+    if (wantDiets && wantDiets.length && !suitsAll(d.id, wantDiets)) return;
+    var match = jaccard(tf, FLAV[d.id] || []);
+    if (match === 0) return;
+
+    var reasons = [];
+    var shared = (FLAV[d.id] || []).filter(function(f){ return tf.indexOf(f) > -1; });
+    if (shared.length) reasons.push("shares " + shared.join(", "));
+    reasons.push(Math.abs(shift) < 0.02 ? "same price"
+      : (shift > 0 ? "+" : "") + Math.round(shift * 100) + "% on the menu price");
+    if (d.subOrigin === target.subOrigin) reasons.push("same " + d.subOrigin + " line");
+
+    out.push({ dish: d, match: match, shift: shift, reasons: reasons,
+      score: match * 0.7 + (1 - Math.abs(shift) / tolerance) * 0.25 +
+             (d.subOrigin === target.subOrigin ? 0.05 : 0) });
+  });
+
+  out.sort(function(a, b){ return b.score - a.score; });
+  return out.slice(0, limit || 4);
+}
+
 // --- transport, mirroring lib/venues.ts ----------------------------------
 function transportCost(tierId, district, venue, peak, liveStation){
   var oneWay = district.driveMinutes + (peak ? district.peakExtra : 0);
@@ -1273,7 +1530,7 @@ document.getElementById("langBtn").addEventListener("click", function(){
 var tabs = [].slice.call(document.querySelectorAll(".tab"));
 function show(name){
   tabs.forEach(function(t){ t.setAttribute("aria-selected", String(t.dataset.pane === name)); });
-  ["home","moments","find","menu","recipes","seasonal","compare","graph","packages","builder"].forEach(function(p){
+  ["home","moments","find","menu","recipes","seasonal","compare","graph","day","packages","builder"].forEach(function(p){
     document.getElementById("pane-" + p).hidden = (p !== name);
   });
   applyLanguage();
@@ -1856,6 +2113,8 @@ function renderSeason(){
         "<span class='mono' style='display:block;font-size:11px;color:var(--warn);margin-top:4px'>" +
         off[id].map(esc).join(", ") + "</span></div>";
     }).join("") + "</div>" : "");
+
+    renderSubs(offIds, month);
 
   document.getElementById("seasonPantry").innerHTML =
     "<h3 class='mono grouphead'>Available all year &middot; " + pantry.length + "</h3>" +
@@ -2642,6 +2901,7 @@ function render(){
 // back into it after the fact.
 localiseLabels();
 renderFind();
+renderDay();
 render();
 
 // Everything is painted; translate what is on screen and label the toggle.
