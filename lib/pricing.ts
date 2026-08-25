@@ -22,7 +22,16 @@ export const IGV_RATE = 0.18;
 /** Food-cost band we price to. Outside this, a dish needs repricing or re-speccing. */
 export const FOOD_COST_TARGET = { min: 0.25, max: 0.3 } as const;
 
-export type QuoteBasis = "net" | "gross";
+/*
+ * There was a `QuoteBasis = "net" | "gross"` here, accepted by buildQuote,
+ * defaulted, stored on the Quote and never read. Both figures are computed
+ * either way, so it changed nothing - but it advertised a headline figure that
+ * moves with it, and the first caller to set "gross" and read netPerGuest as
+ * the price they quoted would have been 18% out: S/595.80 on a S/3,310 job.
+ *
+ * A quote states both numbers and labels which is which. That is the rule at
+ * the top of this file, and it does not need a switch.
+ */
 
 export interface TierRules {
   id: ServiceTier;
@@ -119,8 +128,6 @@ export interface QuoteInput {
   dishes: Dish[];
   guests: number;
   tier: ServiceTier;
-  /** Whether the headline figure includes IGV. Defaults to net (+ IGV). */
-  basis?: QuoteBasis;
   /**
    * Where the event is. Omit and the quote falls back to the tier's flat
    * transport figure, which is wrong for anywhere but the near districts.
@@ -140,7 +147,6 @@ export interface QuoteLine {
 export interface Quote {
   tier: TierRules;
   guests: number;
-  basis: QuoteBasis;
 
   /** Menu value of the selected dishes, per guest, before any service costs. */
   menuValuePerGuest: number;
@@ -198,7 +204,6 @@ function menuTotals(dishes: Dish[], bitesPerGuest: number): [number, number] {
 
 export function buildQuote(input: QuoteInput): Quote {
   const { dishes, guests, tier: tierId } = input;
-  const basis: QuoteBasis = input.basis ?? "net";
   const tier = TIERS[tierId];
   const warnings: string[] = [];
 
@@ -292,7 +297,6 @@ export function buildQuote(input: QuoteInput): Quote {
   return {
     tier,
     guests,
-    basis,
     menuValuePerGuest,
     foodCostPerGuest,
     serviceLines,

@@ -39,6 +39,49 @@ await page.goto("file://" + FILE);
 
 let failures = 0;
 
+// --- The file has to be a file: standards mode, sized for a phone, offline ---
+// Every one of these was missing. The page ran in quirks mode, laid itself out
+// at ~980px on a real phone whatever the CSS said, and blocked first paint for
+// 13.2 seconds on a Google Fonts request that is not there to be reached from a
+// market stall in Surquillo.
+{
+  const offline = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const external = [];
+  offline.on("request", (r) => { if (!r.url().startsWith("file:")) external.push(r.url()); });
+  await offline.goto("file://" + FILE);
+  await offline.waitForTimeout(1200);
+  const head = await offline.evaluate(() => ({
+    doctype: document.doctype ? document.doctype.name : null,
+    mode: document.compatMode,
+    charset: document.characterSet,
+    viewport: !!document.querySelector('meta[name="viewport"]'),
+    description: !!document.querySelector('meta[name="description"]'),
+    fcp: Math.round((performance.getEntriesByType("paint")[0] || {}).startTime ?? -1),
+    fonts: ["Fraunces", "Karla", "IBM Plex Mono"].filter((f) => document.fonts.check(`16px '${f}'`)),
+    sideways: document.documentElement.scrollWidth > document.documentElement.clientWidth
+  }));
+  const headOk = head.doctype === "html" && head.mode === "CSS1Compat" &&
+    head.charset === "UTF-8" && head.viewport && head.description;
+  if (!headOk) failures++;
+  console.log(`\nstandards mode, charset and viewport: ${headOk ? "✓" : "✗ " + JSON.stringify(head)}`);
+
+  if (external.length) failures++;
+  console.log(`nothing fetched from the network: ${external.length ? "✗ " + external[0].slice(0, 80) : "✓"}`);
+
+  const fontsOk = head.fonts.length === 3;
+  if (!fontsOk) failures++;
+  console.log(`all three faces embedded and loaded: ${fontsOk ? "✓" : "✗ only " + head.fonts.join(", ")}`);
+
+  // 13,172 ms as shipped, 112 ms with the link removed. A second is generous.
+  const paintOk = head.fcp >= 0 && head.fcp < 1000;
+  if (!paintOk) failures++;
+  console.log(`first paint under a second: ${paintOk ? "✓" : "✗"} (${head.fcp} ms)`);
+
+  if (head.sideways) failures++;
+  console.log(`no sideways scroll at 390px: ${head.sideways ? "✗" : "✓"}`);
+  await offline.close();
+}
+
 // Sanity: the data actually made it into the page.
 await page.getByRole("tab", { name: "The matrix" }).click();
 const rowCount = await page.locator("#menuBody .mxtable tbody tr").count();
@@ -588,8 +631,21 @@ console.log(
 
 // --- Spanish: the toggle works, and coverage is reported honestly ---------
 const esPage = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+// Only seed the language if nothing has chosen one yet. This used to set it
+// unconditionally, and addInitScript re-runs on every navigation - so when the
+// toggle at the bottom of this block reloaded the page, this put it straight
+// back into Spanish and the round-trip check could never have passed on a
+// working page.
+//
+// It reported ✓ anyway, for a reason worth writing down: the old build linked
+// Google Fonts from its head, the reload blocked on that request and never
+// completed, and the check then read the raw English strings out of the
+// half-loaded source markup and called that "restored to English". Embedding
+// the fonts made the reload finish, which is what finally exposed both bugs.
 await esPage.addInitScript(() => {
-  try { localStorage.setItem("ayesicena-lang", "es"); } catch (e) {}
+  try {
+    if (!localStorage.getItem("ayesicena-lang")) localStorage.setItem("ayesicena-lang", "es");
+  } catch (e) {}
 });
 await esPage.goto("file://" + FILE);
 await esPage.waitForTimeout(900);
@@ -717,11 +773,16 @@ console.log(
   `summaries and placeholders translated: ${chromeGaps.length ? "✗ " + chromeGaps.join(" | ") : "✓"}`
 );
 
-// Switching back to English must restore the source text, not a translation.
+// Switching back to English must restore the source text, not a translation -
+// and it must do so on a page that actually finished reloading, so wait for the
+// load rather than a fixed delay.
+const reloaded = esPage.waitForLoadState("load");
 await esPage.locator("#langBtn").click();
-await esPage.waitForTimeout(900);
+await reloaded;
+await esPage.waitForTimeout(600);
 const navBack = await esPage.getByRole("tab").allInnerTexts();
-const backOk = navBack.some((t) => t.trim() === "The matrix");
+const backOk = navBack.some((t) => t.trim() === "The matrix") &&
+  (await esPage.evaluate(() => document.documentElement.lang)) === "en";
 if (!backOk) failures++;
 console.log(`toggling back to English restores the source: ${backOk ? "✓" : "✗"}`);
 await esPage.close();
@@ -877,6 +938,46 @@ if (!browserKeys) {
     `\ncanonicaliser parity across ${sample.length} ingredients: ` +
     (bad.length ? `✗ ${bad.length} disagree — first ${JSON.stringify(bad[0])}` : "✓")
   );
+}
+
+// --- Reachable without a mouse or a pair of eyes ---------------------------
+// Not an audit. Four things that were wrong and are cheap to keep right: a
+// control nobody can name, a result count that changes silently, a heading
+// outline with holes in it, and an allergen chip with no text.
+{
+  const a11y = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+  await a11y.goto("file://" + FILE);
+  await a11y.waitForTimeout(900);
+  const panes = await a11y.evaluate(() =>
+    [].map.call(document.querySelectorAll("nav [data-pane]"), (n) => n.dataset.pane));
+  for (const k of panes) {
+    await a11y.evaluate((x) => document.querySelector(`nav [data-pane="${x}"]`).click(), k);
+    await a11y.waitForTimeout(200);
+  }
+  const r = await a11y.evaluate(() => {
+    const nameless = [];
+    document.querySelectorAll("input,select,textarea").forEach((el) => {
+      if (el.type === "hidden") return;
+      const lab = el.id && document.querySelector(`label[for="${CSS.escape(el.id)}"]`);
+      if (!(lab || el.closest("label") || el.getAttribute("aria-label") ||
+            el.getAttribute("aria-labelledby") || el.getAttribute("title"))) {
+        nameless.push(el.tagName + "#" + (el.id || "(no id)"));
+      }
+    });
+    let skips = 0;
+    document.querySelectorAll("[id^=pane-]").forEach((pane) => {
+      const hs = [].map.call(pane.querySelectorAll("h1,h2,h3,h4,h5,h6"), (h) => +h.tagName[1]);
+      for (let i = 1; i < hs.length; i++) if (hs[i] > hs[i - 1] + 1) skips++;
+    });
+    return { nameless, skips, live: document.querySelectorAll("[aria-live]").length };
+  });
+  if (r.nameless.length) failures++;
+  console.log(`\nevery control has an accessible name: ${r.nameless.length ? "✗ " + r.nameless.join(", ") : "✓"}`);
+  if (r.skips) failures++;
+  console.log(`heading outline has no gaps: ${r.skips ? "✗ " + r.skips + " skips" : "✓"}`);
+  if (r.live < 3) failures++;
+  console.log(`result counts announce themselves: ${r.live >= 3 ? "✓" : "✗"} (${r.live} live regions)`);
+  await a11y.close();
 }
 
 await browser.close();

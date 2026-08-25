@@ -1135,6 +1135,10 @@ export const ES_PATTERNS: [string, string][] = [
   ["^Transport & load-in — (.+)$", "Transporte y carga — $1"],
   ["^Transport & load-in \\(flat estimate — no venue set\\)$",
    "Transporte y carga (estimado plano — sin local definido)"],
+  // "No milk-free option in Desserts" reads badly as "Sin opción milk-free" -
+  // the -free suffix has to become the Spanish "sin", not ride through as a
+  // capture. The allergen word itself is translated before it gets here.
+  ["^No (.+)-free option in (.+)$", "Sin opción sin $1 en $2"],
   ["^No (.+) option in (.+)$", "Sin opción $1 en $2"],
   ["^All (\\d+) dishes in this course contain (.+)\\. A guest avoiding it has nothing to eat at this course\\.$",
    "Los $1 platos de este tiempo contienen $2. Un invitado que lo evita no tiene qué comer en este tiempo."],

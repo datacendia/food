@@ -69,18 +69,22 @@ SWEET_CATEGORIES = {"bakery", "dessert"}
 FLAVOUR_OVERRIDES: dict[int, list[str]] = {}
 
 # --- allergens --------------------------------------------------------------
-# Derived from the dish text, so they are a starting point for a real allergen
-# audit, never a substitute for one. Catering law does not accept a guess.
-ALLERGEN_RULES = {
-    "gluten":    r"flour|pastry|bread|oat|shortbread|biscuit|cake|filo|breadcrumb|crumb|roll|scone|batter|dough|sponge|bannock|pasta|barley|bun|tart\b|pie\b|puff",
-    "dairy":     r"butter|cream|cheese|milk|manjar|custard|yoghurt|crowdie|ganache|chocolate",
-    "egg":       r"\begg|mayo|meringue|custard|aioli|batter|brioche",
-    "fish":      r"trout|paiche|corvina|chita|haddock|anchov|\bfish|bacalao|smokie|kipper",
-    "shellfish": r"langostino|prawn|shrimp|oyster|scallop|octopus|pulpo|crab|mussel",
-    "nuts":      r"almond|walnut|hazelnut|pecan|marzipan|frangipane|\bnut\b|pistachio",
-    "pork":      r"\bpork|bacon|morcilla|chorizo|\bham\b|chicharr[oó]n|black pudding|lardo|panceta",
-    "alcohol":   r"whisky|whiskey|pisco|\bwine|beer|stout|\bale\b|sherry|liqueur|cusque[nñ]a|chicha de jora",
-}
+# NOT DERIVED HERE ANY MORE. This file used to read allergens out of a regex
+# over the dish name, the fusion line and the "key local ingredients" column -
+# that is, out of marketing copy written to sell the dish. It disagreed with the
+# recipe on 165 of 223 dishes, and of the 103 dishes it offered as gluten-free,
+# 50 contained gluten. Its vocabulary was eight words, so celery, mustard,
+# sesame, soya, sulphites and lupin could not be declared at all.
+#
+# lib/dietary.ts reads them off the recipe's actual ingredient lines. Every row
+# below is written with `allergens: []` and filled in by the second step:
+#
+#   python3 scripts/import-matrix.py data/ayesicena-matrix.xlsx
+#   node --experimental-strip-types --import ./scripts/ts-alias.mjs \
+#        scripts/derive-allergens.mjs
+#
+# __tests__/dietary.test.ts fails if that second step is skipped, so a stale
+# file cannot ship.
 
 # --- equipment --------------------------------------------------------------
 # What the dish occupies during service. Drives the kitchen-collision check.
@@ -185,7 +189,9 @@ def main():
         flavours[did] = derive_flavours(did, name, fusion, key_ings, cat)
 
         text = f"{name} {fusion} {key_ings}".lower()
-        allergens = sorted(a for a, pat in ALLERGEN_RULES.items() if re.search(pat, text))
+        # Left empty on purpose; scripts/derive-allergens.mjs fills it from the
+        # recipes. See the note above ALLERGEN_RULES' grave.
+        allergens: list[str] = []
         equipment = sorted(e for e, pat in EQUIPMENT_RULES.items() if re.search(pat, text))
         if raw_fmt == "Live station" and "griddle" not in equipment:
             equipment.append("griddle")

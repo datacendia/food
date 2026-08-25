@@ -54,6 +54,8 @@ export const ES_INGREDIENTS: Record<string, string> = {
   "fresh yeast": "levadura fresca", "baking powder": "polvo de hornear",
   "bicarbonate of soda": "bicarbonato de sodio", "gelatine": "gelatina sin sabor",
   "gelatine leaf": "láminas de gelatina", "maiz morado": "maíz morado",
+  // Sold under the same name in Lima, in the baking aisle and in Chinatown.
+  "agar agar": "agar agar",
 
   // ---- sugar and sweet ----
   "sugar": "azúcar", "caster sugar": "azúcar blanca fina",

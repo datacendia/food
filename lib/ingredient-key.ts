@@ -22,7 +22,11 @@ const IRREGULAR: Record<string, string> = {
   leaves: "leaf", loaves: "loaf", knives: "knife", haggis: "haggis",
   asparagus: "asparagus", couscous: "couscous", tomatoes: "tomato",
   potatoes: "potato", berries: "berry", cherries: "cherry", anchovies: "anchovy",
-  chives: "chive", peas: "pea", oats: "oat", greens: "green", molasses: "molasses"
+  chives: "chive", peas: "pea", oats: "oat", greens: "green", molasses: "molasses",
+  // Singular nouns that already end in "s". Getting these wrong is not
+  // cosmetic: "octopus" folded to "octopu", which is a key no veda and no
+  // price list will ever match.
+  octopus: "octopus", camarones: "camaron"
 };
 
 function stripAccents(s: string): string {

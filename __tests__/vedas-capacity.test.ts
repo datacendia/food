@@ -20,32 +20,100 @@ describe("the vedas are law, not seasonality", () => {
     }
   });
 
-  it("names ingredient keys the recipes actually use", () => {
-    const used = new Set<string>();
-    for (const r of RECIPES) for (const i of r.ingredients) used.add(canonicalIngredient(i.item));
+  /**
+   * This used to also assert that every key matched a line in some recipe, and
+   * that rule is why three vedas were wrong. There was no octopus on the menu,
+   * so `pulpo` was keyed to "baby squid" to satisfy the test - blocking the
+   * Txipirones for two months for a law about a different animal. `anchoveta`
+   * was keyed to the tinned Cantabrian fillet its own note exempts, and
+   * `langostino-wild` to the farmed prawn its own note calls legal all year.
+   *
+   * A veda covering a species the menu does not currently sell is correct and
+   * useful: it is armed for the day a recipe adds it. What must hold is that
+   * the key CAN match - that it is written in the form the canonicaliser
+   * produces - not that it does match today.
+   */
+  it("writes keys in the form the canonicaliser produces, so they can match", () => {
     for (const v of VEDAS) {
-      for (const k of v.ingredientKeys) {
-        expect(canonicalIngredient(k)).toBe(k);
-        expect(used.has(k)).toBe(true);
+      expect(v.ingredientKeys.length).toBeGreaterThan(0);
+      for (const k of v.ingredientKeys) expect(canonicalIngredient(k)).toBe(k);
+    }
+  });
+
+  /**
+   * The blocks, pinned. A veda keyed to the wrong ingredient does not throw -
+   * it quietly takes a sellable dish off the menu and cites the law while doing
+   * it, which is how the three above survived. Any change to a key shows up
+   * here as a readable diff, and every row has to be defensible out loud.
+   */
+  it("blocks these dishes in these months, and no others", () => {
+    const blocks: string[] = [];
+    for (let m = 1; m <= 12; m++) {
+      for (const h of vedaHits(DISHES, RECIPES, VEDAS, m)) {
+        blocks.push(`${m} ${h.dish.id} ${h.dish.name} <- ${h.veda.id} via ${h.ingredient}`);
+      }
+    }
+    expect(blocks.sort()).toEqual([
+      "10 125 Croquetas de Corvina Salada <- corvina via corvina",
+      "10 127 Marmitako de Bonito <- bonito via bonito loin",
+      "10 134 Ceviche de Corvina y Eneldo <- corvina via corvina fillet",
+      "10 143 Chupe de Corvina Ahumada <- corvina via smoked corvina",
+      "10 193 Partan Bree Shots <- cangrejo via crab meat",
+      "10 201 Finnan Haddie, Mustard Cream <- corvina via corvina fillet",
+      "10 209 Partan Bree Bowl <- cangrejo via crab meat",
+      "10 219 Chupe de Cangrejo, Avena <- cangrejo via crab meat",
+      "10 38 Fish Supper, Yuca Chips <- chita via chita",
+      "10 43 Corvina al Pil-Pil <- corvina via corvina fillet",
+      "11 127 Marmitako de Bonito <- bonito via bonito loin",
+      "11 193 Partan Bree Shots <- cangrejo via crab meat",
+      "11 209 Partan Bree Bowl <- cangrejo via crab meat",
+      "11 219 Chupe de Cangrejo, Avena <- cangrejo via crab meat",
+      "11 38 Fish Supper, Yuca Chips <- chita via chita",
+      "7 196 Musselburgh Pie Minis <- concha-de-abanico via concha de abanico",
+      "8 196 Musselburgh Pie Minis <- concha-de-abanico via concha de abanico",
+      "9 125 Croquetas de Corvina Salada <- corvina via corvina",
+      "9 134 Ceviche de Corvina y Eneldo <- corvina via corvina fillet",
+      "9 143 Chupe de Corvina Ahumada <- corvina via smoked corvina",
+      "9 193 Partan Bree Shots <- cangrejo via crab meat",
+      "9 196 Musselburgh Pie Minis <- concha-de-abanico via concha de abanico",
+      "9 201 Finnan Haddie, Mustard Cream <- corvina via corvina fillet",
+      "9 209 Partan Bree Bowl <- cangrejo via crab meat",
+      "9 219 Chupe de Cangrejo, Avena <- cangrejo via crab meat",
+      "9 38 Fish Supper, Yuca Chips <- chita via chita",
+      "9 43 Corvina al Pil-Pil <- corvina via corvina fillet",
+    ].sort());
+  });
+
+  it("leaves the squid, the tinned anchovy and the farmed prawn alone", () => {
+    // Each of these was blocked by a veda whose own note exempts it.
+    const free: [number, number[]][] = [
+      [128, [7, 8]],        // Txipirones - squid, not octopus
+      [21, [8, 9]],         // Gilda - tinned Cantabrian anchovy, not anchoveta
+      [18, [1, 2, 3]]       // Prawn Cocktail Chifles - farmed langostino
+    ];
+    for (const [id, months] of free) {
+      for (const m of months) {
+        expect(vedaHits([dish(id)], RECIPES, VEDAS, m)).toHaveLength(0);
       }
     }
   });
 
-  it("catches the dish built specifically to survive a veda", () => {
-    // 143 Chupe de Corvina Ahumada exists so there is something to sell
-    // through the langostino veda. It must not itself be caught by it.
+  it("keeps January to March open, now that the farmed prawn is not blocked", () => {
+    // The langostino veda covers wild camarón de río, which nothing on the menu
+    // buys, so its closed months cost nothing. 143 Chupe de Corvina Ahumada was
+    // added as cover for those months and is still good cover - just for the
+    // corvina veda in September and October instead.
     const langostino = VEDAS.find((v) => v.id === "langostino-wild")!;
     for (const m of langostino.closed) {
-      const hits = vedaHits([dish(143)], RECIPES, [langostino], m);
-      expect(hits).toHaveLength(0);
+      expect(vedaHits(DISHES, RECIPES, [langostino], m)).toHaveLength(0);
     }
   });
 
   it("does block the dish that actually uses the closed species", () => {
-    const langostino = VEDAS.find((v) => v.id === "langostino-wild")!;
-    const hits = vedaHits(DISHES, RECIPES, [langostino], langostino.closed[0]);
+    const corvina = VEDAS.find((v) => v.id === "corvina")!;
+    const hits = vedaHits(DISHES, RECIPES, [corvina], corvina.closed[0]);
     expect(hits.length).toBeGreaterThan(0);
-    for (const h of hits) expect(h.ingredient).toBe("langostino");
+    for (const h of hits) expect(corvina.ingredientKeys).toContain(h.ingredient);
   });
 
   it("reports the closed months for a dish across the whole year", () => {

@@ -119,7 +119,6 @@ export const ES_PREP: Record<string, string> = {
   "salt-cured": "salado en seco",
   "cured": "curado",
   "tempered": "templado",
-  "bloomed": "hidratada",
   "slaked": "disuelto en frío",
   "slaked in 50 ml warm water": "disuelto en 50 ml de agua tibia",
   "buttered": "enmantequillado",

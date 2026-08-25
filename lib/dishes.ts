@@ -1,5 +1,7 @@
 /** Types for the Aye Si Cena matrix. Schema follows the spreadsheet. */
 
+import type { Allergen } from "./dietary";
+
 export type Category =
   | "canape"
   | "main"
@@ -43,8 +45,16 @@ export interface Dish {
   price: number;
   /** False until a real supplier price replaces the estimate. */
   costVerified: boolean;
-  /** Derived from the dish text — a starting point for an audit, not an audit. */
-  allergens: string[];
+  /**
+   * Read off the recipe's ingredient lines by lib/dietary.ts, not typed by
+   * hand. It used to be a spreadsheet column, and it disagreed with the recipe
+   * on 165 of 223 dishes - half the dishes it offered as gluten-free contained
+   * gluten. Regenerate with scripts/derive-allergens.mjs; a test fails if this
+   * file is left stale.
+   *
+   * Still not a legal allergen audit. See the header of lib/dietary.ts.
+   */
+  allergens: Allergen[];
   /** What the dish occupies during service: oven, fryer, griddle, hob, cold. */
   equipment: string[];
   tiers: ServiceTier[];

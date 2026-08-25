@@ -64,6 +64,11 @@ const NOT_FOR_CHILDREN = loadData("ingredient-attributes.ts", "NOT_FOR_CHILDREN"
 const HIGH_FODMAP = loadData("ingredient-attributes.ts", "HIGH_FODMAP");
 const HIGH_CARB = loadData("ingredient-attributes.ts", "HIGH_CARB");
 const VEDAS = loadData("vedas.ts", "VEDAS");
+// The same list lib/dietary.ts and lib/conflicts.ts check against. The page
+// used to hardcode a shorter one and so could not warn about six of the
+// fourteen declarable allergens.
+const ALLERGENS = loadData("allergens.ts", "ALLERGENS");
+const ALLERGEN_LABEL = loadData("allergens.ts", "ALLERGEN_LABEL");
 const ES_PATTERNS = loadData("i18n.ts", "ES_PATTERNS");
 const PRICES = loadData("prices.ts", "PRICES");
 const SUB_RECIPE_OF = loadData("prices.ts", "SUB_RECIPE_OF");
@@ -151,6 +156,7 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
     ["kid-friendly","Children","Nothing hot, boozy, skewered or on the bone."],
     ["soft-texture","Soft texture","For guests who cannot chew easily. Not an IDDSI assessment."]
   ],
+  allergens: ALLERGENS, allergenLabel: ALLERGEN_LABEL,
   prices: PRICES, subOf: SUB_RECIPE_OF, subPrices: SUB_PREP_PRICES,
   sundryPrices: NON_FOOD_PRICES, alias: COMPOUND_ALIAS, sundries: NON_FOOD,
   trip: { vanHourly: 45, perKm: 1.8, crewHourly: 18, generator: 280,
@@ -160,11 +166,53 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
   lead: { cold: 1440, oven: 240, hob: 180, griddle: 30, fryer: 15 },
   months: ["January","February","March","April","May","June","July","August","September","October","November","December"] });
 
-const html = String.raw`<title>Aye Si Cena</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+/**
+ * The three faces, embedded.
+ *
+ * Linking Google Fonts from the head of a file whose whole point is opening
+ * without a network cost 13.2 seconds to first paint when the request failed;
+ * the same file with the link removed painted in 112 ms. Subsetted to the
+ * characters this page actually uses, the three faces come to about 166 KB of
+ * base64 - which buys those thirteen seconds back, and stops every open
+ * reporting the reader's IP to Google.
+ *
+ * Regenerate the .woff2 files with:  node scripts/fetch-fonts.mjs
+ */
+const FONT_DIR = path.join(ROOT, "assets", "fonts");
+const FONT_FACES = JSON.parse(fs.readFileSync(path.join(FONT_DIR, "manifest.json"), "utf8"))
+  .map((f) => {
+    const b64 = fs.readFileSync(path.join(FONT_DIR, f.file)).toString("base64");
+    // The variable cuts serve several weights from one file, so declare a
+    // weight range rather than repeat a 60 KB data URI three times.
+    const weight = f.weights.length > 1
+      ? `${Math.min(...f.weights)} ${Math.max(...f.weights)}`
+      : String(f.weights[0]);
+    return `@font-face{font-family:'${f.family}';font-style:normal;` +
+           `font-weight:${weight};font-display:swap;` +
+           `src:url(data:font/woff2;base64,${b64}) format('woff2')}`;
+  })
+  .join("\n");
+
+/**
+ * The head.
+ *
+ * Every line here earns its place. Without the doctype the page renders in
+ * quirks mode, which changes the box model out from under the layout. Without
+ * the viewport tag a phone lays the page out at ~980px and scales the result
+ * down, so none of the responsive CSS below ever engages on the device it was
+ * written for - and a 390px test viewport will not show you that, because the
+ * tool sets the viewport directly. Without the charset a file:// open is left
+ * guessing, and "Lúcuma" is a coin toss.
+ */
+const html = String.raw`<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aye Si Cena</title>
+<meta name="description" content="Aye, Si, Cena - catering escoces-peruano en Lima. 223 platos con su costo, sus alergenos y su temporada.">
 <style>
+${FONT_FACES}
 :root{
   --bg:#E8E9E6;--surface:#F5F5F2;--raised:#DEE0DB;
   --ink:#1E2326;--ink-2:#565E62;--ink-3:#7C8589;--line:#CBCFC9;
@@ -221,7 +269,7 @@ const html = String.raw`<title>Aye Si Cena</title>
 .graphpanel{position:absolute;right:12px;top:12px;width:min(300px,calc(100% - 24px));
   max-height:calc(100% - 24px);overflow:auto;background:var(--raised);border:1px solid var(--line);
   border-radius:12px;padding:14px 15px;box-shadow:0 8px 28px rgba(0,0,0,.22)}
-.graphpanel h3{margin:0 0 3px;font-size:1.02rem}
+.graphpanel h2{margin:0 0 3px;font-size:1.02rem;letter-spacing:0}
 .graphpanel .close{float:right;border:0;background:none;color:var(--ink-3);cursor:pointer;
   font-size:17px;line-height:1;padding:0 2px}
 @media (prefers-reduced-motion:reduce){#graphSvg .edge,#graphSvg .node circle{transition:none}}
@@ -303,6 +351,11 @@ h1{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.02em;line
 h2{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;
   font-size:clamp(1.4rem,3.2vw,2rem);margin:0;text-wrap:balance}
 h3{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.2rem;margin:0}
+/* Every pane is its own page with its own h1, so the group headings under it
+   are h2 - but they are card titles and should not be set at h2 size. This
+   keeps the outline honest without changing the design. */
+h2.h-sm{font-size:1.2rem;letter-spacing:0}
+h2.grouphead{font-size:11px;letter-spacing:.12em}
 .eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
   letter-spacing:.17em;text-transform:uppercase;color:var(--ink-3);margin:0 0 16px}
 .lede{max-width:60ch;color:var(--ink-2);font-size:1.06rem;margin:0}
@@ -451,7 +504,7 @@ fieldset{min-width:0}
 .linkbtn:hover{color:var(--ink)}
 .empty{border:1px dashed var(--line);border-radius:12px;padding:34px 22px;text-align:center;
   color:var(--ink-2)}
-.empty h3{margin:0 0 7px}
+.empty h2{margin:0 0 7px;font-size:1.2rem;letter-spacing:0}
 .empty p{margin:0 0 14px;font-size:.92rem}
 
 /* Sortable table headers */
@@ -508,6 +561,8 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 48px;
 footer p{margin:0 0 7px;max-width:70ch}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+</head>
+<body>
 
 <header class="bar">
   <div class="bar-in">
@@ -638,7 +693,7 @@ footer p{margin:0 0 7px;max-width:70ch}
       <div class="chips" id="dietChips"></div>
       <p id="dietNote" class="muted" style="font-size:.88rem;margin:10px 0 0"></p>
     </fieldset>
-    <div id="findCount" style="border-top:1px solid var(--line);padding-top:18px;margin-bottom:20px"></div>
+    <div id="findCount" role="status" aria-live="polite" style="border-top:1px solid var(--line);padding-top:18px;margin-bottom:20px"></div>
     <div id="findResults"></div>
   </section>
 
@@ -682,7 +737,7 @@ footer p{margin:0 0 7px;max-width:70ch}
         <div class="filtline" id="mxOrigins"></div>
         <div class="filtline" id="mxFlags"></div>
       </details>
-      <div class="resultbar" id="mxCount"></div>
+      <div class="resultbar" id="mxCount" role="status" aria-live="polite"></div>
     </div>
     <div id="menuBody"></div>
   </section>
@@ -717,7 +772,7 @@ footer p{margin:0 0 7px;max-width:70ch}
         <div class="filtline chips" id="recCats"></div>
         <div class="filtline chips" id="recDiets"></div>
       </details>
-      <div class="resultbar" id="recCount"></div>
+      <div class="resultbar" id="recCount" role="status" aria-live="polite"></div>
     </div>
     <div id="recBody"></div>
   </section>
@@ -878,10 +933,20 @@ function patternTranslate(key){
 }
 var PRICES = D.prices, SUB_OF = D.subOf, SUB_PRICES = D.subPrices;
 var SUNDRY_PRICES = D.sundryPrices, ALIAS = D.alias, SUNDRIES = D.sundries;
+var ALLERGENS = D.allergens, ALLERGEN_LABEL = D.allergenLabel;
 
 function soles(n){ return "S/ " + n.toFixed(2); }
-function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
-  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+/**
+ * The renderer writes plenty of single-quoted attributes, so ' has to be in
+ * here too. It was not, and the only ingredient note carrying an apostrophe -
+ * "The caramel note in the Millionaire's..." - happened to belong to Lúcuma,
+ * which is seasonal and so never reached the pantry renderer that uses a
+ * single-quoted title. The next all-year ingredient with an apostrophe would
+ * have terminated the attribute early and turned the rest of the sentence into
+ * junk attributes.
+ */
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function ratio(d){ return d.cost / d.price; }
 function flag(d){ var r = ratio(d); return r > K.FC_MAX ? "over" : (r < K.FC_MIN ? "under" : "ok"); }
 
@@ -1500,7 +1565,7 @@ function renderDay(){
 
   document.getElementById("bookingForms").innerHTML = BOOKINGS.map(function(b, i){
     var w = bookingWindow(b);
-    return "<div class='card'><h3 style='margin:0 0 10px'><span>Booking</span> " + b.id + "</h3>" +
+    return "<div class='card'><h2 class='h-sm' style='margin:0 0 10px'><span>Booking</span> " + b.id + "</h2>" +
       "<div style='display:flex;flex-wrap:wrap;gap:10px'>" +
         "<label class='src'>Service<input type='time' data-bk='" + i + "' data-f='hour' " +
           "value='" + clock(b.hour*60) + "' style='display:block;margin-top:4px'></label>" +
@@ -1790,7 +1855,9 @@ function localiseLabels(){
   Object.keys(LABELS).forEach(function(k){ if (ES[LABELS[k]]) LABELS[k] = ES[LABELS[k]]; });
   Object.keys(FORMATS).forEach(function(k){ if (ES[FORMATS[k]]) FORMATS[k] = ES[FORMATS[k]]; });
   MONTHS.forEach(function(m, i){ if (ES[m]) MONTHS[i] = ES[m]; });
-  AXES.forEach(function(a, i){ if (ES[a]) AXES[i] = AXES[i]; });   // axes keep their ids
+  // AXES are deliberately not translated - they are ids, and the flavour
+  // wheel labels them separately. There used to be a loop here that assigned
+  // each element to itself, which looked deliberate and did nothing.
 }
 
 function applyLanguage(){
@@ -1865,7 +1932,7 @@ document.getElementById("homeStats").innerHTML = ORDER.map(function(c){
 
 document.getElementById("homeTiers").innerHTML = Object.keys(TIERS).map(function(k){
   var t = TIERS[k];
-  return "<div class='card'><h3>" + esc(t.name) + "</h3>" +
+  return "<div class='card'><h2 class='h-sm'>" + esc(t.name) + "</h2>" +
     "<p class='src' style='margin:5px 0 12px'>Minimum " + t.minGuests + " guests · " +
       t.bitesPerGuest + " bites per guest</p>" +
     "<dl style='margin:0'>" +
@@ -2021,7 +2088,7 @@ function renderMatrix(){
   }
 
   if (!hits.length){
-    body.innerHTML = "<div class='empty'><h3>Nothing matches that</h3>" +
+    body.innerHTML = "<div class='empty'><h2>Nothing matches that</h2>" +
       "<p>Try an ingredient rather than a dish name, or clear a filter.</p>" +
       "<button type='button' class='chip' id='mxEmptyClear'>Clear all filters</button></div>";
     document.getElementById("mxEmptyClear").addEventListener("click", function(){
@@ -2294,7 +2361,7 @@ function renderRecipes(){
 
   if (!hits.length){
     document.getElementById("recBody").innerHTML =
-      "<div class='empty'><h3>Nothing matches that</h3>" +
+      "<div class='empty'><h2>Nothing matches that</h2>" +
       "<p>Try an ingredient rather than a dish name, or loosen a filter.</p>" +
       "<button type='button' class='chip' id='recEmptyClear'>Clear all filters</button></div>";
     document.getElementById("recEmptyClear").addEventListener("click", recClearAll);
@@ -2307,7 +2374,7 @@ function renderRecipes(){
     return "<div class='card' style='margin-bottom:18px'>" +
       "<p class='dish-n'>" + String(d.id).padStart(3,"0") + " &middot; <span>" +
         esc(LABELS[d.category]) + "</span></p>" +
-      "<h3 style='margin:3px 0 6px'>" + esc(d.name) + "</h3>" +
+      "<h2 class='h-sm' style='margin:3px 0 6px'>" + esc(d.name) + "</h2>" +
       "<p class='dna' style='margin:0 0 10px'><span class='u'>" + esc(d.origin) +
         "</span> <span style='color:var(--ink-3)'>&rarr;</span> <span class='p'>" +
         esc(d.subOrigin) + "</span></p>" +
@@ -2320,14 +2387,14 @@ function renderRecipes(){
         " &middot; <span>" + esc(FORMATS[d.format]) + "</span></p>" +
 
       "<div class='grid' style='grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px'>" +
-        "<div><h4 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;" +
-          "text-transform:uppercase;color:var(--ink-3)'>Ingredients</h4><dl style='margin:0'>" +
+        "<div><h3 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;'" +
+          "text-transform:uppercase;color:var(--ink-3)'>Ingredients</h3><dl style='margin:0'>" +
           r.ingredients.map(function(i){
             return "<div class='kv'><dt>" + esc(recipeItem(i.item)) + "</dt>" +
               "<dd class='tnum'>" + esc(i.qty) + "</dd></div>";
           }).join("") + "</dl></div>" +
-        "<div><h4 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;" +
-          "text-transform:uppercase;color:var(--ink-3)'>Method</h4><ol style='margin:0;padding-left:18px'>" +
+        "<div><h3 style='margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;'" +
+          "text-transform:uppercase;color:var(--ink-3)'>Method</h3><ol style='margin:0;padding-left:18px'>" +
           r.method.map(function(m){
             return "<li style='margin-bottom:7px;line-height:1.5'>" + esc(m) + "</li>";
           }).join("") + "</ol></div>" +
@@ -2365,7 +2432,7 @@ document.getElementById("pkgCards").innerHTML = Object.keys(TIERS).map(function(
   var t = TIERS[k];
   var n = DISHES.filter(function(d){ return d.tiers.indexOf(t.id) > -1; }).length;
   function row(l,v){ return "<div class='kv'><dt>" + l + "</dt><dd class='tnum'>" + v + "</dd></div>"; }
-  return "<div class='card'><h3>" + esc(t.name) + "</h3>" +
+  return "<div class='card'><h2 class='h-sm'>" + esc(t.name) + "</h2>" +
     "<p class='src' style='margin:5px 0 14px'>" + n + " dishes available at this tier</p><dl style='margin:0'>" +
     row("Minimum guests", t.minGuests) + row("Bites per guest", t.bitesPerGuest) +
     row("Menaje per guest", t.menajePerGuest>0?soles(t.menajePerGuest):"—") +
@@ -2635,7 +2702,7 @@ function renderFind(){
 
   if (!out.length){
     document.getElementById("findResults").innerHTML =
-      "<div class='empty'><h3>Nothing matches that combination</h3>" +
+      "<div class='empty'><h2>Nothing matches that combination</h2>" +
       "<p>Switch the match mode to any, drop a flavour, or clear the search.</p>" +
       "<button type='button' class='chip' id='clearFind'>Clear all filters</button></div>";
     return;
@@ -2645,7 +2712,7 @@ function renderFind(){
     var rows = out.filter(function(d){ return d.category === cat; });
     if (!rows.length) return "";
     return "<section style='margin-bottom:26px'>" +
-      "<h3 class='mono grouphead'><span>" + esc(LABELS[cat]) + "</span> &middot; " + rows.length + "</h3>" +
+      "<h2 class='mono grouphead'><span>" + esc(LABELS[cat]) + "</span> &middot; " + rows.length + "</h2>" +
       "<div class='grid g3'>" + rows.map(function(d, i){
         // Cap the stagger: past a dozen cards the delay stops reading as
         // rhythm and starts reading as lag.
@@ -2703,7 +2770,7 @@ function renderSeason(){
   var outNow   = seasonal.filter(function(i){ return !inSeason(i, month); });
 
   document.getElementById("seasonPanels").innerHTML =
-    "<div class='card'><h3 class='mono grouphead' style='color:var(--good)'><span>Buying now</span> &middot; " +
+    "<div class='card'><h2 class='mono grouphead' style='color:var(--good)'><span>Buying now</span> &middot; " +
       inNow.length + "</h3>" +
       (inNow.length ? inNow.map(function(i){
         return "<div style='margin-bottom:14px'><span style='font-weight:700;font-size:.9rem'>" +
@@ -2714,7 +2781,7 @@ function renderSeason(){
           i.dishes.length + " dish" + (i.dishes.length === 1 ? "" : "es") + "</span></div>";
       }).join("") : "<p class='muted' style='font-size:.9rem'>Nothing seasonal peaks this month.</p>") +
     "</div>" +
-    "<div class='card'><h3 class='mono grouphead' style='color:var(--warn)'><span>Out of window</span> &middot; " +
+    "<div class='card'><h2 class='mono grouphead' style='color:var(--warn)'><span>Out of window</span> &middot; " +
       outNow.length + "</h3>" +
       (outNow.length ? outNow.map(function(i){
         return "<div style='margin-bottom:11px'><span class='muted' style='font-weight:700;font-size:.9rem'>" +
@@ -2752,7 +2819,7 @@ function renderSeason(){
     renderSubs(offIds, month);
 
   document.getElementById("seasonPantry").innerHTML =
-    "<h3 class='mono grouphead'><span>Available all year</span> &middot; " + pantry.length + "</h3>" +
+    "<h2 class='mono grouphead'><span>Available all year</span> &middot; " + pantry.length + "</h2>" +
     "<div style='display:flex;flex-wrap:wrap;gap:8px'>" + pantry.map(function(i){
       return "<span class='chip' style='cursor:default' title='" + esc(i.note) + "'>" +
         esc(i.name) + "</span>";
@@ -2835,11 +2902,15 @@ function findConflicts(sel, tierId){
   Object.keys(byCat).forEach(function(cat){
     var list = byCat[cat];
     if (list.length < 2) return;
-    ["gluten","dairy","egg","fish","shellfish","nuts","pork","alcohol"].forEach(function(a){
+    ALLERGENS.forEach(function(a){
       if (list.every(function(d){ return d.allergens.indexOf(a) > -1; })){
+        // Compose in English and let ES_PATTERNS rewrite the whole sentence -
+        // the allergen word is looked up first so it arrives already Spanish
+        // and rides through the pattern as a capture.
+        var label = L(a);
         out.push({ severity:"blocker", kind:"allergen",
-          title: "No " + a + "-free option in " + LABELS[cat],
-          detail: "All " + list.length + " dishes in this course contain " + a +
+          title: "No " + label + "-free option in " + LABELS[cat],
+          detail: "All " + list.length + " dishes in this course contain " + label +
             ". A guest avoiding it has nothing to eat at this course." });
       }
     });
@@ -2935,12 +3006,12 @@ function renderCompare(){
       if (best) menu.push(best);
     });
     var q = buildQuote(menu, guests, tid);
-    if (!q) return "<div class='card'><h3>" + esc(t.name) + "</h3></div>";
+    if (!q) return "<div class='card'><h2 class='h-sm'>" + esc(t.name) + "</h2></div>";
     function row(l,v,strong){
       return "<div class='qrow " + (strong ? "tot" : "") + "'><span>" + l +
         "</span><span class='tnum'>" + v + "</span></div>";
     }
-    return "<div class='card'><h3>" + esc(t.name) + "</h3>" +
+    return "<div class='card'><h2 class='h-sm'>" + esc(t.name) + "</h2>" +
       "<p class='mono' style='font-size:11px;color:var(--ink-3);margin:4px 0 0'><span>min</span> " +
         t.minGuests + " <span>guests</span></p>" +
       "<p class='mono tnum' style='font-size:1.9rem;font-weight:600;margin:14px 0 0'>" +
@@ -3301,7 +3372,7 @@ function renderGraphPanel(){
   el.hidden = false;
   el.innerHTML =
     "<button class='close' id='graphClose' aria-label='Close'>\u00d7</button>" +
-    "<h3 class='cap'>" + esc(p.name) + "</h3>" +
+    "<h2 class='cap'>" + esc(p.name) + "</h2>" +
     "<p class='src' style='margin:0 0 10px'>" + p.dishes.length + " dishes \u00b7 " +
       soles(p.value) + " of menu</p>" +
     (partners.length
@@ -3453,7 +3524,7 @@ function render(){
   document.getElementById("pickBody").innerHTML = ORDER.map(function(cat){
     var rows = available.filter(function(d){ return d.category === cat; });
     if (!rows.length) return "";
-    return "<section style='margin-bottom:26px'><h3 class='src' style=\"font-family:'IBM Plex Mono',monospace;" +
+    return "<section style='margin-bottom:26px'><h2 class='src h-sm' style=\"font-family:'IBM Plex Mono',monospace;" +
       "letter-spacing:.12em;text-transform:uppercase;margin:0 0 10px\">" + esc(LABELS[cat]) + "</h3>" +
       "<div class='picks'>" + rows.map(function(d){
         return "<button class='pick' data-id='" + d.id + "' aria-pressed='" +
@@ -3472,7 +3543,7 @@ function render(){
   renderLegal(selected, eventMonth);
   var box = document.getElementById("quote");
   if (!q){
-    box.innerHTML = "<h3>Your quote</h3><p class='muted' style='font-size:.9rem;margin-top:8px'>" +
+    box.innerHTML = "<h2 class='h-sm'>Your quote</h2><p class='muted' style='font-size:.9rem;margin-top:8px'>" +
       "Pick at least one dish to see the price.</p>";
     return;
   }
@@ -3483,7 +3554,7 @@ function render(){
   conflicts.forEach(function(c){ if (c.severity === "blocker") blocked[c.title] = 1; });
   var sheet = buildRunSheet(selected, serviceTime);
 
-  box.innerHTML = "<h3>Your quote</h3>" +
+  box.innerHTML = "<h2 class='h-sm'>Your quote</h2>" +
     "<p class='src' style='margin:4px 0 12px'>" + esc(q.tier.name) + " · " + q.guests +
       " guests · " + selected.length + " dishes</p>" +
     conflicts.map(function(c){
@@ -3518,8 +3589,10 @@ function render(){
     // leaves on WhatsApp. Plain text, in the language the page is in, with
     // the estimate caveat carried along rather than left behind.
     "<div style='margin-top:17px;border-top:1px solid var(--line);padding-top:13px'>" +
-      "<p class='mono grouphead' style='margin:0 0 8px'>Send this quote</p>" +
-      "<textarea id='waText' readonly rows='8' class='mono' style='width:100%;resize:vertical;" +
+      "<p class='mono grouphead' id='waLabel' style='margin:0 0 8px'>Send this quote</p>" +
+      // The heading above is the label. Without the association a screen reader
+      // announces this only as "edit text, read only".
+      "<textarea id='waText' aria-labelledby='waLabel' readonly rows='8' class='mono' style='width:100%;resize:vertical;" +
         "background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;" +
         "padding:9px 10px;font-size:11px;line-height:1.5'>" + esc(quoteText(q, selected)) + "</textarea>" +
       "<div style='display:flex;gap:8px;margin-top:8px;flex-wrap:wrap'>" +
@@ -3772,6 +3845,8 @@ function initQuickSearch(){
 applyLanguage();
 })();
 </script>
+</body>
+</html>
 `;
 
 // The page script is emitted from a template literal, which quietly eats one

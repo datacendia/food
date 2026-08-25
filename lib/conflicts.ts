@@ -15,6 +15,10 @@
 
 import type { Dish, Category, ServiceTier } from "./dishes";
 import { CATEGORY_LABEL } from "./dishes";
+// This file used to keep its own eight-word allergen list. It could not name
+// celery, mustard, sesame, soya, sulphites or lupin, so it could not warn about
+// them either. One vocabulary, in one place.
+import { ALLERGENS, ALLERGEN_LABEL } from "./dietary";
 import { TIERS, FOOD_COST_TARGET } from "./pricing";
 
 export type ConflictKind = "allergen" | "kitchen" | "margin";
@@ -45,16 +49,6 @@ export const CAPACITY = {
   griddle: 3
 } as const;
 
-const ALLERGEN_LABEL: Record<string, string> = {
-  gluten: "gluten",
-  dairy: "dairy",
-  egg: "egg",
-  fish: "fish",
-  shellfish: "shellfish",
-  nuts: "nuts",
-  pork: "pork",
-  alcohol: "alcohol"
-};
 
 /**
  * A course with no safe option. If every dish in a category carries the same
@@ -74,14 +68,15 @@ function allergenConflicts(dishes: Dish[]): Conflict[] {
 
   for (const [cat, list] of byCategory) {
     if (list.length < 2) continue;
-    for (const allergen of Object.keys(ALLERGEN_LABEL)) {
+    for (const allergen of ALLERGENS) {
       if (list.every((d) => d.allergens.includes(allergen))) {
+        const label = ALLERGEN_LABEL[allergen].toLowerCase();
         out.push({
           kind: "allergen",
           severity: "blocker",
-          title: `No ${ALLERGEN_LABEL[allergen]}-free option in ${CATEGORY_LABEL[cat]}`,
+          title: `No ${label}-free option in ${CATEGORY_LABEL[cat]}`,
           detail:
-            `All ${list.length} dishes in this course contain ${ALLERGEN_LABEL[allergen]}. ` +
+            `All ${list.length} dishes in this course contain ${label}. ` +
             `A guest avoiding it has nothing to eat at this course.`,
           dishes: list.map((d) => d.id)
         });

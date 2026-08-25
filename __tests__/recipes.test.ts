@@ -1,4 +1,5 @@
 import { DISHES } from "@/data/dishes";
+import { dishDietary } from "@/lib/dietary";
 import { RECIPES } from "@/data/recipes";
 
 const byId = new Map(DISHES.map((d) => [d.id, d]));
@@ -60,15 +61,41 @@ describe("recipes agree with the matrix", () => {
     }
   });
 
-  it("does not put meat in a dish the matrix calls vegetarian", () => {
-    const meat = /\b(lamb|beef|pork|bacon|chicken|morcilla|anchov|prawn|langostino|trout|paiche|duck)\b/i;
+  /**
+   * This used to hand-write its own meat regex:
+   *
+   *   /\b(lamb|beef|pork|bacon|chicken|morcilla|anchov|prawn|langostino|
+   *      trout|paiche|duck)\b/i
+   *
+   * Lard, suet and gelatine are not in that list, so it passed while nine
+   * dishes badged vegetarian on the page contained animal fat or animal
+   * collagen: 52 and 60 (lard), 87 and 171 (suet), 96, 101, 150, 156 and 166
+   * (gelatine). Neither were rennet, isinglass, fish sauce or carmine - the
+   * same hole, waiting for the next recipe.
+   *
+   * lib/dietary.ts already knew. It reads every line, follows sub-preparations,
+   * and names what it found. Asking it is both correct and shorter.
+   */
+  it("does not put an animal product in a dish the matrix calls vegetarian", () => {
     const wrong: string[] = [];
     for (const r of RECIPES) {
       const dish = byId.get(r.dishId)!;
       if (!dish.veg) continue;
-      for (const ing of r.ingredients) {
-        if (meat.test(ing.item)) wrong.push(`${dish.id} ${dish.name}: ${ing.item}`);
+      const d = dishDietary(r);
+      if (!d.suits.includes("vegetarian")) {
+        wrong.push(`${dish.id} ${dish.name}: ${(d.because.vegetarian ?? []).join(", ")}`);
       }
+    }
+    expect(wrong).toEqual([]);
+  });
+
+  /** And the other way: a dish the recipe says is fine, hidden from the filter. */
+  it("does not hide a vegetarian dish behind a false veg: false", () => {
+    const wrong: string[] = [];
+    for (const r of RECIPES) {
+      const dish = byId.get(r.dishId)!;
+      if (dish.veg) continue;
+      if (dishDietary(r).suits.includes("vegetarian")) wrong.push(`${dish.id} ${dish.name}`);
     }
     expect(wrong).toEqual([]);
   });

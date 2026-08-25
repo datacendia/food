@@ -125,6 +125,10 @@ export const PRICES: Record<string, Price> = {
   "bicarbonate of soda": { per: "kg", soles: 12 },
   "gelatine": { per: "kg", soles: 90 },
   "gelatine leaf": { per: "each", soles: 0.5 , unitGrams: 2 },
+  // Sets about eight times harder than gelatine by weight, so the quantities in
+  // the recipes are not a like-for-like swap - they were recalculated. Dearer
+  // per kilo and much cheaper per batch. Estimate, like every price here.
+  "agar agar": { per: "kg", soles: 220 },
 
   // ---- sugar and sweet ----
   "sugar": { per: "kg", soles: 4.2 },

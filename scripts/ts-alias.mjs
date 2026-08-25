@@ -9,6 +9,9 @@
  *   node --experimental-strip-types --import ./scripts/ts-alias.mjs script.mjs
  */
 import { register } from "node:module";
-import { pathToFileURL } from "node:url";
 
-register("./ts-alias-hooks.mjs", pathToFileURL("./scripts/"));
+// Resolve the hook against THIS file, not the working directory. It used to be
+// pathToFileURL("./scripts/"), so anything run from outside the project root -
+// a probe in a scratch directory, a script invoked by an editor - died with
+// ERR_MODULE_NOT_FOUND pointing at a path that was never going to exist.
+register("./ts-alias-hooks.mjs", import.meta.url);

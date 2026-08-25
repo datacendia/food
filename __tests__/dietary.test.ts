@@ -205,6 +205,51 @@ describe("the restrictions this app can only half answer", () => {
     }
   });
 
+  /**
+   * The one that matters.
+   *
+   * The menu row used to carry its own hand-typed allergen list, derived by
+   * regex from the dish's marketing copy. It disagreed with the recipe on 165
+   * of 223 dishes: 242 allergens present in an ingredient line and missing from
+   * the row. Of the 103 dishes the row offered as gluten-free, 50 contained
+   * gluten; of the 158 it offered as dairy-free, 92 contained milk. Nothing
+   * failed, because nothing compared the two.
+   *
+   * data/dishes.ts is now filled in by scripts/derive-allergens.mjs. If that
+   * step is skipped after an import, or if anyone hand-edits a row, this fails
+   * and names the dish.
+   */
+  it("declares on the menu row exactly what the recipe contains", () => {
+    const byId = new Map(RECIPES.map((r) => [r.dishId, r]));
+    const wrong: string[] = [];
+    for (const d of DISHES) {
+      const r = byId.get(d.id);
+      if (!r) { wrong.push(`${d.id} ${d.name}: no recipe`); continue; }
+      const want = dishDietary(r).allergens;
+      const got = [...d.allergens].sort();
+      if (JSON.stringify(want) !== JSON.stringify(got)) {
+        wrong.push(`${d.id} ${d.name}: row ${JSON.stringify(got)} vs recipe ${JSON.stringify(want)}`);
+      }
+    }
+    expect(wrong).toEqual([]);
+  });
+
+  /**
+   * The direction that hurts. A row that over-declares costs a sale; a row that
+   * under-declares feeds somebody something they told you they cannot eat.
+   */
+  it("never offers a dish as free of something its recipe contains", () => {
+    const byId = new Map(RECIPES.map((r) => [r.dishId, r]));
+    for (const a of ALLERGENS) {
+      const offered = DISHES.filter((d) => !d.allergens.includes(a));
+      const lying = offered.filter((d) => {
+        const r = byId.get(d.id);
+        return r ? dishDietary(r).allergens.includes(a) : false;
+      });
+      expect({ [a]: lying.map((d) => d.id) }).toEqual({ [a]: [] });
+    }
+  });
+
   it("covers all fourteen EU declarable allergens, whether or not any dish uses them", () => {
     // Peanuts and lupin declare zero dishes. That is correct and the category
     // still has to exist, so a recipe that adds them is caught.

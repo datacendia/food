@@ -1,0 +1,7 @@
+[
+ { "file": "fraunces-400-600-700.woff2", "family": "Fraunces",      "weights": [400, 600, 700] },
+ { "file": "karla-400-500-700.woff2",    "family": "Karla",         "weights": [400, 500, 700] },
+ { "file": "plex-mono-400.woff2",        "family": "IBM Plex Mono", "weights": [400] },
+ { "file": "plex-mono-500.woff2",        "family": "IBM Plex Mono", "weights": [500] },
+ { "file": "plex-mono-600.woff2",        "family": "IBM Plex Mono", "weights": [600] }
+]

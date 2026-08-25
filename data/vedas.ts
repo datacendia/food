@@ -25,18 +25,29 @@ export const VEDAS: Veda[] = [
     species: "Wild river shrimp (camarón de río)",
     /** Months the sale is closed, 1-12. */
     closed: [1, 2, 3],
-    ingredientKeys: ["langostino"],
+    /**
+     * The wild species, NOT farmed langostino. This used to key "langostino",
+     * which matched the one farmed line on the menu and took Prawn Cocktail
+     * Chifles off sale for a quarter of the year - for a veda the note beside
+     * it says does not apply to that product.
+     */
+    ingredientKeys: ["camaron de rio", "wild river shrimp"],
     note:
-      "Farmed langostino runs year-round and is legal throughout. Wild camarón de río is closed roughly December to March. If you cannot prove which you bought, you are holding the wild one.",
+      "Farmed langostino runs year-round and is legal throughout, and the recipes buy the farmed one. Wild camarón de río is closed roughly December to March. If you cannot prove which you bought, you are holding the wild one - so if a recipe ever changes to the wild species, change the line to say so and this veda will find it.",
     verified: false
   },
   {
     id: "anchoveta",
     species: "Anchoveta",
     closed: [8, 9],
-    ingredientKeys: ["good anchovy fillet in oil"],
+    /**
+     * Local salted anchovy, not the tin. This used to key the tinned Cantabrian
+     * fillet the recipes actually buy - the exact product the note beside it
+     * exempts - and blocked the Gilda every August.
+     */
+    ingredientKeys: ["salted anchovy", "anchoveta", "fresh anchovy"],
     note:
-      "The industrial veda drives the whole coast's supply. Tinned Spanish anchovy is unaffected; local salted anchovy is not.",
+      "The industrial veda drives the whole coast's supply, so expect prices on everything to move. Tinned Spanish anchovy is unaffected and is what the recipes use; local fresh or salted anchoveta is not.",
     verified: false
   },
   {
@@ -86,9 +97,15 @@ export const VEDAS: Veda[] = [
     id: "pulpo",
     species: "Pulpo (octopus)",
     closed: [7, 8],
-    ingredientKeys: ["baby squid"],
+    /**
+     * Octopus, and only octopus. This used to key "baby squid" - committing, in
+     * data, precisely the confusion the note beside it warns about, and taking
+     * the Txipirones off sale for July and August. No recipe currently uses
+     * octopus; the keys stay so that the day one does, the veda finds it.
+     */
+    ingredientKeys: ["pulpo", "octopus"],
     note:
-      "The octopus veda is the well-known one; squid is separate and generally open. Listed because the two are bought from the same stall and confused constantly.",
+      "The octopus veda is the well-known one; squid is separate and generally open, and the Txipirones are squid. Kept on the list because the two are bought from the same stall and confused constantly - including, once, by this file.",
     verified: false
   }
 ];

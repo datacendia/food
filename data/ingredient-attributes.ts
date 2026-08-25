@@ -196,8 +196,18 @@ export const INGREDIENT_ATTRS: Record<string, IngredientAttrs> = {
   "glace cherry": { allergens: ["sulphites"], sugary: true },
   "mixed peel": { allergens: ["sulphites"], sugary: true },
   "date": { sugary: true },
-  "whisky": { allergens: ["alcohol", "gluten"] },
-  "single malt whisky": { allergens: ["alcohol", "gluten"] },
+  /*
+   * Distilled from barley, and carrying no gluten because of it. Distillation
+   * leaves the protein behind: Coeliac UK says so, and EU 1169/2011 Annex II
+   * exempts cereal distillates from the declaration outright. Beer, stout and
+   * cerveza negra below are NOT distilled and keep theirs.
+   *
+   * This was tagged gluten, which excluded dish 168 Whisky Truffle Torte from
+   * the gluten-free filter - a flourless cake whose own menu copy sells it as
+   * coeliac-safe. The dish was right and the tag was wrong.
+   */
+  "whisky": { allergens: ["alcohol"] },
+  "single malt whisky": { allergens: ["alcohol"] },
   "pisco": { allergens: ["alcohol", "sulphites"] },
   "brandy": { allergens: ["alcohol", "sulphites"] },
   "red wine": { allergens: ["alcohol", "sulphites"] },
@@ -213,6 +223,8 @@ export const INGREDIENT_ATTRS: Record<string, IngredientAttrs> = {
   "vinegar": { allergens: ["sulphites"] },
   "gelatine": { vegetarian: false },
   "gelatine leaf": { vegetarian: false },
+  // Seaweed. The reason five desserts marked vegetarian now actually are.
+  "agar agar": { vegetarian: true, vegan: true },
   "honey": { vegan: false, sugary: true },
   "irn bru": { sugary: true },
 

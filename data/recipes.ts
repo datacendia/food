@@ -1404,7 +1404,7 @@ export const RECIPES: Recipe[] = [
       { qty: "150 g", item: "plain flour" },
       { qty: "2 tsp", item: "salt" },
       { qty: "1 tsp", item: "bicarbonate of soda" },
-      { qty: "160 g", item: "lard or butter, melted" },
+      { qty: "160 g", item: "butter, melted", note: "traditionally lard; butter so the oatcake stays vegetarian, and so the dishes built on it can say so" },
       { qty: "350 ml", item: "boiling water" }
     ],
     method: [
@@ -1602,8 +1602,7 @@ export const RECIPES: Recipe[] = [
       { qty: "20 g", item: "fresh yeast or 10 g dried" },
       { qty: "20 g", item: "salt", note: "butteries are meant to be salty; do not reduce it" },
       { qty: "600 ml", item: "warm water" },
-      { qty: "350 g", item: "lard, softened" },
-      { qty: "350 g", item: "butter, softened" }
+      { qty: "700 g", item: "butter, softened", note: "traditionally half lard; all butter keeps it vegetarian and the lamination still works" }
     ],
     method: [
       "Make a slack dough with flour, yeast, salt and water. Knead 8 minutes and prove until doubled, about 1 hour.",
@@ -2309,7 +2308,7 @@ export const RECIPES: Recipe[] = [
     cookMin: 180,
     ingredients: [
       { qty: "500 g", item: "plain flour" },
-      { qty: "300 g", item: "shredded suet or cold grated butter" },
+      { qty: "300 g", item: "cold grated butter", note: "suet is traditional and not vegetarian; the butter version is the one this menu sells" },
       { qty: "300 g", item: "pinhead oats" },
       { qty: "600 g", item: "raisins and currants" },
       { qty: "200 g", item: "chancaca or dark sugar" },
@@ -2559,7 +2558,7 @@ export const RECIPES: Recipe[] = [
       { qty: "120 ml", item: "water", note: "for the Italian meringue" },
       { qty: "160 g", item: "egg whites" },
       { qty: "20 g", item: "freeze-dried strawberry powder", note: "powder, not purée; purée will collapse the meringue" },
-      { qty: "8 g", item: "gelatine, bloomed", note: "stabiliser" },
+      { qty: "1.5 g", item: "agar agar", note: "stabiliser; agar rather than gelatine so the teacake is vegetarian. Bloom it in the syrup and boil - agar will not set from cold the way gelatine does" },
       { qty: "900 g", item: "70% Peruvian dark chocolate, tempered" }
     ],
     method: [
@@ -2702,7 +2701,7 @@ export const RECIPES: Recipe[] = [
       { qty: "3 L", item: "double cream" },
       { qty: "400 ml", item: "algarrobina" },
       { qty: "300 ml", item: "whisky" },
-      { qty: "8", item: "gelatine leaves" },
+      { qty: "3 g", item: "agar agar", note: "replaces 8 gelatine leaves; agar sets firmer and needs a boil, so bring it up in the cream" },
       { qty: "1", item: "lemon, zest only" }
     ],
     method: [
@@ -3926,7 +3925,7 @@ export const RECIPES: Recipe[] = [
       { qty: "2 kg", item: "maiz morado" },
       { qty: "1", item: "pineapple, with skin" },
       { qty: "3", item: "quinces" },
-      { qty: "24", item: "gelatine leaves" },
+      { qty: "8 g", item: "agar agar", note: "replaces 24 gelatine leaves; the trifle layers set firmer with agar, so pour each layer warm and let it set before the next" },
       { qty: "1", item: "plain sponge, cut into fingers" },
       { qty: "2 L", item: "double cream" },
       { qty: "300 g", item: "oatmeal, toasted" }
@@ -4077,7 +4076,7 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { qty: "2.5 kg", item: "aguaymanto" },
       { qty: "700 g", item: "caster sugar" },
-      { qty: "24", item: "gelatine leaves" },
+      { qty: "8 g", item: "agar agar", note: "replaces 24 gelatine leaves; agar must boil to activate, so bring the aguaymanto purée up before folding" },
       { qty: "1.2 L", item: "double cream" },
       { qty: "500 g", item: "rolled oats" },
       { qty: "400 g", item: "plain flour" },
@@ -4331,7 +4330,7 @@ export const RECIPES: Recipe[] = [
       { qty: "1.5 L", item: "double cream" },
       { qty: "8", item: "chirimoya" },
       { qty: "400 g", item: "caster sugar" },
-      { qty: "18", item: "gelatine leaves" },
+      { qty: "6 g", item: "agar agar", note: "replaces 18 gelatine leaves; agar sets at room temperature, so work quickly once it is off the heat" },
       { qty: "4", item: "limes" },
       { qty: "100 g", item: "cacao nibs" }
     ],
@@ -4454,7 +4453,7 @@ export const RECIPES: Recipe[] = [
     ingredients: [
       { qty: "1.2 kg", item: "plain flour" },
       { qty: "600 g", item: "medium oatmeal" },
-      { qty: "700 g", item: "suet" },
+      { qty: "700 g", item: "cold grated butter", note: "suet is traditional and not vegetarian; same swap as dish 87, and the crumb is barely different" },
       { qty: "900 g", item: "chancaca" },
       { qty: "800 g", item: "dried aguaymanto" },
       { qty: "40 g", item: "mixed spice" },

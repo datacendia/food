@@ -24,21 +24,13 @@ import { canonicalIngredient } from "./ingredient-key";
 import { SUB_RECIPE_OF } from "@/data/prices";
 import { RECIPES } from "@/data/recipes";
 import type { Dish, Recipe } from "./dishes";
+import type { Allergen } from "@/data/allergens";
 
-/** The 14 declarable allergens, plus two restrictions that behave like them. */
-export const ALLERGENS = [
-  "gluten", "crustaceans", "eggs", "fish", "peanuts", "soya", "milk", "nuts",
-  "celery", "mustard", "sesame", "sulphites", "lupin", "molluscs",
-  "pork", "alcohol"
-] as const;
-export type Allergen = (typeof ALLERGENS)[number];
-
-export const ALLERGEN_LABEL: Record<Allergen, string> = {
-  gluten: "Gluten", crustaceans: "Crustaceans", eggs: "Eggs", fish: "Fish",
-  peanuts: "Peanuts", soya: "Soya", milk: "Milk", nuts: "Tree nuts",
-  celery: "Celery", mustard: "Mustard", sesame: "Sesame", sulphites: "Sulphites",
-  lupin: "Lupin", molluscs: "Molluscs", pork: "Pork", alcohol: "Alcohol"
-};
+// The vocabulary itself lives in data/allergens.ts, so the standalone build can
+// load the same list this file checks against. Re-exported here because this is
+// where every caller already looks for it.
+export { ALLERGENS, ALLERGEN_LABEL } from "@/data/allergens";
+export type { Allergen } from "@/data/allergens";
 
 /**
  * Diets the app can answer for. Each is a question a real guest asks, not a
