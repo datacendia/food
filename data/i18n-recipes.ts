@@ -2651,4 +2651,603 @@ export const ES_RECIPES: Record<string, string> = {
     "Sirva dentro del minuto de salir de la plancha. Cocine al momento y solo en tandas chicas.",
   "A 1 m plancha does about 60 portions an hour. More guests means a second plancha, not fuller pans.":
     "Una plancha de 1 m hace unas 60 porciones por hora. Más invitados significa una segunda plancha, no cargarla más.",
+
+  // ---- 129 Smoked Paria & Aguaymanto Paste ----
+  "Cook the aguaymanto with the lemon juice and a splash of water until it collapses completely.":
+    "Cocine el aguaymanto con el jugo de limón y un chorro de agua hasta que se deshaga por completo.",
+  "Push it through a sieve, weigh the pulp, and add three-quarters of that weight in sugar.":
+    "Pásela por un colador, pese la pulpa y agregue tres cuartas partes de ese peso en azúcar.",
+  "Cook the paste back down, stirring constantly, until it pulls away cleanly from the base of the pan.":
+    "Vuelva a cocinar la pasta, revolviendo sin parar, hasta que se despegue limpiamente del fondo de la olla.",
+  "Pour into a lined tray to a depth of 2 cm and leave it uncovered overnight to firm up.":
+    "Vierta en una bandeja forrada hasta 2 cm de altura y déjela destapada toda la noche para que tome firmeza.",
+  "Cut the paste into batons and the smoked paria into slabs of roughly the same thickness.":
+    "Corte la pasta en bastones y el paria ahumado en lonjas de aproximadamente el mismo grosor.",
+  "Board them together with the toasted pecans, and take the cheese out of the fridge an hour before service.":
+    "Móntelos juntos en la tabla con las pecanas tostadas, y saque el queso de la refrigeradora una hora antes del servicio.",
+  "The paste keeps for months made in season. Board it up on the morning of the event.":
+    "La pasta dura meses si se hace en temporada. Arme la tabla la mañana del evento.",
+  "Three hours on a board at room temperature, which is exactly how the cheese should be eaten.":
+    "Tres horas en tabla a temperatura ambiente, que es exactamente como debe comerse el queso.",
+
+  // ---- 130 Tarta de Queso, Lucuma ----
+  "3 cakes, 36 portions": "3 tortas, 36 porciones",
+  "Line the tins with baking parchment crumpled first, pushed in so it pleats well above the rim.":
+    "Forre los moldes con papel manteca arrugado previamente, empujado de modo que se pliegue bien por encima del borde.",
+  "Beat the cream cheese and sugar smooth before adding anything else, scraping the bowl twice.":
+    "Bata el queso crema con el azúcar hasta que quede liso antes de agregar nada más, raspando el bol dos veces.",
+  "Add the eggs two at a time on a low speed — beating air in now gives you a souffle that collapses.":
+    "Agregue los huevos de dos en dos a velocidad baja — incorporar aire ahora da un suflé que se desploma.",
+  "Fold in the cream, the lucuma pulp, the sifted flour and the salt until it is just uniform.":
+    "Integre la crema, la pulpa de lúcuma, la harina tamizada y la sal solo hasta que quede uniforme.",
+  "Bake at 210 °C for 50 to 55 minutes until the top is genuinely dark and the centre still moves as one.":
+    "Hornee a 210 °C por 50 a 55 minutos hasta que la superficie esté realmente oscura y el centro todavía se mueva como una sola pieza.",
+  "Cool completely in the tin and do not refrigerate — chilling is what turns a Basque cheesecake dense.":
+    "Enfríe por completo en el molde y no refrigere — el frío es lo que vuelve densa una tarta vasca.",
+  "Bake the day before and leave it out overnight. It is a better cake on day two.":
+    "Hornee el día anterior y déjela fuera toda la noche. Es mejor torta al segundo día.",
+  "All day at room temperature and it cuts to any headcount, which is what makes it good value.":
+    "Todo el día a temperatura ambiente, y se corta para cualquier número de invitados, que es lo que la hace rentable.",
+  "One oven takes three tins. Above 100 guests, bake across two days rather than crowding the shelves.":
+    "Un horno acepta tres moldes. Por encima de 100 invitados, hornee en dos días en vez de saturar las bandejas.",
+
+  // ---- 131 Causa de Trucha Ahumada ----
+  "Boil the papa amarilla whole in salted water, then peel and pass it through a ricer while still hot.":
+    "Hierva la papa amarilla entera en agua con sal, pélela y pásela por prensapuré todavía caliente.",
+  "Work in the aji amarillo, lime juice, oil and salt while the potato is warm — cold potato will not take it up.":
+    "Incorpore el ají amarillo, el jugo de limón, el aceite y la sal mientras la papa está tibia — la papa fría no los absorbe.",
+  "Cool the mass completely before shaping, or the layers slump and the terrine loses its edges.":
+    "Enfríe la masa por completo antes de armar, o las capas se hunden y la terrina pierde sus aristas.",
+  "Flake the smoked trout and bind it with the soured cream and most of the dill, keeping the flakes visible.":
+    "Desmenuce la trucha ahumada y lígela con la crema agria y casi todo el eneldo, dejando las láminas visibles.",
+  "Layer potato, trout, potato in a lined tray, pressing each layer flat with an offset palette knife.":
+    "Arme capas de papa, trucha y papa en una bandeja forrada, aplanando cada capa con una espátula acodada.",
+  "Chill 3 hours, cut into squares with a hot wet knife, and finish each with a dill frond at the venue.":
+    "Refrigere 3 horas, corte en cuadrados con un cuchillo caliente y mojado, y corone cada uno con una ramita de eneldo en el local.",
+  "Build the terrine the day before and cut on the morning of service for the cleanest edges.":
+    "Arme la terrina el día anterior y corte la mañana del servicio para lograr los bordes más limpios.",
+  "Two hours out of the fridge. Set the tray over ice on a warm Lima afternoon.":
+    "Dos horas fuera de la refrigeradora. Apoye la bandeja sobre hielo en una tarde calurosa de Lima.",
+
+  // ---- 132 Causa de Haggis ----
+  "Make the causa base exactly as for the trout version — riced hot potato, aji, lime, oil, seasoned hard.":
+    "Haga la base de causa exactamente como en la versión de trucha — papa prensada en caliente, ají, limón, aceite y sazón fuerte.",
+  "Cook the haggis mix through, then loosen it with the whisky and mustard until it is spreadable, not crumbly.":
+    "Cocine bien la mezcla de haggis y aflójela con el whisky y la mostaza hasta que quede untable y no desmoronable.",
+  "Let the haggis cool to room temperature; spread it hot and it melts the causa layer beneath it.":
+    "Deje que el haggis baje a temperatura ambiente; untado caliente derrite la capa de causa que tiene debajo.",
+  "Layer causa, haggis, causa, pressing firmly so the finished slab holds together under the knife.":
+    "Arme capas de causa, haggis y causa, presionando con firmeza para que la placa final aguante el cuchillo.",
+  "Chill at least 3 hours, then cut into squares with a hot wet knife wiped between every cut.":
+    "Refrigere al menos 3 horas y corte en cuadrados con un cuchillo caliente y mojado, limpiándolo entre cada corte.",
+  "Serve at cool room temperature — fridge-cold, the aji amarillo goes flat and reads as nothing.":
+    "Sirva a temperatura ambiente fresca — helado de refrigeradora, el ají amarillo se apaga y no se lee.",
+  "Build the day before. The whisky settles into the haggis and stops shouting overnight.":
+    "Arme el día anterior. El whisky se asienta en el haggis y deja de gritar durante la noche.",
+  "Two hours out of the fridge. This is the dish that explains the whole business in one bite.":
+    "Dos horas fuera de la refrigeradora. Este es el plato que explica todo el negocio en un solo bocado.",
+
+  // ---- 133 Anticuchos de Cordero, Muna ----
+  "Blitz the aji panca, muna, garlic, vinegar, cumin and oil into a marinade thick enough to cling.":
+    "Procese el ají panca, la muña, el ajo, el vinagre, el comino y el aceite hasta un adobo lo bastante espeso para adherirse.",
+  "Marinate the lamb at least 8 hours — muna is a slower aromatic than rosemary and needs the time.":
+    "Macere el cordero al menos 8 horas — la muña es un aromático más lento que el romero y necesita ese tiempo.",
+  "Thread three cubes per skewer with the grain running the same way, so they cook at the same rate.":
+    "Ensarte tres cubos por brocheta con la fibra orientada igual, para que se cocinen al mismo ritmo.",
+  "Boil the papa nativa whole, then halve them and hold them warm to go alongside off the plancha.":
+    "Hierva la papa nativa entera, pártala por la mitad y manténgala tibia para acompañar al salir de la plancha.",
+  "Grill hard on a very hot plancha, 3 minutes a side, basting with the leftover marinade as you turn.":
+    "Ase fuerte en una plancha muy caliente, 3 minutos por lado, bañando con el adobo sobrante al voltear.",
+  "Rest the skewers 2 minutes on a warm tray before they go out, or the juice ends up on the guest.":
+    "Repose las brochetas 2 minutos en una bandeja tibia antes de sacarlas, o el jugo termina sobre el invitado.",
+  "Marinate and skewer the day before. The potatoes can be boiled in the morning and reheated.":
+    "Macere y ensarte el día anterior. Las papas se pueden hervir en la mañana y recalentar.",
+  "Grill to order. Skewers held more than 10 minutes go dry and there is no recovering them.":
+    "Ase al momento. Las brochetas que esperan más de 10 minutos se secan y no hay forma de recuperarlas.",
+  "A 1 m plancha turns out about 70 skewers an hour. Beyond that, add a grill, not a cook.":
+    "Una plancha de 1 m saca unas 70 brochetas por hora. Más allá de eso, agregue una parrilla, no un cocinero.",
+
+  // ---- 134 Ceviche de Corvina y Eneldo ----
+  "Check the veda calendar before you buy — a closed season on corvina is law, and this dish has no substitute plan.":
+    "Revise el calendario de vedas antes de comprar — la veda de la corvina es ley, y este plato no tiene plan de reemplazo.",
+  "Cut the fish into 2 cm cubes and keep it on ice; warm fish cures unevenly and goes chalky at the edges.":
+    "Corte el pescado en cubos de 2 cm y manténgalo sobre hielo; el pescado tibio se cura disparejo y se pone harinoso en los bordes.",
+  "Squeeze the limes by hand and stop before the pith — a machine juicer makes the leche de tigre bitter.":
+    "Exprima los limones a mano y pare antes de llegar a la parte blanca — un exprimidor mecánico amarga la leche de tigre.",
+  "Blitz a handful of the fish with lime, aji limo, cucumber, dill stalks and salt to build the leche de tigre.":
+    "Licúe un puñado del pescado con limón, ají limo, pepino, tallos de eneldo y sal para armar la leche de tigre.",
+  "Pass it through a sieve, taste for salt and acid, and keep it ice-cold until the moment of service.":
+    "Pásela por colador, pruebe sal y acidez, y manténgala helada hasta el momento del servicio.",
+  "Dress the fish 4 minutes before it leaves the kitchen, add the sliced onion and dill fronds, and plate.":
+    "Adere el pescado 4 minutos antes de que salga de la cocina, agregue la cebolla cortada y las ramitas de eneldo, y emplate.",
+  "Cut the fish and make the leche de tigre the morning of. The two meet minutes before service.":
+    "Corte el pescado y haga la leche de tigre la misma mañana. Los dos se encuentran minutos antes del servicio.",
+  "Four minutes. This is a plated dish for a reason and it cannot be put on a buffet.":
+    "Cuatro minutos. Es un plato emplatado por una razón y no se puede poner en un buffet.",
+
+  // ---- 135 Tiradito de Trucha, Whisky ----
+  "Freeze the fillets for 40 minutes before slicing — firm fish gives you thin slices, soft fish gives you shreds.":
+    "Congele los filetes 40 minutos antes de cortar — el pescado firme da láminas finas, el blando da hilachas.",
+  "Slice on the bias at about 3 mm and lay the slices flat and overlapping on chilled plates.":
+    "Corte en diagonal a unos 3 mm y acomode las láminas planas y montadas sobre platos fríos.",
+  "Warm the whisky briefly to take the raw spirit edge off, then cool it before it goes near the cream.":
+    "Caliente el whisky brevemente para quitarle el filo del destilado crudo y enfríelo antes de acercarlo a la crema.",
+  "Whisk the aji amarillo into the cream with the whisky and lime juice until it just coats a spoon.":
+    "Integre el ají amarillo a la crema con el whisky y el jugo de limón hasta que apenas nape la cuchara.",
+  "Spoon the sauce in a line across the fish rather than over it, so the guest sees both.":
+    "Ponga la salsa en una línea que cruce el pescado en vez de cubrirlo, para que el invitado vea ambos.",
+  "Finish with flaked salt and chives and send it out immediately — the lime keeps curing the fish on the plate.":
+    "Termine con sal en escamas y cebollín y sáquelo de inmediato — el limón sigue curando el pescado en el plato.",
+  "Make the sauce a day ahead. Slice the fish no more than an hour before service, kept on ice.":
+    "Haga la salsa un día antes. Corte el pescado no más de una hora antes del servicio y manténgalo sobre hielo.",
+  "Ten minutes plated. Slice and dress in rounds as the plates go out.":
+    "Diez minutos una vez emplatado. Corte y adere por tandas a medida que salen los platos.",
+
+  // ---- 136 Lomo Saltado, Dripping Chips ----
+  "Blanch the chips in dripping at 140 °C until soft but pale, then drain and cool them completely on racks.":
+    "Escalde las papas en grasa de res a 140 °C hasta que estén blandas pero pálidas, escurra y enfríelas por completo sobre rejillas.",
+  "Season the beef and get the wok or plancha ferociously hot — a lukewarm pan stews the meat and floods it.":
+    "Sazone la carne y ponga el wok o la plancha ferozmente caliente — una sartén tibia guisa la carne y la inunda.",
+  "Sear the beef in small batches for barely a minute and pull it out while it is still rare in the middle.":
+    "Selle la carne en tandas chicas por apenas un minuto y sáquela mientras siga roja al centro.",
+  "Fry the onion hard for 30 seconds, add tomato, then deglaze with sillao and vinegar so it flames up.":
+    "Fría la cebolla con fuerza por 30 segundos, agregue tomate y desglase con sillao y vinagre para que levante llama.",
+  "Fry the chips a second time at 185 °C until crisp and deep gold — the dripping is what makes them taste Scottish.":
+    "Fría las papas por segunda vez a 185 °C hasta que estén crocantes y doradas oscuras — la grasa de res es lo que las hace saber escocesas.",
+  "Return the beef to the pan, toss with the chips off the heat, and serve within a minute of the toss.":
+    "Devuelva la carne a la sartén, mézclela con las papas fuera del fuego y sirva dentro del minuto.",
+  "First-fry the chips and cut everything the day before. The wok work happens only at the venue.":
+    "Dé la primera fritura a las papas y corte todo el día anterior. El trabajo de wok ocurre solo en el local.",
+  "Serve straight from the pan. Held ten minutes, the chips go soft and the dish is pointless.":
+    "Sirva directo de la sartén. Diez minutos en espera y las papas se ablandan y el plato pierde sentido.",
+  "One wok station does about 60 portions an hour. Two smaller pans beat one large one every time.":
+    "Una estación de wok hace unas 60 porciones por hora. Dos sartenes chicas rinden más que una grande, siempre.",
+
+  // ---- 137 Aji de Gallina, Cheddar Crumb ----
+  "Poach the chickens with onion and bay, then shred the meat and keep 1.5 litres of the stock.":
+    "Escalfe los pollos con cebolla y laurel, deshilache la carne y guarde 1,5 litros del caldo.",
+  "Soak the bread in the evaporated milk for 15 minutes and blend it smooth with the pecans.":
+    "Remoje el pan en la leche evaporada por 15 minutos y licúelo con las pecanas hasta que quede liso.",
+  "Fry the aji amarillo paste in oil for a good 5 minutes until it darkens and loses its raw edge.":
+    "Fría la pasta de ají amarillo en aceite por unos buenos 5 minutos hasta que oscurezca y pierda el filo crudo.",
+  "Combine the paste, the bread cream and the stock, and cook it out until it holds a line on the spoon.":
+    "Combine la pasta, la crema de pan y el caldo, y cocine hasta que sostenga una línea en la cuchara.",
+  "Fold the chicken through, season hard, and spread it into gastronorm trays no deeper than 5 cm.":
+    "Integre el pollo, sazone con fuerza y extienda en bandejas gastronorm de no más de 5 cm de alto.",
+  "Rub the oats and cheddar into a crumb, scatter it over and bake at 190 °C for 25 minutes until dark gold.":
+    "Arene la avena con el cheddar hasta formar un crumble, espárzalo encima y hornee a 190 °C por 25 minutos hasta dorado oscuro.",
+  "Make the sauce and shred the meat 2 days ahead. Crumb and bake on the day of the event.":
+    "Haga la salsa y deshilache la carne 2 días antes. El crumble y el horneado, el día del evento.",
+  "Three hours in a chafing dish, which is the whole reason for the crumb — it stops a skin forming.":
+    "Tres horas en chafing dish, que es toda la razón del crumble — impide que se forme una película.",
+
+  // ---- 138 Huancaina de Paria y Pimienta ----
+  "Boil the potatoes whole and unpeeled, then peel and slice them into thick rounds while warm.":
+    "Hierva las papas enteras y con cáscara, luego pélelas y córtelas en rodajas gruesas en tibio.",
+  "Fry the aji amarillo in oil until it darkens, and let it cool before it goes into the blender.":
+    "Fría el ají amarillo en aceite hasta que oscurezca y déjelo enfriar antes de llevarlo a la licuadora.",
+  "Blend the smoked paria, crackers, evaporated milk and cooled aji into a sauce that pours slowly.":
+    "Licúe el paria ahumado, las galletas de soda, la leche evaporada y el ají frío hasta una salsa que caiga despacio.",
+  "Crack the black pepper coarsely and stir it in at the end so the heat sits alongside the aji rather than under it.":
+    "Muela la pimienta negra gruesa e incorpórela al final, para que su picor acompañe al ají en vez de quedar debajo.",
+  "Nap the potato rounds with the sauce rather than drowning them; the potato has to still read as potato.":
+    "Nape las rodajas de papa con la salsa en vez de ahogarlas; la papa tiene que seguir leyéndose como papa.",
+  "Finish with olives and serve at cool room temperature, not fridge-cold.":
+    "Termine con aceitunas y sirva a temperatura ambiente fresca, no helado de refrigeradora.",
+  "Make the sauce 2 days ahead — it thickens, so slacken it with a little milk before serving.":
+    "Haga la salsa 2 días antes — espesa, así que aflójela con un poco de leche antes de servir.",
+  "Three hours at room temperature. The sauce forms a skin, so cover it until the moment it goes out.":
+    "Tres horas a temperatura ambiente. La salsa forma película, así que manténgala tapada hasta el momento de salir.",
+
+  // ---- 139 Rocoto Relleno, Morcilla ----
+  "Cut the tops off the rocoto, hollow them out and keep the lids — they go back on for the bake.":
+    "Corte la parte superior de los rocotos, vacíelos y guarde las tapas — vuelven a su sitio para el horneado.",
+  "Boil the shells three times in fresh water with sugar and vinegar, discarding the water each time.":
+    "Hierva las cáscaras tres veces en agua limpia con azúcar y vinagre, botando el agua cada vez.",
+  "Taste a scrap of shell after the third boil; if it still takes your breath away, boil them once more.":
+    "Pruebe un pedacito de cáscara después del tercer hervor; si todavía le quita el aliento, hiérvalos una vez más.",
+  "Brown the beef, add the onion and aji panca, then fold the crumbled morcilla and the oats through off the heat.":
+    "Dore la carne, agregue la cebolla y el ají panca, e integre la morcilla desmenuzada y la avena fuera del fuego.",
+  "Fill the shells, cap each with a slice of paria and its own lid, and sit them upright in a deep tray.":
+    "Rellene las cáscaras, corone cada una con una lámina de paria y su propia tapa, y párelas en una bandeja honda.",
+  "Pour the evaporated milk around the base and bake at 180 °C for 40 minutes until the cheese is blistered.":
+    "Vierta la leche evaporada alrededor de la base y hornee a 180 °C por 40 minutos hasta que el queso ampolle.",
+  "Boil and stuff the shells the day before. Bake on site so they arrive at the table hot.":
+    "Hierva y rellene las cáscaras el día anterior. Hornee en el local para que lleguen calientes a la mesa.",
+  "Two hours in a chafing dish. The shells soften but the filling holds, which is the right trade.":
+    "Dos horas en chafing dish. Las cáscaras se ablandan pero el relleno aguanta, que es el intercambio correcto.",
+
+  // ---- 140 Ocopa de Ajo Silvestre ----
+  "Boil the potatoes whole in well-salted water, then peel and slice them thick while they are still warm.":
+    "Hierva las papas enteras en agua bien salada, luego pélelas y córtelas gruesas mientras siguen tibias.",
+  "Toast the pecans in a dry pan until they smell nutty — untoasted, they make the sauce taste of nothing.":
+    "Tueste las pecanas en sartén seca hasta que huelan a nuez — sin tostar, dejan la salsa sin sabor.",
+  "Blanch the wild garlic leaf for 10 seconds and refresh it in ice water so the sauce stays green.":
+    "Blanquee la hoja de ajo silvestre por 10 segundos y refrésquela en agua con hielo para que la salsa siga verde.",
+  "Blend the huacatay, wild garlic, pecans, queso fresco, crackers and milk until completely smooth.":
+    "Licúe el huacatay, el ajo silvestre, las pecanas, el queso fresco, las galletas de soda y la leche hasta que quede completamente liso.",
+  "Season with salt and a squeeze of lime and check the consistency — it should coat, not flood.":
+    "Sazone con sal y un chorro de limón y revise la consistencia — debe napar, no inundar.",
+  "Nap the potatoes and serve at room temperature, dressing the trays only just before they go out.":
+    "Nape las papas y sirva a temperatura ambiente, aderezando las bandejas justo antes de sacarlas.",
+  "The sauce keeps 3 days but loses colour after one. Blend fresh on the morning of the event.":
+    "La salsa dura 3 días pero pierde color al día siguiente. Licúela fresca la mañana del evento.",
+  "Three hours at room temperature. Cover it, or the surface darkens within twenty minutes.":
+    "Tres horas a temperatura ambiente. Tápela, o la superficie se oscurece en veinte minutos.",
+
+  // ---- 141 Pastel de Choclo, Cordero y Avena ----
+  "Brown the lamb hard in batches so it colours rather than steams, and drain off the excess fat.":
+    "Dore el cordero con fuerza por tandas para que tome color en vez de cocinarse al vapor, y escurra el exceso de grasa.",
+  "Sweat the onion with cumin and aji panca until sweet, then return the meat and stir the oats through.":
+    "Sude la cebolla con comino y ají panca hasta que esté dulce, devuelva la carne e integre la avena.",
+  "Add stock a ladle at a time until the oats swell and the mixture holds its shape on a spoon.":
+    "Agregue caldo de a un cucharón hasta que la avena hinche y la mezcla sostenga su forma en la cuchara.",
+  "Blitz the choclo kernels coarsely with the evaporated milk and a little butter into a rough, sweet paste.":
+    "Licúe los granos de choclo grueso con la leche evaporada y un poco de mantequilla hasta una pasta rústica y dulce.",
+  "Layer the meat into trays, lay the olives and egg over it, and spread the choclo paste right to the edges.":
+    "Ponga la carne en bandejas, acomode las aceitunas y el huevo encima y extienda la pasta de choclo hasta los bordes.",
+  "Dust with sugar and bake at 190 °C for 35 minutes until the top blisters and browns in patches.":
+    "Espolvoree azúcar y hornee a 190 °C por 35 minutos hasta que la superficie ampolle y dore en manchas.",
+  "Build the trays the day before and bake on site. It reheats better than almost anything here.":
+    "Arme las bandejas el día anterior y hornee en el local. Se recalienta mejor que casi cualquier cosa de esta carta.",
+  "Three hours in a chafing dish. The choclo lid stops it drying out the way mashed potato would.":
+    "Tres horas en chafing dish. La tapa de choclo evita que se seque como lo haría un puré de papa.",
+
+  // ---- 142 Empanada de Aji de Gallina y Puerro ----
+  "60 empanadas": "60 empanadas",
+  "Make the dough, rest it an hour in the fridge, and roll it to 3 mm — thicker and the filling ratio goes wrong.":
+    "Haga la masa, déjela reposar una hora en la refrigeradora y estírela a 3 mm — más gruesa y la proporción de relleno se desequilibra.",
+  "Sweat the leek in butter over a low heat for 20 minutes until it collapses and sweetens completely.":
+    "Sude el poro en mantequilla a fuego bajo por 20 minutos hasta que se deshaga y endulce por completo.",
+  "Fry the aji amarillo paste out properly, then add the soaked bread and cook to a thick, glossy base.":
+    "Fría bien la pasta de ají amarillo, agregue el pan remojado y cocine hasta una base espesa y brillante.",
+  "Fold the chicken and leek through and chill the filling hard — warm filling tears wet dough every time.":
+    "Integre el pollo y el poro y refrigere bien el relleno — un relleno tibio rompe la masa húmeda siempre.",
+  "Fill, fold and crimp with a repulgue, then chill the trays 20 minutes before they go in the oven.":
+    "Rellene, doble y cierre con repulgue, y refrigere las bandejas 20 minutos antes de meterlas al horno.",
+  "Egg-wash and bake at 200 °C for 22 minutes until deep gold, turning the trays once halfway.":
+    "Pincele con huevo y hornee a 200 °C por 22 minutos hasta dorado oscuro, girando las bandejas una vez a mitad de cocción.",
+  "Freeze filled and crimped, then bake from frozen at 190 °C for 28 minutes. Better than fresh-chilled.":
+    "Congélelas rellenas y repulgadas, y hornee desde congelado a 190 °C por 28 minutos. Mejor que refrigeradas en fresco.",
+  "Two hours warm, four at room temperature. They are designed to be eaten off a napkin.":
+    "Dos horas tibias, cuatro a temperatura ambiente. Están diseñadas para comerse sobre una servilleta.",
+
+  // ---- 143 Chupe de Corvina Ahumada ----
+  "Smoke or buy the corvina smoked, then flake it and pick it over carefully for pin bones.":
+    "Ahúme la corvina o cómprela ahumada, desmenúcela y revísela con cuidado para sacar las espinas.",
+  "Build the base by frying onion, garlic and aji panca until dark, which is the aderezo everything sits on.":
+    "Arme la base friendo cebolla, ajo y ají panca hasta que oscurezcan: ese es el aderezo sobre el que se apoya todo.",
+  "Add the stock and the potatoes and simmer until the potatoes are done and starting to break at the edges.":
+    "Agregue el caldo y las papas y cocine a fuego lento hasta que las papas estén listas y empiecen a deshacerse por los bordes.",
+  "Add the choclo rounds for the last 8 minutes only, or they go tough and stringy in the bowl.":
+    "Agregue las ruedas de choclo solo en los últimos 8 minutos, o se ponen duras y fibrosas en el plato.",
+  "Pour in the milk and bring it to a bare simmer — boiled milk splits and there is no fixing it in the pot.":
+    "Vierta la leche y llévela a un hervor apenas perceptible — la leche hervida se corta y no hay cómo arreglarla en la olla.",
+  "Fold the smoked fish and the huacatay in off the heat and let it sit five minutes before serving.":
+    "Integre el pescado ahumado y el huacatay fuera del fuego y deje reposar cinco minutos antes de servir.",
+  "Make the base and cook the potatoes a day ahead. Milk and fish go in during the last ten minutes.":
+    "Haga la base y cocine las papas un día antes. La leche y el pescado entran en los últimos diez minutos.",
+  "Ninety minutes held below a simmer. Prawns have a legal closed season; this version does not.":
+    "Noventa minutos mantenido por debajo del hervor. Los langostinos tienen veda legal; esta versión no.",
+
+  // ---- 144 Arroz con Pato, Stout ----
+  "Render the duck skin down in a dry pan and brown the joints hard in their own fat, then set them aside.":
+    "Derrita la piel del pato en una sartén seca y dore las presas con fuerza en su propia grasa, luego resérvelas.",
+  "Build the aderezo in the duck fat with onion, garlic and aji amarillo, cooking it until it is almost jammy.":
+    "Arme el aderezo en la grasa de pato con cebolla, ajo y ají amarillo, cocinándolo hasta que quede casi como mermelada.",
+  "Blitz the culantro with a little stock to a bright green liquor and hold it back until the very end.":
+    "Licúe el culantro con un poco de caldo hasta un líquido verde intenso y guárdelo hasta el final.",
+  "Braise the duck in the stout and stock for an hour until the meat pulls easily from the bone.":
+    "Brasee el pato en la cerveza negra y el caldo por una hora hasta que la carne se despegue fácil del hueso.",
+  "Lift the duck out, measure the liquor, and cook the rice in it with the choclo, covered and undisturbed.":
+    "Retire el pato, mida el líquido y cocine el arroz en él junto con el choclo, tapado y sin moverlo.",
+  "Fork the culantro liquor through the finished rice off the heat so it stays green, and sit the duck back on top.":
+    "Integre el líquido de culantro al arroz terminado con un tenedor y fuera del fuego para que siga verde, y vuelva a colocar el pato encima.",
+  "Braise the duck the day before. The rice must be cooked within an hour of service, not reheated.":
+    "Brasee el pato el día anterior. El arroz debe cocinarse dentro de la hora previa al servicio, no recalentarse.",
+  "One hour in a covered tray. Rice held longer goes claggy and the culantro browns off.":
+    "Una hora en bandeja tapada. El arroz que espera más se apelmaza y el culantro se oscurece.",
+
+  // ---- 145 Butifarra Escocesa ----
+  "60 rolls": "60 panes",
+  "Rub the pork leg with aji panca, garlic, cumin and salt and leave it overnight in the fridge.":
+    "Frote la pierna de cerdo con ají panca, ajo, comino y sal y déjela toda la noche en la refrigeradora.",
+  "Roast at 150 °C for three hours until a skewer meets no resistance, then cool it completely before slicing.":
+    "Hornee a 150 °C por tres horas hasta que una brocheta no encuentre resistencia, y enfríe por completo antes de cortar.",
+  "Slice it thin on a machine — hand-cut jamon del pais is too thick and the roll will not close.":
+    "Córtelo fino en máquina — el jamón del país cortado a mano queda muy grueso y el pan no cierra.",
+  "Cut the salsa criolla no more than an hour before service and dress it with lime and salt only.":
+    "Corte la salsa criolla no más de una hora antes del servicio y adérela solo con limón y sal.",
+  "Split the morning rolls, scrape a little mustard on the base, and lay the pork in loose folds.":
+    "Abra los panes, unte un poco de mostaza en la base y acomode el cerdo en pliegues sueltos.",
+  "Top with drained salsa criolla and close; wet criolla will turn the roll to paste within twenty minutes.":
+    "Corone con salsa criolla escurrida y cierre; una criolla mojada convierte el pan en pasta en veinte minutos.",
+  "Roast and slice the pork the day before. Build the rolls no more than an hour before service.":
+    "Hornee y corte el cerdo el día anterior. Arme los panes no más de una hora antes del servicio.",
+  "One hour built. Beyond that the roll goes soggy, so build in rounds as trays go out.":
+    "Una hora una vez armado. Más allá el pan se aguada, así que arme por tandas a medida que salen las bandejas.",
+
+  // ---- 146 Suspiro Limeno, Whisky ----
+  "40 glasses": "40 copas",
+  "Cook the two milks together over a low heat, stirring constantly, until the manjar blanco pulls from the pan.":
+    "Cocine las dos leches juntas a fuego bajo, revolviendo sin parar, hasta que el manjar blanco se despegue de la olla.",
+  "Take it off the heat and beat the yolks in one at a time so they thicken it without scrambling.":
+    "Retire del fuego e integre las yemas de a una batiendo, para que espesen sin cuajarse.",
+  "Cool the manjar completely and spoon it into glasses to just under half full.":
+    "Enfríe el manjar por completo y repártalo en copas hasta un poco menos de la mitad.",
+  "Boil the sugar with a little water to 118 °C, then pour it onto the whipping whites in a thin steady thread.":
+    "Hierva el azúcar con un poco de agua hasta 118 °C y viértalo sobre las claras batiéndose en un hilo fino y constante.",
+  "Beat the meringue to stiff and glossy, then fold the whisky in at the very end — heat would cook it off.":
+    "Bata el merengue a punto firme y brillante e integre el whisky al final — el calor lo evaporaría.",
+  "Pipe the meringue over the manjar, dust with cinnamon, and keep the glasses cool until service.":
+    "Ponga el merengue con manga sobre el manjar, espolvoree canela y mantenga las copas frescas hasta el servicio.",
+  "Make the manjar 3 days ahead. Whip the meringue on the day; it weeps by the second morning.":
+    "Haga el manjar 3 días antes. Bata el merengue el mismo día; para la segunda mañana ya llora.",
+  "Four hours at cool room temperature. Direct sun on a Lima terrace collapses the meringue fast.":
+    "Cuatro horas a temperatura ambiente fresca. El sol directo en una terraza limeña baja el merengue rápido.",
+
+  // ---- 147 Picarones, Marmalade Syrup ----
+  "Boil the camote and zapallo separately until soft, then pass both and weigh the puree before mixing.":
+    "Hierva el camote y el zapallo por separado hasta que estén blandos, pase ambos y pese el puré antes de mezclar.",
+  "Mix the puree with the flour and activated yeast to a wet, sticky batter and prove it 90 minutes.":
+    "Mezcle el puré con la harina y la levadura activada hasta una masa húmeda y pegajosa y déjela leudar 90 minutos.",
+  "Melt the chancaca with the marmalade, orange peel, fig leaf and anise into a syrup and pass it through a sieve.":
+    "Derrita la chancaca con la mermelada, la cáscara de naranja, la hoja de higo y el anís hasta hacer una miel y pásela por colador.",
+  "Get the oil to 180 °C and check it with a scrap of batter before the first real ring goes in.":
+    "Lleve el aceite a 180 °C y pruébelo con un pedacito de masa antes de echar el primer aro de verdad.",
+  "Shape each ring with a wet hand and a thumb through the middle, dropping it straight into the oil.":
+    "Forme cada aro con la mano mojada y el pulgar atravesando el centro, echándolo directo al aceite.",
+  "Fry 90 seconds a side, drain briefly, and pour the warm syrup over as it goes to the guest.":
+    "Fría 90 segundos por lado, escurra brevemente y bañe con la miel tibia justo cuando va al invitado.",
+  "The syrup keeps for weeks. The batter must be proved on the day and used within four hours.":
+    "La miel dura semanas. La masa debe leudarse el mismo día y usarse dentro de cuatro horas.",
+  "Fry to order. A picaron that has sat five minutes is a doughnut, and not a good one.":
+    "Fría al momento. Un picarón que lleva cinco minutos esperando es una dona, y no una buena.",
+  "One fryer does about 90 rings an hour. This is a queue-forming station, so staff it accordingly.":
+    "Una freidora hace unos 90 aros por hora. Es una estación que genera cola, así que dótela de personal en consecuencia.",
+
+  // ---- 148 Alfajores de Lucuma y Mantequilla ----
+  "80 alfajores": "80 alfajores",
+  "Beat the butter and icing sugar only until smooth — creaming air in gives you a biscuit that spreads.":
+    "Bata la mantequilla con el azúcar en polvo solo hasta que quede lisa — incorporar aire da una galleta que se expande.",
+  "Work in both flours by hand to shortbread proportions, which is what makes this version hold its snap.":
+    "Incorpore las dos harinas a mano en proporciones de shortbread, que es lo que hace que esta versión mantenga su quiebre.",
+  "Roll to 5 mm between parchment, cut discs, and chill them a full 30 minutes before baking.":
+    "Estire a 5 mm entre papel manteca, corte discos y refrigérelos 30 minutos completos antes de hornear.",
+  "Bake at 160 °C for 13 to 15 minutes until barely coloured; browning kills the texture you are after.":
+    "Hornee a 160 °C por 13 a 15 minutos hasta que apenas tomen color; dorarlos mata la textura que busca.",
+  "Beat the lucuma pulp into the manjar blanco, which cuts the sweetness and stiffens it for piping.":
+    "Integre la pulpa de lúcuma al manjar blanco: corta el dulzor y lo endurece para trabajar con manga.",
+  "Sandwich the cooled discs, roll the edges in more lucuma manjar if you like, and dust with icing sugar.":
+    "Arme el sándwich con los discos fríos, pase los bordes por más manjar de lúcuma si quiere y espolvoree azúcar en polvo.",
+  "Bake the discs up to a week ahead and sandwich within 24 hours of service.":
+    "Hornee los discos hasta una semana antes y arme los sándwiches dentro de las 24 horas previas al servicio.",
+  "Two days sandwiched before the biscuit softens. Undipped discs keep a week in a sealed tin.":
+    "Dos días armados antes de que la galleta se ablande. Los discos sin rellenar duran una semana en tarro hermético.",
+
+  // ---- 149 Turron de Dona Pepa, Avena ----
+  "Rub the butter into the flour and oatmeal, then bring it together with the yolks and a little anise water.":
+    "Arene la mantequilla con la harina y la avena, y una la masa con las yemas y un poco de agua de anís.",
+  "Roll the dough into finger-thick sticks and lay them in tight rows so they bake into a slab.":
+    "Forme palitos del grosor de un dedo y acomódelos en filas apretadas para que horneen como una placa.",
+  "Bake at 170 °C for 25 minutes until dry and firm all the way through, then cool completely.":
+    "Hornee a 170 °C por 25 minutos hasta que estén secos y firmes de lado a lado, y enfríe por completo.",
+  "Simmer the chancaca with ginger, cloves, orange peel, quince and fig leaf to a syrup that threads off a spoon.":
+    "Cocine la chancaca a fuego lento con kion, clavo, cáscara de naranja, membrillo y hoja de higo hasta una miel que hile desde la cuchara.",
+  "Layer the sticks in a tray, pouring syrup over each layer and crossing the direction as you build.":
+    "Acomode los palitos en capas en una bandeja, bañando cada capa con miel y cruzando la dirección conforme arma.",
+  "Leave overnight for the syrup to soak in, then cut into squares with a heavy oiled knife.":
+    "Deje toda la noche para que la miel penetre, y corte en cuadrados con un cuchillo pesado y aceitado.",
+  "Bake the sticks a week ahead. Assemble and syrup two days before service so it sets properly.":
+    "Hornee los palitos una semana antes. Arme y almibare dos días antes del servicio para que cuaje bien.",
+  "A week at room temperature, wrapped. This is an October product and it keeps like one.":
+    "Una semana a temperatura ambiente, envuelto. Es un producto de octubre y se conserva como tal.",
+
+  // ---- 150 Chicha Morada Trifle ----
+  "Boil the maiz morado with pineapple skin, quince, cinnamon and clove for 40 minutes to make the chicha.":
+    "Hierva el maíz morado con cáscara de piña, membrillo, canela y clavo por 40 minutos para hacer la chicha.",
+  "Strain it, sweeten to taste and sharpen it with lime — under-acidic chicha sets into a bland jelly.":
+    "Cuélela, endulce al gusto y acentúela con limón — una chicha poco ácida cuaja en una gelatina sosa.",
+  "Soften the gelatine, dissolve it into a portion of the warm chicha, then combine and cool to room temperature.":
+    "Hidrate la gelatina, disuélvala en una parte de la chicha tibia, combine y enfríe a temperatura ambiente.",
+  "Line the trifle bowls with sponge fingers and pour the cooled chicha over, filling to two-thirds.":
+    "Forre los boles con bizcotelas y vierta la chicha fría encima, llenando hasta dos tercios.",
+  "Set for at least 4 hours before the cream goes on; a warm jelly and whipped cream make a pink mess.":
+    "Deje cuajar al menos 4 horas antes de poner la crema; una gelatina tibia y crema batida dan un desastre rosado.",
+  "Whip the cream to soft peaks, spoon it over the set jelly and top with toasted oatmeal at the venue.":
+    "Bata la crema a picos suaves, repártala sobre la gelatina cuajada y corone con avena tostada en el local.",
+  "Make the chicha and set the jellies 2 days ahead. Cream and oatmeal go on at the venue.":
+    "Haga la chicha y cuaje las gelatinas 2 días antes. La crema y la avena van en el local.",
+  "Two hours out of the fridge before the jelly softens. The oatmeal goes on last or it goes soft.":
+    "Dos horas fuera de la refrigeradora antes de que la gelatina se ablande. La avena va al final o se ablanda.",
+
+  // ---- 151 Torta Tres Leches, Whisky ----
+  "36 portions": "36 porciones",
+  "Whisk the yolks with half the sugar to a thick ribbon, then fold in the sifted flour by hand.":
+    "Bata las yemas con la mitad del azúcar hasta punto letra, e integre la harina tamizada a mano.",
+  "Beat the whites to soft peak with the rest of the sugar and fold them through in three additions.":
+    "Bata las claras a picos suaves con el resto del azúcar e intégrelas en tres adiciones.",
+  "Bake at 175 °C for 30 minutes; the sponge must be dry, because a wet one collapses when soaked.":
+    "Hornee a 175 °C por 30 minutos; el bizcocho debe quedar seco, porque uno húmedo se desploma al remojarse.",
+  "Cool completely, then dock the whole surface with a skewer so the soak reaches the base.":
+    "Enfríe por completo y pinche toda la superficie con una brocheta para que el remojo llegue a la base.",
+  "Mix the three milks with the whisky and pour it over cold sponge in three passes, 20 minutes apart.":
+    "Mezcle las tres leches con el whisky y viértalas sobre el bizcocho frío en tres pasadas, con 20 minutos entre cada una.",
+  "Chill overnight and finish with burnt sugar at the venue, not before, or the top goes to syrup.":
+    "Refrigere toda la noche y termine con azúcar quemada en el local, no antes, o la superficie se vuelve almíbar.",
+  "Bake two days ahead, soak the day before. It is a better cake on day two than on day one.":
+    "Hornee dos días antes y remoje el día anterior. Es mejor torta al segundo día que al primero.",
+  "Needs refrigeration; two hours out at a Lima event. The soak makes it heavy, so cut small.":
+    "Necesita refrigeración; dos horas fuera en un evento limeño. El remojo la vuelve pesada, así que corte porciones chicas.",
+  "Soak in three passes at any size. Poured in one go it runs off the top and floods the tray.":
+    "Remoje en tres pasadas sea cual sea el tamaño. Vertido de golpe se escurre por encima e inunda la bandeja.",
+
+  // ---- 152 Lucuma Victoria Sponge ----
+  "Cream the butter and sugar for a full 5 minutes until it is pale and noticeably lighter.":
+    "Cremee la mantequilla y el azúcar por 5 minutos completos hasta que palidezca y se note más ligera.",
+  "Add the eggs one at a time with a spoonful of the flour to stop the batter splitting.":
+    "Agregue los huevos de a uno con una cucharada de la harina para evitar que la masa se corte.",
+  "Fold in the remaining flour in two additions and stop the moment no dry flour shows.":
+    "Integre el resto de la harina en dos adiciones y pare en el momento en que no quede harina seca a la vista.",
+  "Divide between four lined tins and bake at 180 °C for 25 to 30 minutes until springy.":
+    "Reparta en cuatro moldes forrados y hornee a 180 °C por 25 a 30 minutos hasta que estén esponjosos al tacto.",
+  "Beat the lucuma pulp with a third of the cream to a curd, then whip the rest to soft peak.":
+    "Bata la pulpa de lúcuma con un tercio de la crema hasta una crema espesa, y bata el resto a picos suaves.",
+  "Sandwich cold sponge with lucuma curd first, cream on top of it, and dust with icing sugar.":
+    "Arme el bizcocho frío poniendo primero la crema de lúcuma, encima la crema batida, y espolvoree azúcar en polvo.",
+  "Bake the day before and keep the sponges wrapped. Fill on the morning of the event.":
+    "Hornee el día anterior y guarde los bizcochos envueltos. Rellene la mañana del evento.",
+  "Four hours filled at room temperature. Filled the night before, the sponge goes damp.":
+    "Cuatro horas rellena a temperatura ambiente. Rellenada la noche anterior, el bizcocho se humedece.",
+
+  // ---- 153 Cacao Celebration Cake ----
+  "2 cakes, 40 slices": "2 tortas, 40 porciones",
+  "Melt 600 g of the chocolate with a third of the butter and let it cool to blood heat.":
+    "Derrita 600 g del chocolate con un tercio de la mantequilla y déjelo enfriar a temperatura corporal.",
+  "Cream the remaining butter with the caster sugar, then beat in the eggs two at a time.":
+    "Cremee el resto de la mantequilla con el azúcar fina y agregue los huevos de dos en dos batiendo.",
+  "Fold in the cooled chocolate, then the flour, and stop before the batter goes tight.":
+    "Integre el chocolate frío y luego la harina, y pare antes de que la masa se apriete.",
+  "Bake in four lined tins at 170 °C for 40 to 45 minutes; a skewer should come out with crumbs, not clean.":
+    "Hornee en cuatro moldes forrados a 170 °C por 40 a 45 minutos; la brocheta debe salir con migas, no limpia.",
+  "Make the buttercream by beating soft butter with melted chancaca and the remaining chocolate.":
+    "Haga el buttercream batiendo mantequilla pomada con chancaca derretida y el chocolate restante.",
+  "Level the layers with a serrated knife, stack with buttercream, and press cacao nibs round the base.":
+    "Empareje las capas con cuchillo de sierra, apílelas con buttercream y presione nibs de cacao alrededor de la base.",
+  "Bake two days ahead. Fill and coat the day before; a coated cake travels far better.":
+    "Hornee dos días antes. Rellene y cubra el día anterior; una torta cubierta viaja mucho mejor.",
+  "All day at room temperature. Above 26 °C the buttercream slips — transport it cold.":
+    "Todo el día a temperatura ambiente. Por encima de 26 °C el buttercream se desliza — transpórtela en frío.",
+  "Four tins is one oven. Above 80 slices, bake across two days rather than crowding shelves.":
+    "Cuatro moldes son un horno. Por encima de 80 porciones, hornee en dos días en vez de saturar las bandejas.",
+
+  // ---- 154 Carrot & Kiwicha Cake ----
+  "Toast the kiwicha dry until it pops, then cool it — untoasted it stays hard in the crumb.":
+    "Tueste la kiwicha en seco hasta que reviente y enfríela — sin tostar queda dura dentro de la miga.",
+  "Grate the carrot on the coarse side; fine grating turns to water and the cake sinks.":
+    "Ralle la zanahoria por el lado grueso; el rallado fino se vuelve agua y la torta se hunde.",
+  "Whisk the oil, sugar and eggs, then fold in the flour, cinnamon, kiwicha and carrot.":
+    "Bata el aceite, el azúcar y los huevos, e integre la harina, la canela, la kiwicha y la zanahoria.",
+  "Bake at 175 °C for 35 to 40 minutes until the top springs back and the edges pull away.":
+    "Hornee a 175 °C por 35 a 40 minutos hasta que la superficie vuelva al tacto y los bordes se despeguen.",
+  "Beat the queso fresco smooth with icing sugar and a little lime zest for the frosting.":
+    "Bata el queso fresco hasta que quede liso con azúcar en polvo y un poco de ralladura de limón para el frosting.",
+  "Frost only once the cake is stone cold, or the queso fresco slides off the top.":
+    "Cubra solo cuando la torta esté completamente fría, o el queso fresco se resbala por encima.",
+  "Bake 2 days ahead — an oil-based cake keeps far better than a butter one. Frost on the day.":
+    "Hornee 2 días antes — una torta a base de aceite se conserva mucho mejor que una de mantequilla. Cubra el mismo día.",
+  "Frosted, keep it cool and serve within four hours. Unfrosted it holds for days.":
+    "Ya cubierta, manténgala fresca y sírvala dentro de cuatro horas. Sin cubrir aguanta días.",
+
+  // ---- 155 Coffee & Pecan Cake ----
+  "Brew the coffee at double strength and cool it — hot coffee cooks the egg in the batter.":
+    "Prepare el café al doble de concentración y enfríelo — el café caliente cuaja el huevo de la masa.",
+  "Toast the pecans and chop them, keeping a third back whole for the top.":
+    "Tueste las pecanas y píquelas, reservando un tercio enteras para la superficie.",
+  "Cream the butter and sugar, add the eggs one at a time, then half the coffee and the flour.":
+    "Cremee la mantequilla y el azúcar, agregue los huevos de a uno y luego la mitad del café y la harina.",
+  "Fold the chopped pecans through and bake at 180 °C for 28 to 30 minutes.":
+    "Integre las pecanas picadas y hornee a 180 °C por 28 a 30 minutos.",
+  "Beat the remaining coffee into butter and icing sugar for the buttercream.":
+    "Integre el café restante batiéndolo con mantequilla y azúcar en polvo para el buttercream.",
+  "Sandwich and top the cold sponges, then set the whole pecans round the edge.":
+    "Rellene y cubra los bizcochos fríos, y coloque las pecanas enteras alrededor del borde.",
+  "Bake the day before. The coffee flavour deepens overnight and the crumb settles.":
+    "Hornee el día anterior. El sabor del café se profundiza durante la noche y la miga se asienta.",
+  "All day at room temperature. This is the most forgiving cake on the sheet.":
+    "Todo el día a temperatura ambiente. Es la torta más indulgente de toda la hoja.",
+
+  // ---- 156 Torta Helada de Aguaymanto ----
+  "Rub the butter into the oats, flour and a little sugar and press it into lined trays.":
+    "Arene la mantequilla con la avena, la harina y un poco de azúcar y presione en bandejas forradas.",
+  "Bake the oat base at 175 °C for 20 minutes until it smells nutty, then cool it flat.":
+    "Hornee la base de avena a 175 °C por 20 minutos hasta que huela a nuez y enfríela plana.",
+  "Cook the aguaymanto with the sugar until it collapses, then pass half and keep half whole.":
+    "Cocine el aguaymanto con el azúcar hasta que se deshaga, pase la mitad por colador y deje la otra mitad entera.",
+  "Soften the gelatine, dissolve it into the warm fruit, and cool the mixture to room temperature.":
+    "Hidrate la gelatina, disuélvala en la fruta tibia y enfríe la mezcla a temperatura ambiente.",
+  "Whip the cream to soft peak and fold a third of the fruit through it for the middle layer.":
+    "Bata la crema a picos suaves e integre un tercio de la fruta para la capa del medio.",
+  "Layer cream over base, then clear fruit jelly on top, and set 4 hours before cutting.":
+    "Ponga la crema sobre la base, luego la gelatina de fruta limpia encima, y deje cuajar 4 horas antes de cortar.",
+  "Build 2 days ahead. The layers set firmer overnight and cut far more cleanly.":
+    "Arme 2 días antes. Las capas cuajan más firmes durante la noche y se cortan mucho más limpias.",
+  "Needs refrigeration. Two hours out before the jelly softens at the edges.":
+    "Necesita refrigeración. Dos horas fuera antes de que la gelatina se ablande por los bordes.",
+
+  // ---- 157 Cacao & Olive Oil Cake (vegan) ----
+  "Sift the flour, sugar, cocoa and bicarbonate together — no egg means no second chance to fix lumps.":
+    "Tamice juntos la harina, el azúcar, el cacao y el bicarbonato — sin huevo no hay segunda oportunidad para arreglar grumos.",
+  "Whisk the olive oil into the chicha morada and pour it into the dry ingredients.":
+    "Integre el aceite de oliva a la chicha morada batiendo y viértalo sobre los ingredientes secos.",
+  "Add the vinegar last and mix for 30 seconds only; the acid and bicarbonate start working immediately.":
+    "Agregue el vinagre al final y mezcle solo 30 segundos; el ácido y el bicarbonato empiezan a actuar de inmediato.",
+  "Get it into the tins and into the oven straight away, or the rise is spent before it bakes.":
+    "Llévelo a los moldes y al horno de inmediato, o el levantado se gasta antes de hornearse.",
+  "Bake at 180 °C for 32 to 35 minutes until a skewer comes out clean.":
+    "Hornee a 180 °C por 32 a 35 minutos hasta que una brocheta salga limpia.",
+  "Cool in the tin — a vegan sponge is fragile hot and firms up considerably as it cools.":
+    "Enfríe en el molde — un bizcocho vegano es frágil en caliente y toma bastante firmeza al enfriar.",
+  "Bake the day before; oil-based sponges keep better than butter ones and stay moist for three days.":
+    "Hornee el día anterior; los bizcochos a base de aceite se conservan mejor que los de mantequilla y siguen húmedos tres días.",
+  "All day at room temperature. No dairy and no egg, so it is also the safest cake in a hot van.":
+    "Todo el día a temperatura ambiente. Sin lácteos ni huevo, así que también es la torta más segura en una camioneta caliente.",
+  "Mix in batches no larger than two tins. The raising is chemical and it does not wait.":
+    "Mezcle en tandas de no más de dos moldes. El leudado es químico y no espera.",
+
+  // ---- 158 Quinoa & Almond Torte ----
+  "2 tortes, 24 slices": "2 tortas, 24 porciones",
+  "Keep this away from every wheat surface in the kitchen — for a coeliac guest that is the whole point.":
+    "Manténgala lejos de toda superficie con trigo de la cocina — para un invitado celíaco ese es todo el punto.",
+  "Whisk the yolks with two-thirds of the sugar until pale, then fold in the almonds and quinoa flour.":
+    "Bata las yemas con dos tercios del azúcar hasta que palidezcan e integre las almendras y la harina de quinua.",
+  "Beat the whites to soft peak with the remaining sugar; they are the only lift this cake gets.":
+    "Bata las claras a picos suaves con el azúcar restante; son el único levantado que tiene esta torta.",
+  "Fold the whites through in three additions, losing as little air as you can manage.":
+    "Integre las claras en tres adiciones, perdiendo la menor cantidad de aire posible.",
+  "Fold in the melted butter and lemon zest last, then bake at 170 °C for 38 to 40 minutes.":
+    "Integre al final la mantequilla derretida y la ralladura de limón, y hornee a 170 °C por 38 a 40 minutos.",
+  "Scatter flaked almonds over while warm so they stick, and cool completely in the tin.":
+    "Esparza almendras laminadas en tibio para que se adhieran, y enfríe por completo en el molde.",
+  "Bake 2 days ahead. It is denser and better on the second day.":
+    "Hornee 2 días antes. Es más densa y mejor al segundo día.",
+  "All day at room temperature. Wheat-free by construction, not by substitution.":
+    "Todo el día a temperatura ambiente. Sin trigo por construcción, no por sustitución.",
+
+  // ---- 159 Chirimoya Pavlova ----
+  "Wipe the bowl with lemon and dry it — a trace of fat and the whites will not whip.":
+    "Limpie el bol con limón y séquelo — con un rastro de grasa las claras no montan.",
+  "Beat the whites to soft peak, then add the sugar a spoonful at a time over a full 8 minutes.":
+    "Bata las claras a picos suaves y agregue el azúcar de a una cucharada a lo largo de 8 minutos completos.",
+  "Fold in the cornflour and vinegar at the end; they give the marshmallow centre.":
+    "Integre el chuño y el vinagre al final; son los que dan el centro tipo malvavisco.",
+  "Bake at 110 °C for 2 hours, then switch the oven off and leave them in it to cool completely.":
+    "Hornee a 110 °C por 2 horas, apague el horno y déjelas dentro hasta que enfríen por completo.",
+  "Scoop the chirimoya at the last moment and pick the seeds out — every one of them.":
+    "Saque la pulpa de la chirimoya al último momento y retire las pepas — todas y cada una.",
+  "Whip the cream to soft peak, pile it on, and top with chirimoya and lime at the venue.":
+    "Bata la crema a picos suaves, móntela encima y corone con chirimoya y limón en el local.",
+  "Bake the meringue 2 days ahead and keep it sealed and dry. Assemble at the venue only.":
+    "Hornee el merengue 2 días antes y manténgalo sellado y seco. Arme únicamente en el local.",
+  "Twenty minutes assembled. Lima humidity is the enemy — keep the shells boxed until the last moment.":
+    "Veinte minutos una vez armada. La humedad de Lima es el enemigo — mantenga los merengues encajados hasta el último momento.",
+
+  // ---- 160 Banana & Chancaca Loaf ----
+  "3 loaves, 30 slices": "3 kekes, 30 porciones",
+  "Use bananas that are black — anything less and the loaf tastes of flour rather than fruit.":
+    "Use plátanos negros — con menos que eso el keke sabe a harina y no a fruta.",
+  "Melt two-thirds of the chancaca with a splash of water and let it cool before it meets the eggs.":
+    "Derrita dos tercios de la chancaca con un chorro de agua y déjela enfriar antes de que toque los huevos.",
+  "Mash the bananas roughly, leaving lumps; a puree gives you a dense wet loaf.":
+    "Aplaste los plátanos grueso, dejando grumos; un puré da un keke denso y húmedo.",
+  "Fold everything together in as few strokes as possible and get it into lined tins.":
+    "Integre todo con la menor cantidad de movimientos posible y llévelo a moldes forrados.",
+  "Bake at 170 °C for 50 to 55 minutes, covering the tops with foil at 35 minutes if they colour fast.":
+    "Hornee a 170 °C por 50 a 55 minutos, cubriendo la superficie con papel aluminio a los 35 minutos si dora rápido.",
+  "Melt the remaining chancaca and brush it over while the loaves are still hot in the tin.":
+    "Derrita la chancaca restante y pincélela mientras los kekes siguen calientes en el molde.",
+  "Bake 3 days ahead. It improves for two of them and then holds.":
+    "Hornee 3 días antes. Mejora durante dos de ellos y luego se mantiene.",
+  "Days, wrapped. The best-keeping cake here and the cheapest to make.":
+    "Días, envuelto. La torta que mejor se conserva de esta carta y la más barata de hacer.",
 };
