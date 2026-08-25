@@ -17,9 +17,14 @@ const require = createRequire(import.meta.url);
 
 function loadData(file, exportName) {
   const src = fs.readFileSync(path.join(ROOT, "data", file), "utf8");
+  // Same stripping as build-standalone: annotated and bare exports both, plus
+  // `as const` and type aliases, none of which are valid CJS.
   const js = src
     .replace(/^import type .*$/gm, "")
-    .replace(/export const (\w+)\s*:[^=]+=/g, "module.exports.$1 =");
+    .replace(/^export type .*$/gm, "")
+    .replace(/export const (\w+)\s*:[^=]+=/g, "module.exports.$1 =")
+    .replace(/export const (\w+)\s*=/g, "module.exports.$1 =")
+    .replace(/\bas const\b/g, "");
   const tmp = path.join(ROOT, `.book-${exportName}.tmp.cjs`);
   fs.writeFileSync(tmp, js);
   try {
@@ -33,12 +38,66 @@ function loadData(file, exportName) {
 
 const DISHES = loadData("dishes.ts", "DISHES");
 const RECIPES = loadData("recipes.ts", "RECIPES");
+const ES = loadData("i18n.ts", "ES");
+// The recipe lines live in their own file because there are 1,590 of them and
+// they arrive in tranches. Merged here so one lookup serves both.
+const ES_RECIPES = loadData("i18n-recipes.ts", "ES_RECIPES");
+Object.assign(ES, ES_RECIPES);
+const ES_INGREDIENTS = loadData("i18n-ingredients.ts", "ES_INGREDIENTS");
 
-const CATEGORY_LABEL = {
+// `npm run book -- --lang es` prints the kitchen edition. The ingredient
+// names are the ones a Lima market uses, which is the half of this a cook
+// needs before anything else.
+const LANG = process.argv.includes("--lang") ? process.argv[process.argv.indexOf("--lang") + 1] : "en";
+const es = LANG === "es";
+
+/** Translate where we can, leave the source visible where we cannot. */
+function t(s) {
+  if (!es) return s;
+  const key = String(s).replace(/\s+/g, " ").trim();
+  return ES[key] || s;
+}
+
+const PREP_WORDS = ("chopped finely coarsely sliced diced grated softened melted cubed minced " +
+  "crushed shredded peeled trimmed beaten whisked sifted soaked rinsed drained warmed cooled " +
+  "room temperature roughly thinly thickly picked stripped halved quartered scored cleaned " +
+  "boned skinned jointed filleted deseeded hulled zested juiced").split(" ");
+const IRREGULAR = { leaves:"leaf", loaves:"loaf", knives:"knife", haggis:"haggis",
+  asparagus:"asparagus", couscous:"couscous", tomatoes:"tomato", potatoes:"potato",
+  berries:"berry", cherries:"cherry", anchovies:"anchovy", chives:"chive", peas:"pea",
+  oats:"oat", greens:"green", molasses:"molasses" };
+const OR_OVERRIDE = { "lamb or beef stock": "lamb stock", "fish or light chicken stock": "fish stock" };
+
+function canonIng(item) {
+  const raw = String(item ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const head = raw.split(",")[0].trim().replace(/\s+/g, " ");
+  if (OR_OVERRIDE[head]) return OR_OVERRIDE[head];
+  const body = raw.split(",")[0].replace(/\([^)]*\)/g, " ").split(/\bor\b/)[0]
+    .replace(/[^a-z0-9%\s-]/g, " ");
+  return body.split(/\s+/).filter(Boolean)
+    .filter((w) => !PREP_WORDS.includes(w))
+    .map((w) => IRREGULAR[w] || (w.length > 3 && w.endsWith("s") && !w.endsWith("ss") ? w.slice(0, -1) : w))
+    .join(" ").trim();
+}
+
+/** The market name, with the prep note kept: the name is the shop, the note is the job. */
+function ingName(item) {
+  if (!es) return item;
+  const key = canonIng(item);
+  const name = ES_INGREDIENTS[key];
+  if (!name) return item;
+  const comma = String(item).indexOf(",");
+  return comma > -1 ? name + String(item).slice(comma) : name;
+}
+
+const CATEGORY_LABEL_EN = {
   canape: "Canapés & bites", main: "Mains", bowl: "Bowls", side: "Sides & breads",
   breakfast: "Breakfast", bakery: "Bakery", dessert: "Desserts"
 };
 const ORDER = ["canape", "main", "bowl", "side", "breakfast", "bakery", "dessert"];
+const CATEGORY_LABEL = Object.fromEntries(
+  Object.entries(CATEGORY_LABEL_EN).map(([k, v]) => [k, t(v)])
+);
 const FORMAT = {
   "drop-off": "Drop-off", buffet: "Buffet", plated: "Plated", "live-station": "Live station"
 };
@@ -73,28 +132,28 @@ function recipeHtml(r) {
     </header>
     <div class="cols">
       <section>
-        <h4>Ingredients</h4>
+        <h4>${esc(t("Ingredients"))}</h4>
         <table class="ing">${r.ingredients.map((i) => `
-          <tr><td class="q">${esc(i.qty)}</td><td>${esc(i.item)}${
+          <tr><td class="q">${esc(i.qty)}</td><td>${esc(ingName(i.item))}${
             i.note ? `<span class="inote">${esc(i.note)}</span>` : ""}</td></tr>`).join("")}
         </table>
       </section>
       <section>
-        <h4>Method</h4>
-        <ol>${r.method.map((m) => `<li>${esc(m)}</li>`).join("")}</ol>
+        <h4>${esc(t("Method"))}</h4>
+        <ol>${r.method.map((m) => `<li>${esc(t(m))}</li>`).join("")}</ol>
       </section>
     </div>
     <footer>
-      <p><b>Make ahead</b> ${esc(r.makeAhead)}</p>
-      <p><b>Holds</b> ${esc(r.holds)}</p>
-      ${r.scaling ? `<p><b>At scale</b> ${esc(r.scaling)}</p>` : ""}
+      <p><b>${esc(t("Make ahead"))}</b> ${esc(t(r.makeAhead))}</p>
+      <p><b>${esc(t("Holds"))}</b> ${esc(t(r.holds))}</p>
+      ${r.scaling ? `<p><b>${esc(t("At scale"))}</b> ${esc(t(r.scaling))}</p>` : ""}
     </footer>
   </article>`;
 }
 
 const html = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<title>Aye Si Cena — Kitchen Book</title>
+<html lang="${LANG}"><head><meta charset="utf-8">
+<title>${es ? "Aye Si Cena — Libro de cocina" : "Aye Si Cena — Kitchen Book"}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -145,7 +204,7 @@ const html = `<!doctype html>
 </style></head>
 <body><div class="wrap">
   <h1>Aye Si Cena</h1>
-  <p class="sub">The kitchen book — ${RECIPES.length} recipes, at catering scale.</p>
+  <p class="sub">${es ? `El libro de cocina — ${RECIPES.length} recetas, a escala de catering.` : `The kitchen book — ${RECIPES.length} recipes, at catering scale.`}</p>
 
   <div class="warn">
     <b>Read this first.</b> Quantities here are batch quantities, not domestic ones —
@@ -164,7 +223,7 @@ const html = `<!doctype html>
   ${grouped.map((g) => `<h2 class="cat">${esc(g.label)}</h2>${g.rows.map(recipeHtml).join("")}`).join("")}
 </div></body></html>`;
 
-const out = path.join(ROOT, "kitchen-book.html");
+const out = path.join(ROOT, es ? "kitchen-book-es.html" : "kitchen-book.html");
 fs.writeFileSync(out, html);
 const kb = Math.round(Buffer.byteLength(html) / 1024);
 console.log(`wrote ${out} (${kb} KB, ${RECIPES.length} recipes across ${grouped.length} courses)`);

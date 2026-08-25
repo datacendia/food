@@ -51,6 +51,10 @@ const INGREDIENTS = loadData("ingredients.ts", "INGREDIENTS");
 const MOMENTS = loadData("moments.ts", "MOMENTS");
 const RECIPES = loadData("recipes.ts", "RECIPES");
 const ES = loadData("i18n.ts", "ES");
+// The recipe lines live in their own file because there are 1,590 of them and
+// they arrive in tranches. Merged here so one lookup serves both.
+const ES_RECIPES = loadData("i18n-recipes.ts", "ES_RECIPES");
+Object.assign(ES, ES_RECIPES);
 const ES_INGREDIENTS = loadData("i18n-ingredients.ts", "ES_INGREDIENTS");
 const INGREDIENT_ATTRS = loadData("ingredient-attributes.ts", "INGREDIENT_ATTRS");
 const PLANT_PLAIN = loadData("ingredient-attributes.ts", "PLANT_PLAIN");
