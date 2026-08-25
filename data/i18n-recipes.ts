@@ -1465,4 +1465,602 @@ export const ES_RECIPES: Record<string, string> = {
     "Todo salvo las almendras se puede hacer un día antes, y la salsa mejora.",
   "4 hours chilled. One of the strongest and most reliable corporate box items.":
     "4 horas refrigerado. Uno de los productos de caja corporativa más sólidos y confiables.",
+
+  // ---- 71 Ploughman's Box ----
+  "20 boxes": "20 cajas",
+  "imported; the single most expensive line in this box":
+    "importado; la línea más cara de toda esta caja",
+  "local, sharp, and cuts the import cost considerably":
+    "local, de sabor marcado, y reduce bastante el costo de importación",
+  "as dish 122": "igual que el plato 122",
+  "This is an assembly job, and the discipline is in the cutting rather than the cooking.":
+    "Este es un trabajo de armado, y la disciplina está en el corte más que en la cocción.",
+  "Cut the cheese in generous wedges, not slices. A ploughman's should look like a wedge of cheese, not a sandwich filling.":
+    "Corte el queso en cuñas generosas, no en láminas. Un ploughman's debe verse como una cuña de queso, no como relleno de sándwich.",
+  "Fold the ham rather than laying it flat — height reads as generosity in a box.":
+    "Doble el jamón en vez de acostarlo plano — en una caja, la altura se lee como generosidad.",
+  "Portion the preserve and piccalilli into small pots so they do not wet the bread.":
+    "Porcione la mermelada y el piccalilli en potes chicos para que no mojen el pan.",
+  "Cut the apple last and toss in lemon water, or it browns before the box is closed.":
+    "Corte la manzana al final y páselas por agua con limón, o se oxida antes de cerrar la caja.",
+  "Pack the bread on top so it is not compressed under the cheese.":
+    "Ponga el pan encima para que no quede aplastado bajo el queso.",
+  "Cut cheese and ham the morning of. Preserves keep months.":
+    "Corte el queso y el jamón la misma mañana. Las conservas duran meses.",
+  "4 hours at cool room temperature. Zero cooking on the day makes this the easiest thing in the matrix to scale.":
+    "4 horas a temperatura ambiente fresca. Cero cocción el día del evento la vuelve la cosa más fácil de escalar de toda la matriz.",
+
+  // ---- 72 Cullen Skink Bowl ----
+  "as dish 28, made slightly thicker": "igual que el plato 28, algo más espeso",
+  "for texture in the bowl": "para dar textura al bowl",
+  "as dish 52, packed separately": "igual que el plato 52, empacados aparte",
+  "Make the chupe as dish 28 but reduce it further — a bowl version needs to be thick enough not to slop in transit.":
+    "Haga el chupe como en el plato 28 pero redúzcalo más — la versión en bowl debe quedar lo bastante espesa para no chapotear en el traslado.",
+  "Roast the extra potato cubes so there is something with an edge in a soup that is otherwise soft.":
+    "Hornee los cubos de papa adicionales para que haya algo con arista en una sopa que por lo demás es blanda.",
+  "Cool the soup fast in a shallow tray before boxing. Hot soup in a sealed container steams and thins.":
+    "Enfríe la sopa rápido en una bandeja baja antes de empacarla. La sopa caliente en un envase sellado se cocina al vapor y se aguada.",
+  "Box the soup, then the roast potato and extra fish on top.":
+    "Empaque la sopa y encima la papa asada y el pescado adicional.",
+  "Send the oatcakes in a separate bag. In the same box they are soft within the hour.":
+    "Mande los oatcakes en bolsa aparte. En la misma caja se ablandan en una hora.",
+  "Soup 3 days ahead, and it improves.": "La sopa 3 días antes, y mejora.",
+  "Reheats well and travels well, provided the oatcakes stay separate. A rare hot drop-off that genuinely works.":
+    "Se recalienta bien y viaja bien, siempre que los oatcakes vayan aparte. Una de las pocas entregas calientes que de verdad funciona.",
+
+  // ---- 73 Greek Mezze Box ----
+  "as dish 23": "igual que el plato 23",
+  "as dish 109": "igual que el plato 109",
+  "as dish 111": "igual que el plato 111",
+  "as dish 110": "igual que el plato 110",
+  "This box is an assembly of five component recipes, which is what makes it efficient: nothing here is made only for this dish.":
+    "Esta caja es el armado de cinco recetas componentes, y eso es lo que la hace eficiente: nada aquí se prepara solo para este plato.",
+  "Portion the wet dips into pots first and set them in the box before anything else.":
+    "Porcione primero las salsas húmedas en potes y colóquelas en la caja antes que nada.",
+  "Keftedes go in cold — they are as good cold as warm, which is why they belong in a box.":
+    "Los keftedes van fríos — están tan buenos fríos como tibios, y por eso pertenecen a una caja.",
+  "Cut the salad components chunky and undressed, with the dressing in a pot.":
+    "Corte los componentes de la ensalada en trozos grandes y sin aderezar, con el aderezo en un pote.",
+  "Flatbread on top, folded rather than flat.":
+    "El pan plano encima, doblado y no extendido.",
+  "Check the total weight per box. Mezze boxes drift heavier than costed because everything is scooped rather than counted.":
+    "Controle el peso total por caja. Las cajas de mezze se van por encima del costeo porque todo se sirve con cuchara en vez de contarse.",
+  "Every component holds 2–3 days. Assemble the morning of.":
+    "Cada componente aguanta 2–3 días. Arme la misma mañana.",
+  "4 hours cold. The highest-margin box in the matrix if the portioning is disciplined.":
+    "4 horas en frío. La caja de mayor margen de la matriz si el porcionado es disciplinado.",
+
+  // ---- 74 Nordic Cure Box ----
+  "as dish 44": "igual que el plato 44",
+  "as dish 120": "igual que el plato 120",
+  "as dish 121": "igual que el plato 121",
+  "as dish 117": "igual que el plato 117",
+  "the mustard-dill sauce from dish 44": "la salsa de mostaza y eneldo del plato 44",
+  "Slice the gravlax cold and lay it on paper, not directly on other components — it weeps.":
+    "Corte el gravlax en frío y colóquelo sobre papel, no directamente sobre otros componentes — suelta líquido.",
+  "Pack the potato salad in its own pot; the dressing will grey the crispbread on contact.":
+    "Empaque la ensalada de papa en su propio pote; el aderezo pone gris el crispbread al contacto.",
+  "Pickles in a pot, sauce in a pot. This box lives or dies on compartmentalisation.":
+    "Los encurtidos en un pote, la salsa en otro. Esta caja vive o muere por su compartimentación.",
+  "Crispbread goes in last, on top, and only if the box seals well.":
+    "El crispbread va al final, encima, y solo si la caja sella bien.",
+  "Everything is cured, pickled or cold-set, which makes this the most transport-stable box on the list.":
+    "Todo está curado, encurtido o cuajado en frío, lo que la vuelve la caja más estable para transportar de toda la carta.",
+  "Cure 3 days ahead, crispbread a week, pickles a month. Almost nothing happens on the day.":
+    "Cure 3 días antes, el crispbread una semana antes, los encurtidos un mes antes. Casi nada ocurre el día del evento.",
+  "5 hours cold without deterioration.": "5 horas en frío sin deterioro.",
+
+  // ---- 75 Pollo a la Brasa Pie ----
+  "the brasa marinade": "el adobo a la brasa",
+  "roux": "para el roux",
+  "Marinate the chicken in sillao, cumin, paprika, huacatay and half the ají amarillo for 4 hours.":
+    "Macere el pollo en sillao, comino, páprika, huacatay y la mitad del ají amarillo por 4 horas.",
+  "Roast hard at 220 °C for 25 minutes until charred at the edges. The char is the pollo a la brasa flavour; without it this is just a chicken pie.":
+    "Hornee fuerte a 220 °C por 25 minutos hasta que se queme en los bordes. Ese tostado es el sabor a pollo a la brasa; sin él esto es solo un pie de pollo.",
+  "Shred the meat and reserve every scrap of resting juice.":
+    "Deshilache la carne y reserve hasta la última gota del jugo del reposo.",
+  "Make a roux, add stock and the resting juices, and simmer to a thick velouté. Add cream and the remaining ají amarillo.":
+    "Haga un roux, agregue caldo y los jugos del reposo, y cocine hasta una velouté espesa. Agregue crema y el resto del ají amarillo.",
+  "Fold in the chicken. Cool completely before filling — warm filling melts shortcrust.":
+    "Integre el pollo. Enfríe por completo antes de rellenar — un relleno tibio derrite la masa quebrada.",
+  "Fill, lid, crimp, vent and bake at 190 °C for 35 minutes.":
+    "Rellene, tape, repulgue, haga un respiradero y hornee a 190 °C por 35 minutos.",
+  "Filling 2 days ahead. Assemble and freeze raw if needed.":
+    "El relleno 2 días antes. Arme y congele crudo si hace falta.",
+  "Good warm for an hour, fine at room temperature. A dependable box pie.":
+    "Bueno tibio por una hora, correcto a temperatura ambiente. Un pie de caja confiable.",
+
+  // ---- 76 Petticoat Tails, Cacao Nib ----
+  "60 wedges": "60 cuñas",
+  "the whole flavour; use the best you can afford":
+    "todo el sabor está aquí; use el mejor que su presupuesto permita",
+  "this is what gives shortbread its sandy snap":
+    "esto es lo que le da al shortbread su quiebre arenoso",
+  "Beat butter and sugar until just combined. Do not cream it pale — air makes shortbread cakey.":
+    "Bata mantequilla y azúcar solo hasta unir. No la cremee hasta que palidezca — el aire vuelve el shortbread esponjoso.",
+  "Fold in both flours and the salt, then the cacao nibs, and stop the moment it comes together.":
+    "Integre las dos harinas y la sal, luego los nibs de cacao, y pare en el momento en que la masa se une.",
+  "Press into round tins about 1 cm deep. Press, do not roll.":
+    "Presione en moldes redondos de aproximadamente 1 cm de alto. Presione, no estire con rodillo.",
+  "Crimp the edges, prick all over with a fork, and score into wedges before baking. Scoring after baking shatters it.":
+    "Repulgue los bordes, pinche toda la superficie con tenedor y marque las cuñas antes de hornear. Marcarlas después del horneado lo hace añicos.",
+  "Chill 30 minutes, then bake at 150 °C for 40–45 minutes until pale gold at the very edge only.":
+    "Refrigere 30 minutos y hornee a 150 °C por 40–45 minutos hasta que esté dorado claro solo en el borde.",
+  "Cut through the scores while hot, sprinkle with demerara, and cool in the tin.":
+    "Corte por las marcas en caliente, espolvoree azúcar demerara y enfríe en el molde.",
+  "Two weeks in a tin. The dough freezes a month.":
+    "Dos semanas en un tarro. La masa se congela un mes.",
+  "Indefinite in a sealed tin, and the wedge shape is visually distinctive enough to carry a gift box. One of the strongest retail candidates in the matrix.":
+    "Indefinido en tarro hermético, y la forma de cuña es lo bastante distintiva como para sostener una caja de regalo. Uno de los mejores candidatos a producto de venta al público de toda la matriz.",
+
+  // ---- 77 Lucuma Millionaire's Shortbread ----
+  "48 squares": "48 cuadrados",
+  "as dish 76 without the nibs, pressed into a lined tray":
+    "igual que el plato 76 pero sin los nibs, presionado en una bandeja forrada",
+  "Bake the shortbread base at 150 °C for 35 minutes until pale gold. Cool completely in the tin.":
+    "Hornee la base de shortbread a 150 °C por 35 minutos hasta que quede dorada clara. Enfríe por completo en el molde.",
+  "Cook the manjar blanco with the lúcuma and butter over low heat for 10 minutes, stirring constantly, until it thickens and pulls from the pan.":
+    "Cocine el manjar blanco con la lúcuma y la mantequilla a fuego bajo por 10 minutos, revolviendo sin parar, hasta que espese y se despegue de la olla.",
+  "Pour over the cooled base and level. Chill 2 hours until firm.":
+    "Vierta sobre la base fría y empareje. Refrigere 2 horas hasta que esté firme.",
+  "Temper the chocolate properly: melt to 45 °C, cool to 27 °C, bring back to 31 °C. Untempered chocolate blooms grey within a day and looks like a fault.":
+    "Temple bien el chocolate: derrita a 45 °C, baje a 27 °C y vuelva a 31 °C. El chocolate sin templar florece gris en un día y parece un defecto.",
+  "Pour over, spread thin, and scatter Maras salt before it sets.":
+    "Vierta encima, extienda delgado y esparza sal de Maras antes de que cuaje.",
+  "Cut with a hot dry knife once set but not fridge-cold, or the chocolate cracks.":
+    "Corte con un cuchillo caliente y seco cuando esté cuajado pero no helado, o el chocolate se quiebra.",
+  "Assemble 3 days ahead. Do not refrigerate once finished — condensation dulls the chocolate.":
+    "Arme 3 días antes. No lo refrigere una vez terminado — la condensación opaca el chocolate.",
+  "Days at cool room temperature. In Lima's summer heat the caramel softens; keep it below 22 °C.":
+    "Días a temperatura ambiente fresca. Con el calor del verano limeño el caramelo se ablanda; manténgalo por debajo de 22 °C.",
+  "Tempering is the bottleneck. Temper in 2 kg batches or the chocolate falls out of temper before you finish pouring.":
+    "El templado es el cuello de botella. Temple en tandas de 2 kg o el chocolate se sale de temple antes de que termine de verter.",
+
+  // ---- 78 Whisky & Maca Alfajores ----
+  "50 alfajores": "50 alfajores",
+  "Beat butter and icing sugar, then the yolks.":
+    "Bata la mantequilla con el azúcar en polvo y luego las yemas.",
+  "Fold in both flours and the maca. The dough will be very short and crumbly — that is correct.":
+    "Integre las dos harinas y la maca. La masa quedará muy quebradiza y desmoronable — eso es lo correcto.",
+  "Chill 1 hour, then roll 5 mm between sheets of paper, which is the only way to handle a dough this short.":
+    "Refrigere 1 hora y estire a 5 mm entre hojas de papel, que es la única forma de manejar una masa tan quebradiza.",
+  "Cut 4 cm rounds and bake at 170 °C for 12 minutes. They should not colour at all.":
+    "Corte discos de 4 cm y hornee a 170 °C por 12 minutos. No deben tomar nada de color.",
+  "Cool completely on the tray. Warm alfajor biscuits break if you lift them.":
+    "Enfríe por completo sobre la bandeja. Las tapas de alfajor tibias se rompen al levantarlas.",
+  "Beat the whisky into the manjar blanco. Pipe, sandwich, and roll the edges in coconut.":
+    "Integre el whisky al manjar blanco. Rellene con manga, arme el sándwich y pase los bordes por coco.",
+  "The maca is earthy and slightly bitter, which is what stops the whole thing being cloying.":
+    "La maca es terrosa y ligeramente amarga, y eso es lo que evita que todo resulte empalagoso.",
+  "Biscuits keep a week unfilled. Filled, they soften after 2 days — which some people prefer.":
+    "Las tapas duran una semana sin rellenar. Rellenos, se ablandan a los 2 días — cosa que a algunos les gusta más.",
+  "Excellent. Boxes and travels perfectly. Needs the liquor licence flag only because of the whisky in the filling.":
+    "Excelente. Se encaja y viaja a la perfección. Lleva la marca de licencia de licor únicamente por el whisky del relleno.",
+
+  // ---- 79 Scottish Macaroon (Papa Amarilla) ----
+  "50 macaroons": "50 macaroons",
+  "roughly; add until it stops absorbing": "aproximado; agregue hasta que deje de absorber",
+  "Rice the potato and let it cool completely and dry out. Warm potato will turn the sugar to syrup and the mixture will never set.":
+    "Prense la papa y déjela enfriar por completo y secarse. La papa tibia convierte el azúcar en almíbar y la mezcla nunca cuaja.",
+  "Beat in the icing sugar a large spoonful at a time. It will look like nothing is happening, then it suddenly seizes into a stiff fondant.":
+    "Incorpore el azúcar en polvo de a una cucharada grande. Parecerá que no pasa nada, y de pronto agarra y se vuelve un fondant firme.",
+  "Keep adding sugar until it is firm enough to roll and no longer sticky. The exact amount depends on how wet the potato is.":
+    "Siga agregando azúcar hasta que esté firme para bolear y deje de pegarse. La cantidad exacta depende de qué tan húmeda esté la papa.",
+  "Roll into 20 g logs and chill 1 hour until hard.":
+    "Forme cilindros de 20 g y refrigere 1 hora hasta que endurezcan.",
+  "Dip in tempered chocolate, then straight into the toasted coconut.":
+    "Bañe en chocolate templado y pase de inmediato por el coco tostado.",
+  "Set on paper at cool room temperature.":
+    "Deje cuajar sobre papel a temperatura ambiente fresca.",
+  "One potato and a bag of sugar becomes a confection — a Scottish sweet built on the crop Peru domesticated. This is the best story in the matrix and it costs almost nothing to make.":
+    "Una papa y una bolsa de azúcar se convierten en un dulce — un dulce escocés construido sobre el cultivo que el Perú domesticó. Es la mejor historia de la matriz y hacerla no cuesta casi nada.",
+  "The fondant keeps a week chilled. Dipped, they keep 2 weeks.":
+    "El fondant dura una semana refrigerado. Bañados, duran 2 semanas.",
+  "Very stable. Survives a hot van better than anything else in the bakery section.":
+    "Muy estables. Sobreviven una camioneta caliente mejor que cualquier otra cosa de la sección de panadería.",
+  "Trivially scalable, which combined with the story makes this the obvious retail product.":
+    "Escalable sin esfuerzo, lo que sumado a la historia lo vuelve el producto obvio para venta al público.",
+
+  // ---- 80 Lucuma Tablet ----
+  "60 pieces": "60 piezas",
+  "397 g tin": "lata de 397 g",
+  "Warm the milk, sugar and butter in a heavy, deep pan until the sugar dissolves completely. Undissolved sugar means grainy tablet.":
+    "Caliente la leche, el azúcar y la mantequilla en una olla pesada y honda hasta que el azúcar se disuelva por completo. Azúcar sin disolver significa tablet arenoso.",
+  "Add the condensed milk and bring to a steady boil, stirring constantly. It will climb, so use a pan twice the size you think you need.":
+    "Agregue la leche condensada y lleve a hervor constante, revolviendo sin parar. Va a subir, así que use una olla del doble del tamaño que cree necesitar.",
+  "Boil to 118 °C, about 20 minutes. This is soft-ball stage and there is no substitute for a thermometer.":
+    "Hierva hasta 118 °C, unos 20 minutos. Es el punto de bola blanda y no hay sustituto para un termómetro.",
+  "Take off the heat, add the lúcuma and salt, and beat hard for 5–8 minutes as it cools.":
+    "Retire del fuego, agregue la lúcuma y la sal, y bata con fuerza 5–8 minutos mientras enfría.",
+  "You are looking for the moment it loses its gloss and thickens — that is crystallisation starting, and it is the difference between tablet and fudge.":
+    "Busque el momento en que pierde el brillo y espesa — ahí empieza la cristalización, y es la diferencia entre tablet y fudge.",
+  "Pour into a lined tray immediately and mark into squares while still warm.":
+    "Vierta de inmediato en una bandeja forrada y marque los cuadrados mientras aún está tibio.",
+  "Keeps a month in a tin.": "Dura un mes en un tarro.",
+  "Indefinite. Dry, sweet and stable — ideal for boxes and gifts.":
+    "Indefinido. Seco, dulce y estable — ideal para cajas y regalos.",
+  "Do not double beyond 3 kg of sugar in one pan. Larger batches will not reach temperature evenly and you get a soft centre.":
+    "No pase de 3 kg de azúcar en una sola olla. Las tandas más grandes no alcanzan temperatura pareja y queda un centro blando.",
+
+  // ---- 81 Cacao & Sea Salt Tablet ----
+  "Follow the tablet method exactly as dish 80 up to 118 °C.":
+    "Siga el método del tablet exactamente como en el plato 80 hasta los 118 °C.",
+  "Off the heat, stir in the chopped chocolate until it melts completely.":
+    "Fuera del fuego, integre el chocolate picado hasta que se derrita por completo.",
+  "Beat until it loses its gloss and thickens.":
+    "Bata hasta que pierda el brillo y espese.",
+  "Pour into a lined tray, scatter with cacao nibs and Maras salt, and press them in lightly.":
+    "Vierta en una bandeja forrada, esparza nibs de cacao y sal de Maras, y presiónelos ligeramente.",
+  "Mark into squares while warm.": "Marque los cuadrados en tibio.",
+  "The salt is the point: dark chocolate tablet without it is one-dimensional.":
+    "La sal es el punto: un tablet de chocolate amargo sin ella es de una sola dimensión.",
+  "A month in a tin.": "Un mes en un tarro.",
+  "Indefinite and travels perfectly.": "Indefinido y viaja a la perfección.",
+
+  // ---- 82 Maracuya Empire Biscuits ----
+  "40 biscuits": "40 galletas",
+  "for the icing": "para el glaseado",
+  "Rub the butter into the flour, then add sugar and egg to make a firm dough. Chill 1 hour.":
+    "Arene la mantequilla con la harina, luego agregue azúcar y huevo para formar una masa firme. Refrigere 1 hora.",
+  "Roll 4 mm and cut 6 cm rounds. You need an even number; every biscuit is half a sandwich.":
+    "Estire a 4 mm y corte discos de 6 cm. Necesita un número par; cada galleta es la mitad de un sándwich.",
+  "Bake at 175 °C for 12–14 minutes until barely coloured at the edges.":
+    "Hornee a 175 °C por 12–14 minutos hasta que apenas tomen color en los bordes.",
+  "Cool completely, then sandwich in pairs with the curd. Do not overfill — it will squeeze out under the icing.":
+    "Enfríe por completo y arme en pares con la crema. No rellene de más — se sale por debajo del glaseado.",
+  "Beat the icing sugar with maracuyá juice to a thick, just-pourable glacé icing.":
+    "Bata el azúcar en polvo con jugo de maracuyá hasta un glaseado espeso que apenas se pueda verter.",
+  "Spoon onto each top and place a cherry in the centre before it sets.":
+    "Ponga una cucharada sobre cada tapa y coloque una cereza en el centro antes de que cuaje.",
+  "Note the provenance: Empire biscuits are strongly associated with Scotland but may not have originated there. Do not overclaim on the card.":
+    "Ojo con la procedencia: las Empire biscuits se asocian fuertemente con Escocia pero puede que no hayan nacido ahí. No exagere en la ficha.",
+  "Biscuits keep a week unfilled. Assembled, eat within 3 days before the icing weeps into the biscuit.":
+    "Las galletas duran una semana sin rellenar. Armadas, cómalas dentro de 3 días antes de que el glaseado se filtre en la galleta.",
+  "A day boxed. The icing marks if stacked, so single layers with paper between.":
+    "Un día en caja. El glaseado se marca si se apilan, así que una sola capa con papel entre medio.",
+
+  // ---- 83 Dundee Cake, Pecan & Aguaymanto ----
+  "2 cakes, 24 slices": "2 tortas, 24 porciones",
+  "for the traditional concentric top": "para la superficie concéntrica tradicional",
+  "Soak the dried fruit in whisky overnight. Under-soaked fruit steals moisture from the crumb.":
+    "Remoje la fruta seca en whisky toda la noche. La fruta poco remojada le roba humedad a la miga.",
+  "Cream butter and sugar properly pale, 6–8 minutes. This cake has no chemical lift to fall back on.":
+    "Cremee mantequilla y azúcar hasta que queden bien pálidas, 6–8 minutos. Esta torta no tiene leudante químico al cual recurrir.",
+  "Add the eggs one at a time, with a spoon of flour if it looks like splitting.":
+    "Agregue los huevos de a uno, con una cucharada de harina si parece que se corta.",
+  "Fold in the flour, then the soaked fruit and orange zest.":
+    "Integre la harina, luego la fruta remojada y la ralladura de naranja.",
+  "Fill lined tins two-thirds full, level, and arrange the pecans in concentric rings on top. Do not press them in; they should sit proud.":
+    "Llene los moldes forrados hasta dos tercios, empareje y disponga las pecanas en anillos concéntricos encima. No las hunda; deben quedar sobresaliendo.",
+  "Bake at 150 °C for 1 hour 45 to 2 hours. Cover with paper if the top colours before the centre sets.":
+    "Hornee a 150 °C entre 1 hora 45 y 2 horas. Cubra con papel si la superficie toma color antes de que cuaje el centro.",
+  "Feed with a tablespoon of whisky a week while it matures.":
+    "Aliméntela con una cucharada de whisky por semana mientras madura.",
+  "Make 3–6 weeks ahead and feed weekly. This cake genuinely needs the time.":
+    "Hágala con 3–6 semanas de anticipación y aliméntela cada semana. Esta torta de verdad necesita ese tiempo.",
+  "Months. Slices cleanly cold and travels whole.":
+    "Meses. Se corta limpio en frío y viaja entera.",
+  "Oven time does not scale with tin count, but it does with tin size. Keep to 20 cm tins.":
+    "El tiempo de horno no escala con la cantidad de moldes, pero sí con su tamaño. Manténgase en moldes de 20 cm.",
+
+  // ---- 84 Ecclefechan Tart, Chancaca ----
+  "40 tarts": "40 tartaletas",
+  "the traditional sharpener; it stops the tart being sickly":
+    "el toque ácido tradicional; evita que la tarta resulte empalagosa",
+  "Line 7 cm tartlet tins and chill 30 minutes. No need to blind bake — the filling is wet enough to set the base as it cooks.":
+    "Forre moldes de tartaleta de 7 cm y refrigere 30 minutos. No hace falta hornear en blanco — el relleno es lo bastante húmedo para cuajar la base durante la cocción.",
+  "Melt the chancaca into the warm butter until fully dissolved.":
+    "Derrita la chancaca en la mantequilla tibia hasta disolverla del todo.",
+  "Whisk in the eggs and vinegar off the heat. If the butter is too hot the eggs will scramble.":
+    "Integre los huevos y el vinagre fuera del fuego. Si la mantequilla está muy caliente los huevos se cuajan.",
+  "Stir in the fruit and nuts.": "Incorpore la fruta y los frutos secos.",
+  "Fill the cases three-quarters full and bake at 180 °C for 25–30 minutes until set with a slight wobble.":
+    "Llene las bases hasta tres cuartos y hornee a 180 °C por 25–30 minutos hasta que cuajen con un ligero temblor.",
+  "Cool in the tins — they are fragile hot and firm as they cool.":
+    "Enfríe en los moldes — están frágiles en caliente y toman firmeza al enfriar.",
+  "Bake a day ahead. Chancaca keeps them moist for 4 days.":
+    "Hornee un día antes. La chancaca las mantiene húmedas por 4 días.",
+  "Excellent. Sturdy, sweet and stable at room temperature.":
+    "Excelente. Resistentes, dulces y estables a temperatura ambiente.",
+
+  // ---- 85 Border Tart ----
+  "Line and chill the tartlet cases.": "Forre los moldes de tartaleta y refrigérelos.",
+  "Cream the butter and sugar, add eggs one at a time, then fold in the ground almonds.":
+    "Cremee la mantequilla con el azúcar, agregue los huevos de a uno e integre la almendra molida.",
+  "Fold through the figs, pecans, lemon zest and juice. The lemon is what distinguishes a Border tart from an Ecclefechan.":
+    "Integre los higos, las pecanas, la ralladura y el jugo de limón. El limón es lo que distingue a una Border tart de una Ecclefechan.",
+  "Fill the cases and bake at 180 °C for 25 minutes until golden and just set.":
+    "Rellene las bases y hornee a 180 °C por 25 minutos hasta que doren y apenas cuajen.",
+  "Cool in the tins.": "Enfríe en los moldes.",
+  "Optionally glaze with warmed apricot jam or a thin lemon icing.":
+    "Opcionalmente glasee con mermelada de durazno tibia o un glaseado ligero de limón.",
+  "Bake up to 3 days ahead; the filling improves as the lemon settles into the figs.":
+    "Hornee hasta 3 días antes; el relleno mejora a medida que el limón se asienta en los higos.",
+  "Very stable at room temperature all day. Good for boxes and gifting.":
+    "Muy estables a temperatura ambiente todo el día. Buenas para cajas y regalos.",
+
+  // ---- 86 Black Bun ----
+  "2 loaves, 24 slices": "2 panes, 24 porciones",
+  "for the plain pastry casing": "para la envoltura de masa simple",
+  "Make a firm pastry and rest it. This is a casing, not a pleasure — it is meant to be plain.":
+    "Haga una masa firme y déjela reposar. Esto es una envoltura, no un placer — debe ser sosa a propósito.",
+  "Mix all the fruit, nuts, flour, spices and bicarbonate. The black pepper is traditional and worth keeping.":
+    "Mezcle toda la fruta, los frutos secos, la harina, las especias y el bicarbonato. La pimienta negra es tradicional y vale la pena mantenerla.",
+  "Bind with the pisco and milk to a stiff mixture.":
+    "Ligue con el pisco y la leche hasta obtener una mezcla dura.",
+  "Line loaf tins with pastry, leaving an overhang. Pack the filling in tightly — air pockets collapse.":
+    "Forre moldes de pan con la masa dejando que sobresalga. Compacte bien el relleno — las bolsas de aire se colapsan.",
+  "Fold the pastry over, seal, and prick right through to the base several times with a skewer.":
+    "Doble la masa por encima, selle y pinche varias veces con una brocheta hasta el fondo.",
+  "Bake at 150 °C for 2.5 hours. Cover if the pastry darkens.":
+    "Hornee a 150 °C por 2,5 horas. Cubra si la masa se oscurece.",
+  "Traditionally cut at Hogmanay, which makes it the anchor of a New Year product.":
+    "Tradicionalmente se corta en Hogmanay, lo que lo vuelve el eje de un producto de Año Nuevo.",
+  "Make at least 2 weeks ahead, ideally a month. It is inedible fresh and excellent matured.":
+    "Hágalo con al menos 2 semanas de anticipación, idealmente un mes. Recién hecho es incomible y madurado es excelente.",
+  "Months in a tin. The longest shelf life in the matrix.":
+    "Meses en un tarro. La vida útil más larga de toda la matriz.",
+  "The pricking matters more at scale — without it the pastry lifts off the filling in a dome.":
+    "El pinchado importa más a gran escala — sin él la masa se levanta del relleno formando una cúpula.",
+
+  // ---- 87 Clootie Dumpling ----
+  "the cloot": "el paño (cloot)",
+  "Scald the cloth in boiling water, wring it out, and spread it flat. Dust generously with flour — this forms the characteristic skin.":
+    "Escalde el paño en agua hirviendo, escúrralo y extiéndalo plano. Enharínelo con generosidad — eso forma la piel característica.",
+  "Mix all dry ingredients, then bind with egg, milk and algarrobina to a soft dropping consistency.":
+    "Mezcle todos los secos y ligue con huevo, leche y algarrobina hasta una consistencia blanda que caiga de la cuchara.",
+  "Heap the mixture in the centre of the cloth, gather the edges, and tie with string leaving room to expand.":
+    "Amontone la mezcla en el centro del paño, junte los bordes y ate con pabilo dejando espacio para que expanda.",
+  "Lower onto an upturned plate in a large pan of boiling water and simmer 3 hours, topping up with boiling water.":
+    "Baje sobre un plato invertido dentro de una olla grande con agua hirviendo y cocine 3 horas, reponiendo con agua hirviendo.",
+  "Lift out, dip briefly in cold water to loosen, then unwrap onto a plate.":
+    "Retire, sumerja brevemente en agua fría para despegar y desenvuelva sobre un plato.",
+  "Dry the skin in a low oven for 15 minutes — that leathery skin is the whole point of a clootie.":
+    "Seque la piel en horno bajo por 15 minutos — esa piel correosa es todo el sentido de un clootie.",
+  "Better made 2 days ahead. Keeps a week and slices for frying, which is how leftovers are traditionally eaten.":
+    "Queda mejor hecho 2 días antes. Dura una semana y se corta en rodajas para freír, que es como se comen tradicionalmente las sobras.",
+  "Excellent. Steams to reheat and is arguably better on day two.":
+    "Excelente. Se recalienta al vapor y probablemente esté mejor al segundo día.",
+  "One dumpling per 10 portions. Larger and the centre will not cook through in 3 hours.":
+    "Un dumpling por cada 10 porciones. Más grande y el centro no se cocina en 3 horas.",
+
+  // ---- 88 Fly Cemetery Slice ----
+  "40 slices": "40 porciones",
+  "Warm the fruit with chancaca, butter, spice, lemon and pisco until the fruit plumps and the mixture is thick, 10 minutes. Cool completely.":
+    "Caliente la fruta con chancaca, mantequilla, especias, limón y pisco hasta que la fruta se hinche y la mezcla espese, 10 minutos. Enfríe por completo.",
+  "Roll two pastry sheets to fit a tray. Lay one down, spread the fruit right to the edges — a bare margin makes the slice look mean.":
+    "Estire dos láminas de masa al tamaño de la bandeja. Coloque una, extienda la fruta hasta los bordes — un margen vacío hace que la porción se vea mezquina.",
+  "Top with the second sheet, press the edges, and score the top into portions.":
+    "Cubra con la segunda lámina, presione los bordes y marque las porciones en la superficie.",
+  "Egg wash and sprinkle heavily with caster sugar.":
+    "Pincele con huevo y espolvoree generosamente con azúcar fina.",
+  "Bake at 200 °C for 30–35 minutes until deep gold and the base is cooked through. Lift a corner to check.":
+    "Hornee a 200 °C por 30–35 minutos hasta que esté dorado oscuro y la base cocida. Levante una esquina para comprobar.",
+  "Cool before cutting through the scores.":
+    "Enfríe antes de cortar por las marcas.",
+  "Its name is a Scottish joke about the appearance. Whether you use it on the menu is a judgement call.":
+    "Su nombre es una broma escocesa sobre su aspecto. Usarlo o no en la carta queda a criterio suyo.",
+  "Bake a day ahead.": "Hornee un día antes.",
+  "2 days. Stable, sturdy and cheap — a strong tea-tray item.":
+    "2 días. Estable, resistente y barato — un buen producto para la mesa de té.",
+
+  // ---- 89 Selkirk Bannock ----
+  "Warm the milk with the lúcuma and whisk smooth, then add the yeast and a spoon of the sugar. Leave 10 minutes until foaming.":
+    "Caliente la leche con la lúcuma y bata hasta que quede lisa, luego agregue la levadura y una cucharada del azúcar. Deje 10 minutos hasta que espume.",
+  "Mix into flour, remaining sugar and salt to a soft dough. Knead 10 minutes.":
+    "Mezcle con la harina, el resto del azúcar y la sal hasta una masa suave. Amase 10 minutos.",
+  "Work in the softened butter a little at a time. It will look broken before it comes together — persevere.":
+    "Incorpore la mantequilla pomada de a poco. Se verá cortada antes de unirse — persevere.",
+  "Prove 1 hour until doubled, then knock back and fold in the sultanas. Adding fruit before the first prove slows the yeast.":
+    "Leude 1 hora hasta que doble, desgasifique e integre las pasas. Agregar la fruta antes del primer leudado frena la levadura.",
+  "Shape into rounds, place on trays, and prove 45 minutes.":
+    "Forme discos, colóquelos en bandejas y deje leudar 45 minutos.",
+  "Bake at 190 °C for 35–40 minutes. It should sound hollow underneath.":
+    "Hornee a 190 °C por 35–40 minutos. Debe sonar hueco por debajo.",
+  "Glaze with warm milk and sugar as it comes out.":
+    "Glasee con leche tibia y azúcar al sacarlo.",
+  "Freezes well baked. Best on day one or two, then toasted.":
+    "Se congela bien ya horneado. Mejor el primer o segundo día, y después tostado.",
+  "3 days wrapped. Toasted with butter thereafter, which is traditional anyway.":
+    "3 días envuelto. Después, tostado con mantequilla, que de todos modos es lo tradicional.",
+
+  // ---- 90 Sultana Tea Loaf ----
+  "Soak the sultanas in hot tea, pisco and sugar overnight. This is the entire technique and it cannot be shortened.":
+    "Remoje las pasas en té caliente, pisco y azúcar toda la noche. Esa es toda la técnica y no se puede acortar.",
+  "The next day, beat in the eggs.": "Al día siguiente, integre los huevos batiendo.",
+  "Fold in the flour and spice until just combined. Overmixing makes it tough.":
+    "Integre la harina y las especias solo hasta unir. Batir de más lo pone duro.",
+  "Divide between two lined loaf tins.": "Reparta en dos moldes de pan forrados.",
+  "Bake at 170 °C for 55–60 minutes until a skewer comes out clean.":
+    "Hornee a 170 °C por 55–60 minutos hasta que un palito salga limpio.",
+  "Cool in the tin. Serve sliced and buttered — it is meant to be eaten with butter, not on its own.":
+    "Enfríe en el molde. Sirva en rodajas con mantequilla — está pensado para comerse con mantequilla, no solo.",
+  "Keeps a week wrapped and improves for the first three days.":
+    "Dura una semana envuelto y mejora durante los primeros tres días.",
+  "Excellent. No fat in the batter means it stays moist for days rather than staling.":
+    "Excelente. Al no llevar grasa en la masa se mantiene húmedo por días en vez de secarse.",
+  "Scales perfectly and is one of the cheapest items in the matrix to produce.":
+    "Escala a la perfección y es uno de los productos más baratos de producir de toda la matriz.",
+
+  // ---- 91 Quinoa & Cacao Flapjacks ----
+  "40 bars": "40 barras",
+  "Toast the quinoa until it pops. Untoasted quinoa in a flapjack is unpleasantly raw.":
+    "Tueste la quinua hasta que reviente. La quinua sin tostar en un flapjack sabe desagradablemente cruda.",
+  "Melt the butter, chancaca, syrup and salt together until smooth. Do not let it boil or the bars set rock hard.":
+    "Derrita la mantequilla, la chancaca, el sirope y la sal hasta que quede liso. No lo deje hervir o las barras quedan durísimas.",
+  "Stir in the oats, toasted quinoa and cacao nibs until every grain is coated.":
+    "Integre la avena, la quinua tostada y los nibs de cacao hasta que cada grano quede cubierto.",
+  "Press very firmly into a lined tray. Loose packing is why flapjacks crumble.":
+    "Presione con mucha firmeza en una bandeja forrada. El compactado flojo es la razón por la que los flapjacks se desmoronan.",
+  "Bake at 170 °C for 25–30 minutes until golden at the edges but still soft in the middle — they firm as they cool.":
+    "Hornee a 170 °C por 25–30 minutos hasta que doren en los bordes pero sigan blandos al centro — firman al enfriar.",
+  "Mark into bars while hot, cool completely in the tin, then cut.":
+    "Marque las barras en caliente, enfríe por completo en la bandeja y luego corte.",
+  "A week in a tin.": "Una semana en un tarro.",
+  "Extremely stable. Travels, boxes and survives heat. An obvious tasting-box filler.":
+    "Extremadamente estables. Viajan, se encajan y aguantan el calor. Un relleno obvio para caja de degustación.",
+
+  // ---- 92 Chirimoya Cranachan Cups ----
+  "20 cups": "20 copas",
+  "short season; check the Season page before promising it":
+    "temporada corta; revise la página de Temporada antes de prometerla",
+  "Toast the oats with the sugar under a grill until they caramelise into crunchy clusters. Watch them — they go from toasted to burnt in seconds.":
+    "Tueste la avena con el azúcar bajo el grill hasta que caramelice en grumos crocantes. No los pierda de vista — pasan de tostados a quemados en segundos.",
+  "Cool completely. They must be cold and crisp or they dissolve into the cream.":
+    "Enfríe por completo. Deben estar fríos y crocantes o se disuelven en la crema.",
+  "Whip the cream to soft peaks only. Over-whipped cranachan is grainy.":
+    "Bata la crema solo a punto de picos suaves. Un cranachan sobrebatido queda granuloso.",
+  "Fold in the whisky and half the algarrobina.":
+    "Integre el whisky y la mitad de la algarrobina.",
+  "Scoop the chirimoya flesh, removing every seed, and crush it lightly.":
+    "Saque la pulpa de la chirimoya retirando todas las pepas y aplástela ligeramente.",
+  "Layer in glasses: oats, cream, chirimoya, repeating, finishing with oats so they stay crisp on top.":
+    "Arme en copas por capas: avena, crema, chirimoya, y repita, terminando con avena para que quede crocante encima.",
+  "Thread the remaining algarrobina over at the last moment.":
+    "Haga un hilo con el resto de la algarrobina al último momento.",
+  "Oats a week ahead. Assemble no more than 2 hours before service.":
+    "La avena una semana antes. Arme no más de 2 horas antes del servicio.",
+  "2 hours. The oats soften after that, which is the whole texture gone.":
+    "2 horas. Después de eso la avena se ablanda, y con ella se va toda la textura.",
+  "Chirimoya browns on contact with air. Scoop it in batches as you assemble, not all at once.":
+    "La chirimoya se oxida al contacto con el aire. Sáquela por tandas mientras arma, no toda de golpe.",
+
+  // ---- 93 Tipsy Laird ----
+  "a 30 cm sponge, cubed; day-old is better, fresh turns to paste":
+    "un bizcocho de 30 cm en cubos; mejor del día anterior, el fresco se vuelve pasta",
+  "custard": "para la crema inglesa",
+  "Make a proper custard: heat the milk, whisk into the yolks, sugar and cornflour, then return to the pan and cook out until thick. Cover with cling film touching the surface and cool completely.":
+    "Haga una crema inglesa de verdad: caliente la leche, intégrela batiendo a las yemas, el azúcar y el chuño, devuelva a la olla y cocine hasta que espese. Cubra con film tocando la superficie y enfríe por completo.",
+  "Layer the sponge in a glass bowl and douse with whisky. Let it soak 20 minutes.":
+    "Ponga el bizcocho en capas en un bol de vidrio y empápelo con whisky. Deje absorber 20 minutos.",
+  "Crush half the berries with a little sugar and spoon over; scatter the rest whole.":
+    "Aplaste la mitad de las frutas con un poco de azúcar y repártalas encima; esparza el resto enteras.",
+  "Pour over the cold custard. Warm custard will melt the whole thing into soup.":
+    "Vierta la crema inglesa fría encima. La crema tibia derrite todo y lo convierte en sopa.",
+  "Chill 4 hours until set.": "Refrigere 4 horas hasta que cuaje.",
+  "Whip the cream to soft peaks, spoon on top, and finish with toasted almonds just before serving.":
+    "Bata la crema a picos suaves, póngala encima y termine con almendras tostadas justo antes de servir.",
+  "The whisky is the only thing separating this from an English trifle, and it is worth being generous with it.":
+    "El whisky es lo único que separa esto de un trifle inglés, y vale la pena ser generoso con él.",
+  "Assemble to the custard layer a day ahead. Cream on the day.":
+    "Arme hasta la capa de crema inglesa un día antes. La crema batida, el mismo día.",
+  "Holds 4 hours cold. A glass bowl travels badly — assemble on site if you can.":
+    "Aguanta 4 horas en frío. Un bol de vidrio viaja mal — arme en el local si puede.",
+  "Individual glasses scale better than one bowl and portion themselves, which matters on a buffet.":
+    "Las copas individuales escalan mejor que un solo bol y se porcionan solas, lo cual importa en un buffet.",
+
+  // ---- 94 Caledonian Cream ----
+  "20 pots": "20 potes",
+  "the Dundee-lineage marmalade from dish 65":
+    "la mermelada de linaje Dundee del plato 65",
+  "Whip the cream with the icing sugar to soft peaks. Stop early; it will firm as you fold.":
+    "Bata la crema con el azúcar en polvo a picos suaves. Pare antes de tiempo; firmará al integrar.",
+  "Loosen the marmalade with the whisky and lemon juice so it ripples rather than clumps.":
+    "Afloje la mermelada con el whisky y el jugo de limón para que se marmolee en lugar de apelmazarse.",
+  "Fold the lúcuma through the cream first, evenly.":
+    "Integre primero la lúcuma a la crema, de forma pareja.",
+  "Ripple the marmalade mixture through with two or three folds only. Overmixing gives you a uniform beige, which is not the dish.":
+    "Marmolee la mezcla de mermelada con solo dos o tres movimientos. Mezclar de más da un beige uniforme, que no es el plato.",
+  "Spoon into pots and chill 2 hours.":
+    "Reparta en potes y refrigere 2 horas.",
+  "Top with toasted oats at service.":
+    "Corone con avena tostada al momento del servicio.",
+  "No cooking at all, which makes it one of the highest-margin desserts here.":
+    "Sin nada de cocción, lo que lo vuelve uno de los postres de mayor margen de esta carta.",
+  "Assemble a day ahead. The oats go on last.":
+    "Arme un día antes. La avena va al final.",
+  "4 hours chilled. Lidded pots travel well.":
+    "4 horas refrigerado. Los potes con tapa viajan bien.",
+
+  // ---- 95 Chancaca Sticky Toffee ----
+  "for the sauce": "para la salsa",
+  "Pour the boiling water over the dates and bicarbonate and leave 20 minutes. The bicarbonate breaks the dates down and darkens the sponge.":
+    "Vierta el agua hirviendo sobre los dátiles y el bicarbonato y deje 20 minutos. El bicarbonato deshace los dátiles y oscurece el bizcocho.",
+  "Cream butter and sugar, add eggs, then fold in flour.":
+    "Cremee mantequilla y azúcar, agregue los huevos e integre la harina.",
+  "Fold in the date mixture including all its liquid. The batter will look alarmingly loose — that is correct.":
+    "Integre la mezcla de dátiles con todo su líquido. La masa se verá alarmantemente floja — eso es lo correcto.",
+  "Bake at 180 °C for 35–40 minutes in a lined tray.":
+    "Hornee a 180 °C por 35–40 minutos en una bandeja forrada.",
+  "Sauce: melt the chancaca with butter and cream and simmer 5 minutes until glossy.":
+    "Salsa: derrita la chancaca con mantequilla y crema y cocine 5 minutos hasta que brille.",
+  "Pour a third of the sauce over the hot sponge and let it soak in. Serve with the rest hot.":
+    "Vierta un tercio de la salsa sobre el bizcocho caliente y deje que absorba. Sirva con el resto caliente.",
+  "Note for the provenance card: sticky toffee pudding's origin is genuinely disputed — Lake District and Scotland both claim it. The matrix flags it as contested.":
+    "Nota para la ficha de procedencia: el origen del sticky toffee pudding está genuinamente en disputa — el Lake District y Escocia lo reclaman. La matriz lo marca como disputado.",
+  "Sponge and sauce 3 days ahead, both freeze.":
+    "Bizcocho y salsa 3 días antes; ambos se congelan.",
+  "Reheats perfectly, which is unusual for a sponge. A dependable buffet dessert.":
+    "Se recalienta a la perfección, cosa rara en un bizcocho. Un postre de buffet confiable.",
+
+  // ---- 96 The Fresa Teacake ----
+  "50 teacakes": "50 teacakes",
+  "as dish 76, wholemeal flour, cut in 4 cm rounds":
+    "igual que el plato 76, con harina integral, cortado en discos de 4 cm",
+  "for the Italian meringue": "para el merengue italiano",
+  "powder, not purée; purée will collapse the meringue":
+    "en polvo, no en pulpa; la pulpa baja el merengue",
+  "stabiliser": "estabilizante",
+  "Bake the wholemeal shortbread rounds and cool completely. They must be bone dry.":
+    "Hornee los discos de shortbread integral y enfríe por completo. Deben quedar completamente secos.",
+  "Boil the sugar and water to 118 °C.": "Hierva el azúcar y el agua hasta 118 °C.",
+  "Meanwhile whisk the whites to soft peaks. Trickle the syrup down the side of the bowl while whisking.":
+    "Mientras tanto bata las claras a picos suaves. Vierta el almíbar en hilo por la pared del bol mientras bate.",
+  "Add the bloomed gelatine and whisk until the bowl is barely warm and the meringue holds a stiff peak, about 8 minutes.":
+    "Agregue la gelatina hidratada y bata hasta que el bol esté apenas tibio y el merengue sostenga un pico firme, unos 8 minutos.",
+  "Fold in the strawberry powder at the very end — it is what gives colour and a real tartness rather than a sweetness.":
+    "Integre el polvo de fresa al final — es lo que da color y una acidez real en lugar de dulzor.",
+  "Pipe domes onto the biscuits and leave to skin over for 30 minutes.":
+    "Haga cúpulas con manga sobre las galletas y deje formar película por 30 minutos.",
+  "Enrobe in tempered chocolate. Work fast; the meringue softens if the chocolate is above 32 °C.":
+    "Bañe en chocolate templado. Trabaje rápido; el merengue se ablanda si el chocolate pasa de 32 °C.",
+  "Biscuits a week ahead. Assembled, they are best within 3 days.":
+    "Las galletas una semana antes. Armados, están mejor dentro de 3 días.",
+  "Room temperature only. Refrigeration causes condensation which dulls the chocolate and weeps the meringue. In Lima's summer keep below 22 °C.":
+    "Solo a temperatura ambiente. La refrigeración genera condensación, que opaca el chocolate y hace llorar al merengue. En el verano limeño manténgalos por debajo de 22 °C.",
+  "The flagship product, and the hardest thing in the bakery section to make well. Pipe in batches of 25 so the meringue does not set in the bag.":
+    "El producto insignia, y lo más difícil de hacer bien de toda la sección de panadería. Trabaje con manga en tandas de 25 para que el merengue no cuaje dentro de la bolsa.",
+
+  // ---- 97 Choclo & Paria Scones ----
+  "40 scones": "40 scones",
+  "fresh, not frozen — frozen releases water into the dough":
+    "fresco, no congelado — el congelado suelta agua en la masa",
+  "Rub the cold butter into the flour to coarse crumbs. Stop while you can still see flecks of butter.":
+    "Arene la mantequilla fría con la harina hasta obtener migas gruesas. Pare mientras todavía se vean trocitos de mantequilla.",
+  "Stir in the choclo, most of the cheese, salt and cayenne.":
+    "Incorpore el choclo, casi todo el queso, la sal y la cayena.",
+  "Add the buttermilk and bring together with as few strokes as possible. Overworked scone dough is tough scone dough.":
+    "Agregue el suero de leche y una la masa con la menor cantidad de movimientos posible. Masa de scone sobretrabajada es masa de scone dura.",
+  "Pat out 3 cm thick — thick, not thin, or they will not rise.":
+    "Aplaste a 3 cm de grosor — grueso, no delgado, o no levantan.",
+  "Cut straight down with a sharp cutter and do not twist. Twisting seals the edge and stops the rise.":
+    "Corte hacia abajo en línea recta con un cortador filoso y no gire. Girar sella el borde e impide el levantado.",
+  "Egg wash, top with remaining cheese, and bake at 210 °C for 16–18 minutes.":
+    "Pincele con huevo, cubra con el queso restante y hornee a 210 °C por 16–18 minutos.",
+  "Best on the day. The dough can be cut and frozen raw, then baked from frozen with 5 extra minutes.":
+    "Mejores el mismo día. La masa se puede cortar y congelar cruda, y hornearse desde congelado con 5 minutos extra.",
+  "3 hours. Reheat 4 minutes at 180 °C to revive.":
+    "3 horas. Recaliente 4 minutos a 180 °C para revivirlos.",
+
+  // ---- 98 Loukoumades, Algarrobina ----
+  "20 portions, about 120 pieces": "20 porciones, unas 120 piezas",
+  "Whisk both flours, yeast, salt and water to a very loose, sticky batter — closer to a thick pancake batter than a dough.":
+    "Bata las dos harinas, la levadura, la sal y el agua hasta una masa muy floja y pegajosa — más parecida a una mezcla espesa de panqueques que a una masa.",
+  "Prove 90 minutes until bubbling and doubled.":
+    "Leude 90 minutos hasta que burbujee y doble.",
+  "Heat the oil to 175 °C.": "Caliente el aceite a 175 °C.",
+  "Drop rounded teaspoons of batter into the oil, using two wetted spoons. Wet spoons are the trick; dry ones drag.":
+    "Eche cucharaditas colmadas de masa al aceite, usando dos cucharas mojadas. Las cucharas mojadas son el truco; las secas se pegan.",
+  "Fry 3 minutes, turning, until deep gold and puffed. They should be hollow inside.":
+    "Fría 3 minutos, volteando, hasta que estén dorados oscuros e inflados. Deben quedar huecos por dentro.",
+  "Drain briefly, then toss immediately in warm algarrobina loosened with honey.":
+    "Escurra brevemente y báñelos de inmediato en algarrobina tibia aflojada con miel.",
+  "Scatter with toasted quinoa and walnuts and serve within a minute.":
+    "Esparza quinua tostada y nueces y sirva dentro del minuto.",
+  "Batter can prove in the morning for an evening service, and is better for the longer ferment.":
+    "La masa puede leudar en la mañana para un servicio de noche, y mejora con la fermentación más larga.",
+  "Ninety seconds. There is no version of this that is not made in front of the guest.":
+    "Noventa segundos. No existe una versión de esto que no se haga delante del invitado.",
+  "One fryer serves about 30 guests. The batter is the easy part; the frying rate is the constraint.":
+    "Una freidora atiende a unos 30 invitados. La masa es lo fácil; el ritmo de fritura es la restricción.",
 };
