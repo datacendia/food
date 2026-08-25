@@ -41,13 +41,15 @@ let failures = 0;
 
 // Sanity: the data actually made it into the page.
 await page.getByRole("tab", { name: "The matrix" }).click();
-const rowCount = await page.locator("#menuBody tbody tr").count();
+const rowCount = await page.locator("#menuBody .mxtable tbody tr").count();
 console.log(`dish rows rendered: ${rowCount}${rowCount === DISHES_LEN ? " ✓" : `  ✗ expected ${DISHES_LEN}`}`);
 if (rowCount !== DISHES_LEN) failures++;
 
 // The page must flag exactly the dishes lib/pricing.ts calls over-target -
 // not zero. A dish above the band is a finding to surface, not a test to fail.
-const overFlags = await page.locator("#menuBody .fc.over").count();
+// Scoped to the table: the same rows also render as cards for narrow
+// screens, and counting both double-counts every flag.
+const overFlags = await page.locator("#menuBody .mxtable .fc.over").count();
 const overExpected = DISHES.filter((d) => d.cost / d.price > 0.3).length;
 const overOk = overFlags === overExpected;
 if (!overOk) failures++;
@@ -474,6 +476,97 @@ console.log(
   `\ncategory labels match lib/dishes.ts: ${labelDrift.length ? "✗ " + labelDrift.join(", ") : "✓"}`
 );
 
+// --- Search and filters: the way through 223 dishes ----------------------
+await page.locator('.tab[data-pane="menu"]').click();
+await page.waitForTimeout(500);
+const mxRows = () => page.locator("#menuBody .mxtable tbody tr").count();
+const allRows = await mxRows();
+
+// Accent-insensitive, because half the menu is Spanish and a Peruvian buyer
+// should not have to type an accent to search their own language.
+await page.fill("#mxQ", "lucuma");
+await page.waitForTimeout(350);
+const plain = await mxRows();
+await page.fill("#mxQ", "lúcuma");
+await page.waitForTimeout(350);
+const accented = await mxRows();
+const foldOk = plain > 0 && plain === accented && plain < allRows;
+if (!foldOk) failures++;
+console.log(
+  `\nsearch ignores accents: ${foldOk ? "✓" : "✗"} ("lucuma" ${plain}, "lúcuma" ${accented} of ${allRows})`
+);
+
+await page.fill("#mxQ", "");
+await page.waitForTimeout(300);
+await page.locator("[data-mxcat='dessert']").click();
+await page.waitForTimeout(350);
+const desserts = await mxRows();
+const dessertExpected = DISHES.filter((d) => d.category === "dessert").length;
+const catOk = desserts === dessertExpected;
+if (!catOk) failures++;
+console.log(`course filter: ${desserts} ${catOk ? "✓" : "✗ expected " + dessertExpected}`);
+
+await page.locator("#mxClear").click();
+await page.waitForTimeout(350);
+const cleared = await mxRows();
+const clearOk = cleared === allRows;
+if (!clearOk) failures++;
+console.log(`clear all filters restores every row: ${clearOk ? "✓" : "✗ " + cleared}`);
+
+// Sorting has to actually sort, not merely relabel the header.
+await page.selectOption("#mxSort", "price");
+await page.waitForTimeout(400);
+const prices = (await page.locator("#menuBody .mxtable tbody tr td:nth-child(5)").allInnerTexts())
+  .map((t) => Number(t.replace(/[^\d.]/g, "")));
+const ascending = prices.every((v, i) => i === 0 || prices[i - 1] <= v);
+if (!ascending) failures++;
+console.log(`sort by menu value is ordered: ${ascending ? "✓" : "✗"}`);
+await page.selectOption("#mxSort", "id");
+await page.waitForTimeout(300);
+
+// An empty result has to offer a way out of itself.
+await page.fill("#mxQ", "zzzzzzzz");
+await page.waitForTimeout(350);
+const emptyOk = (await page.locator("#menuBody .empty").count()) === 1;
+if (!emptyOk) failures++;
+console.log(`empty state offers a way back: ${emptyOk ? "✓" : "✗"}`);
+await page.fill("#mxQ", "");
+await page.waitForTimeout(300);
+
+// The quick search reaches everything and lands on the thing itself.
+// Blur first: "/" is deliberately inert while the caret is in a text field,
+// or you could never type a slash into a search box.
+await page.evaluate(() => document.activeElement && document.activeElement.blur());
+await page.keyboard.press("/");
+await page.waitForTimeout(350);
+const qsOpen = !(await page.locator("#qsBack").isHidden());
+await page.fill("#qsQ", "haggis");
+await page.waitForTimeout(350);
+const qsHits = await page.locator(".qs-item").count();
+await page.keyboard.press("Enter");
+await page.waitForTimeout(600);
+const landed = !(await page.locator("#pane-recipes").isHidden());
+const oneRecipe = (await page.locator("#recBody .card").count()) === 1;
+const qsOk = qsOpen && qsHits > 1 && landed && oneRecipe;
+if (!qsOk) failures++;
+console.log(
+  `quick search opens on "/", finds ${qsHits}, and opens the dish itself: ${qsOk ? "✓" : "✗"}`
+);
+
+// The overlay must never sit invisibly over the page swallowing clicks.
+const overlayInert = await page.evaluate(() => {
+  const b = document.getElementById("qsBack");
+  b.hidden = true;
+  return getComputedStyle(b).display === "none";
+});
+if (!overlayInert) failures++;
+console.log(`hidden overlay is really hidden: ${overlayInert ? "✓" : "✗"}`);
+
+await page.locator('.tab[data-pane="recipes"]').click();
+await page.waitForTimeout(400);
+await page.evaluate(() => document.getElementById("recClear")?.click());
+await page.waitForTimeout(400);
+
 // --- The quote has to be sendable, or it is not a quote ------------------
 await page.getByRole("tab", { name: "Build a menu" }).click();
 await page.waitForTimeout(600);
@@ -601,6 +694,27 @@ console.log(`client-facing panes: ${clientPct.toFixed(0)}% ${clientOk ? "✓" : 
 console.log(
   `worst pane: ${worstPane[0]} with ${worstPane[1]} untranslated ` +
   `${paneOk ? "✓" : "✗ expected at most 2"}`
+);
+
+// Chrome the percentage cannot see: a one-word <summary>, a placeholder, an
+// aria-label. These are always translatable, so any English one is a gap.
+const chromeGaps = await esPage.evaluate(() => {
+  const dict = JSON.parse(document.getElementById("data").textContent).es;
+  const values = new Set(Object.values(dict));
+  const bad = [];
+  document.querySelectorAll("summary").forEach((el) => {
+    const t = el.textContent.replace(/\s+/g, " ").trim();
+    if (t && !values.has(t) && !/[áéíóúñ¿¡]/i.test(t)) bad.push("summary: " + t);
+  });
+  document.querySelectorAll("[placeholder]").forEach((el) => {
+    const t = el.getAttribute("placeholder");
+    if (t && !values.has(t) && !/[áéíóúñ¿¡]/i.test(t)) bad.push("placeholder: " + t);
+  });
+  return bad;
+});
+if (chromeGaps.length) failures++;
+console.log(
+  `summaries and placeholders translated: ${chromeGaps.length ? "✗ " + chromeGaps.join(" | ") : "✓"}`
 );
 
 // Switching back to English must restore the source text, not a translation.

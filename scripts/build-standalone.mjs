@@ -269,14 +269,31 @@ header.bar{border-bottom:1px solid var(--line);position:sticky;top:0;background:
 nav{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;flex:1 1 auto;min-width:0;
   scrollbar-width:none;-ms-overflow-style:none;scroll-padding-inline:20px}
 nav::-webkit-scrollbar{display:none}
+/* A scrolling strip that just clips mid-word looks broken. The fade says
+   "there is more this way" without spending a row on arrows. */
+.navwrap{position:relative;flex:1 1 auto;min-width:0;display:flex}
+.navwrap::after{content:"";position:absolute;top:0;right:0;bottom:0;width:34px;
+  pointer-events:none;opacity:0;transition:opacity .18s;
+  background:linear-gradient(90deg,transparent,var(--bg))}
+.navwrap::before{content:"";position:absolute;top:0;left:0;bottom:0;width:34px;z-index:1;
+  pointer-events:none;opacity:0;transition:opacity .18s;
+  background:linear-gradient(270deg,transparent,var(--bg))}
+.navwrap.more-right::after{opacity:1}
+.navwrap.more-left::before{opacity:1}
+.qsbtn{display:flex;align-items:center;gap:7px;border-color:var(--line);flex:0 0 auto}
+.qsbtn svg{width:14px;height:14px}
+.qsbtn:hover{border-color:var(--ink-3)}
+@media(max-width:860px){ .qsbtn-t,.qsbtn-k{display:none} }
 .tab{font:inherit;font-size:.875rem;background:none;border:1px solid transparent;
   color:var(--ink-2);padding:6px 12px;border-radius:99px;cursor:pointer;
   white-space:nowrap;flex:0 0 auto}
 #langBtn{flex:0 0 auto}
 @media (max-width:640px){
   .bar-in{flex-wrap:wrap;gap:8px;padding:11px 16px}
-  .brand{font-size:1.25rem}
-  nav{order:3;flex-basis:100%}
+  .brand{font-size:1.25rem;margin-right:auto}
+  /* The scroller is .navwrap now. Targeting <nav> here put the row order out
+     as brand / tabs / buttons, which cost a third row on a phone. */
+  .navwrap{order:3;flex-basis:100%}
 }
 .tab:hover{color:var(--ink)}
 .tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
@@ -353,6 +370,108 @@ legend{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
   letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px;padding:0}
 fieldset{min-width:0}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ---- quick search ------------------------------------------------------ */
+.qs-back{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.34);
+  display:flex;align-items:flex-start;justify-content:center;padding:9vh 16px 16px;
+  backdrop-filter:blur(2px)}
+/* A class with display:flex beats the hidden attribute, which left an
+   invisible full-screen overlay swallowing every click on the page. */
+.qs-back[hidden]{display:none}
+.qs{width:min(640px,100%);background:var(--surface);border:1px solid var(--line);
+  border-radius:15px;box-shadow:0 22px 60px rgba(0,0,0,.3);overflow:hidden;
+  display:flex;flex-direction:column;max-height:76vh}
+.qs-in{display:flex;align-items:center;gap:10px;padding:15px 16px;
+  border-bottom:1px solid var(--line);flex-shrink:0}
+.qs-in svg{width:17px;height:17px;color:var(--ink-3);flex-shrink:0}
+.qs-in input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;
+  font-size:1.02rem;outline:none}
+.qs-kbd,.qs-foot kbd{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;
+  border:1px solid var(--line);border-radius:5px;padding:2px 6px;color:var(--ink-3);
+  background:var(--bg)}
+.qs-list{overflow-y:auto;padding:7px}
+.qs-grp{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);padding:11px 10px 5px}
+.qs-item{display:flex;gap:11px;align-items:baseline;width:100%;text-align:left;border:0;
+  background:none;color:inherit;font:inherit;padding:9px 10px;border-radius:9px;cursor:pointer}
+.qs-item:hover,.qs-item.sel{background:var(--raised)}
+.qs-item .qs-t{font-weight:600}
+.qs-item .qs-s{font-size:.82rem;color:var(--ink-3);margin-left:auto;white-space:nowrap;
+  font-family:"IBM Plex Mono",ui-monospace,monospace}
+.qs-none{padding:26px 14px;text-align:center;color:var(--ink-3);font-size:.92rem}
+.qs-foot{display:flex;gap:16px;flex-wrap:wrap;padding:9px 15px;border-top:1px solid var(--line);
+  font-size:10.5px;color:var(--ink-3);flex-shrink:0}
+@media(max-width:640px){ .qs-foot{display:none} .qs-back{padding:0} .qs{max-height:100vh;
+  height:100vh;border-radius:0;width:100%} }
+
+/* ---- filter bar -------------------------------------------------------- */
+.toolbar{position:sticky;top:0;z-index:12;background:var(--bg);
+  border-bottom:1px solid var(--line);padding:14px 0 12px;margin:0 0 22px}
+.searchrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.searchbox{position:relative;flex:1 1 260px;min-width:0;display:flex;align-items:center}
+.searchbox svg{position:absolute;left:12px;width:15px;height:15px;pointer-events:none;
+  color:var(--ink-3)}
+.searchbox input{width:100%;padding:11px 38px 11px 35px;border:1px solid var(--line);
+  border-radius:9px;background:var(--surface);color:var(--ink);font:inherit;font-size:.94rem}
+.searchbox input:focus-visible{outline:2px solid var(--aji);outline-offset:1px;border-color:transparent}
+.clearq{position:absolute;right:7px;border:0;background:none;color:var(--ink-3);cursor:pointer;
+  font-size:17px;line-height:1;padding:6px 8px;border-radius:6px;display:none}
+.clearq.on{display:block}
+.clearq:hover{color:var(--ink);background:var(--raised)}
+.selwrap{display:flex;align-items:center;gap:6px}
+.selwrap select{padding:10px 11px;border:1px solid var(--line);border-radius:9px;
+  background:var(--surface);color:var(--ink);font:inherit;font-size:.88rem}
+.filtline{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:11px}
+.filtbox{margin-top:10px}
+.filtbox>summary{cursor:pointer;display:flex;align-items:center;gap:8px;list-style:none;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);padding:6px 0}
+.filtbox>summary::-webkit-details-marker{display:none}
+.filtbox>summary::before{content:"";width:7px;height:7px;flex-shrink:0;
+  border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+  transform:rotate(-45deg);transition:transform .18s;margin-left:2px}
+.filtbox[open]>summary::before{transform:rotate(45deg)}
+.filtbox>summary:hover{color:var(--ink)}
+.filtn{background:var(--ink);color:var(--bg);border-radius:99px;padding:1px 7px;
+  font-size:10px;letter-spacing:0;display:none}
+.filtn.on{display:inline-block}
+.notebox{margin-top:14px;border-top:1px solid var(--line);padding-top:6px}
+.notebox>summary{cursor:pointer;list-style:none;font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding:7px 0;
+  display:flex;align-items:center;gap:8px}
+.notebox>summary::-webkit-details-marker{display:none}
+.notebox>summary::before{content:"+";font-size:14px;line-height:1}
+.notebox[open]>summary::before{content:"\2212"}
+.notebox>summary:hover{color:var(--ink)}
+.resultbar{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-top:11px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;color:var(--ink-3)}
+.resultbar b{color:var(--ink);font-size:13px}
+.linkbtn{border:0;background:none;color:var(--aji);cursor:pointer;font:inherit;
+  font-size:11.5px;text-decoration:underline;padding:2px 0}
+.linkbtn:hover{color:var(--ink)}
+.empty{border:1px dashed var(--line);border-radius:12px;padding:34px 22px;text-align:center;
+  color:var(--ink-2)}
+.empty h3{margin:0 0 7px}
+.empty p{margin:0 0 14px;font-size:.92rem}
+
+/* Sortable table headers */
+th.sortable{cursor:pointer;user-select:none;white-space:nowrap}
+th.sortable:hover{color:var(--ink)}
+th.sortable .arrow{opacity:.35;margin-left:3px}
+th.sortable[aria-sort] .arrow{opacity:1;color:var(--aji)}
+
+/* A 7-column table does not belong on a 390px screen. Below that the same
+   rows render as cards, which is the only honest fix for "swipe sideways". */
+.dishcards{display:none}
+@media(max-width:700px){
+  .mxtable{display:none}
+  .dishcards{display:grid;gap:10px}
+}
+.dcard{border:1px solid var(--line);border-radius:11px;padding:13px 14px;background:var(--surface)}
+.dcard-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.dcard-nums{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;color:var(--ink-3)}
+.dcard-nums b{color:var(--ink);font-weight:600}
 .chip{font:inherit;font-size:.875rem;padding:9px 16px;border-radius:99px;cursor:pointer;
   background:transparent;color:var(--ink-2);border:1px solid var(--line)}
 .chip:hover{border-color:var(--ink-3);color:var(--ink)}
@@ -393,7 +512,7 @@ footer p{margin:0 0 7px;max-width:70ch}
 <header class="bar">
   <div class="bar-in">
     <span class="brand">Aye <em>Si</em> Cena</span>
-    <nav role="tablist" aria-label="Sections">
+    <div class="navwrap"><nav role="tablist" aria-label="Sections">
       <button class="tab" role="tab" data-pane="home" aria-selected="true">Home</button>
       <button class="tab" role="tab" data-pane="moments" aria-selected="false">The evening</button>
       <button class="tab" role="tab" data-pane="find" aria-selected="false">Find dishes</button>
@@ -405,7 +524,12 @@ footer p{margin:0 0 7px;max-width:70ch}
       <button class="tab" role="tab" data-pane="day" aria-selected="false">The day</button>
       <button class="tab" role="tab" data-pane="packages" aria-selected="false">Packages</button>
       <button class="tab" role="tab" data-pane="builder" aria-selected="false">Build a menu</button>
-    </nav>
+    </nav></div>
+    <button id="qsBtn" class="tab qsbtn" type="button" data-openqs aria-label="Search everything">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span class="qsbtn-t">Search</span><kbd class="qs-kbd qsbtn-k">/</kbd>
+    </button>
     <button id="langBtn" class="tab" type="button" aria-label="Cambiar idioma"
       style="font-family:'IBM Plex Mono',monospace;font-size:11px"></button>
   </div>
@@ -478,7 +602,18 @@ footer p{margin:0 0 7px;max-width:70ch}
     <p class="lede">Start from the event or start from the palate. Pick what you are planning and
       the matrix narrows to what actually works for it — then filter by flavour to land on a
       shortlist.</p>
-    <fieldset style="margin-top:30px">
+    <div class="toolbar">
+      <div class="searchrow">
+        <label class="searchbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="findQ" type="search" autocomplete="off" spellcheck="false"
+            placeholder="Search a dish or an ingredient" aria-label="Search dishes">
+          <button type="button" class="clearq" id="findQClear" aria-label="Clear the search">&times;</button>
+        </label>
+      </div>
+    </div>
+    <fieldset style="margin-top:8px">
       <legend>What are you planning?</legend>
       <div class="grid g3" id="evtGrid"></div>
     </fieldset>
@@ -512,13 +647,43 @@ footer p{margin:0 0 7px;max-width:70ch}
     <p class="lede">Every dish with its lineage, its food cost and its menu value. The
       <span class="cu">purple</span> half is the British original; the
       <span class="cp">gold</span> half is what Peru does to it.</p>
-    <p class="lede" style="font-size:.92rem;color:var(--ink-3);margin-top:10px">FC% is food cost as a
-      share of menu value. Above 30% is flagged — it is eating margin.</p>
-    <p class="lede" style="font-size:.92rem;margin-top:8px"><strong>From recipe</strong> is what the
-      dish prices out at when every ingredient line is costed and divided by the yield. Where that
-      disagrees with the estimate by more than 40% the cell is flagged. The bakery is where it
-      disagrees most: sugar and flour are cheap and the estimates assumed otherwise. Both figures
-      are unverified until a market run.</p>
+    <details class="notebox">
+      <summary><span>How to read these numbers</span></summary>
+      <p class="lede" style="font-size:.92rem;color:var(--ink-3);margin-top:10px">FC% is food cost as a
+        share of menu value. Above 30% is flagged — it is eating margin.</p>
+      <p class="lede" style="font-size:.92rem;margin-top:8px"><strong>From recipe</strong> is what the
+        dish prices out at when every ingredient line is costed and divided by the yield. Where that
+        disagrees with the estimate by more than 40% the cell is flagged. The bakery is where it
+        disagrees most: sugar and flour are cheap and the estimates assumed otherwise. Both figures
+        are unverified until a market run.</p>
+    </details>
+    <div class="toolbar">
+      <div class="searchrow">
+        <label class="searchbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="mxQ" type="search" autocomplete="off" spellcheck="false"
+            placeholder="Search a dish, an ingredient, a supplier" aria-label="Search the matrix">
+          <button type="button" class="clearq" id="mxQClear" aria-label="Clear the search">&times;</button>
+        </label>
+        <span class="selwrap"><label class="src" for="mxSort">Sort</label>
+          <select id="mxSort">
+            <option value="id">Number</option>
+            <option value="name">Name</option>
+            <option value="price">Menu value</option>
+            <option value="cost">Estimated cost</option>
+            <option value="fc">Food cost %</option>
+            <option value="gap">Furthest from its estimate</option>
+          </select></span>
+      </div>
+      <details class="filtbox" id="mxFilters">
+        <summary><span>Filters</span><span class="filtn" id="mxFiltN"></span></summary>
+        <div class="filtline" id="mxCats"></div>
+        <div class="filtline" id="mxOrigins"></div>
+        <div class="filtline" id="mxFlags"></div>
+      </details>
+      <div class="resultbar" id="mxCount"></div>
+    </div>
     <div id="menuBody"></div>
   </section>
 
@@ -530,18 +695,30 @@ footer p{margin:0 0 7px;max-width:70ch}
     <p class="lede" style="font-size:.92rem;color:var(--ink-3);margin-top:10px">Quantities are
       batch quantities, not domestic ones. Cross-check them against the run sheet in Build a menu
       before a real service.</p>
-    <fieldset style="margin-top:28px">
-      <legend>Course</legend>
-      <div class="chips" id="recCats"></div>
-    </fieldset>
-    <fieldset>
-      <legend>Search</legend>
-      <input id="recSearch" type="search" placeholder="dish, ingredient or technique"
-        aria-label="Search recipes"
-        style="width:100%;max-width:420px;padding:10px 12px;border:1px solid var(--line);
-               border-radius:8px;background:var(--surface);color:var(--ink);font:inherit">
-    </fieldset>
-    <div id="recCount" style="border-top:1px solid var(--line);padding-top:18px;margin-bottom:20px"></div>
+    <div class="toolbar">
+      <div class="searchrow">
+        <label class="searchbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="recSearch" type="search" autocomplete="off" spellcheck="false"
+            placeholder="Search a dish, an ingredient or a technique" aria-label="Search recipes">
+          <button type="button" class="clearq" id="recQClear" aria-label="Clear the search">&times;</button>
+        </label>
+        <span class="selwrap"><label class="src" for="recTime">Total time</label>
+          <select id="recTime">
+            <option value="">Any</option>
+            <option value="45">Under 45 min</option>
+            <option value="90">Under 90 min</option>
+            <option value="180">Under 3 hours</option>
+          </select></span>
+      </div>
+      <details class="filtbox" id="recFilters">
+        <summary><span>Filters</span><span class="filtn" id="recFiltN"></span></summary>
+        <div class="filtline chips" id="recCats"></div>
+        <div class="filtline chips" id="recDiets"></div>
+      </details>
+      <div class="resultbar" id="recCount"></div>
+    </div>
     <div id="recBody"></div>
   </section>
 
@@ -653,6 +830,25 @@ footer p{margin:0 0 7px;max-width:70ch}
       cost, not verified supplier quotes.</p>
     <p>Aye Si Cena · Lima · Scottish-Peruvian catering</p>
   </footer>
+</div>
+
+<div id="qsBack" class="qs-back" hidden>
+  <div class="qs" role="dialog" aria-modal="true" aria-label="Quick search">
+    <div class="qs-in">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="qsQ" type="text" autocomplete="off" spellcheck="false"
+        placeholder="Search everything — a dish, an ingredient, a section"
+        aria-label="Search everything" aria-controls="qsList" aria-expanded="true">
+      <kbd class="qs-kbd">Esc</kbd>
+    </div>
+    <div id="qsList" class="qs-list" role="listbox" aria-label="Results"></div>
+    <div class="qs-foot">
+      <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> <span>to move</span></span>
+      <span><kbd>&crarr;</kbd> <span>to open</span></span>
+      <span><kbd>/</kbd> <span>to search from anywhere</span></span>
+    </div>
+  </div>
 </div>
 
 <script id="data" type="application/json">${payload}</script>
@@ -1548,7 +1744,10 @@ function translateNode(root){
     if (!parent || NO_TRANSLATE.indexOf(parent.tagName) > -1) continue;
     var raw = n.nodeValue;
     var key = raw.replace(/\s+/g, " ").trim();
-    if (!key || !/[a-zA-Z]{3}/.test(key)) continue;
+    // Any run of letters is a candidate; the dictionary decides. This used to
+    // demand three letters, which meant "of", "at" and "on" could never be
+    // translated no matter what the dictionary said.
+    if (!key || !/[a-zA-Z]/.test(key)) continue;
     var direct = ES[key];
     if (direct === undefined) direct = patternTranslate(key);
     if (direct !== undefined && direct !== null){
@@ -1649,6 +1848,7 @@ function show(name){
   // The tab row scrolls now, so the selected tab can be off-screen.
   var sel = document.querySelector('.tab[aria-selected="true"]');
   if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: "nearest", inline: "nearest" });
+  if (navFade) navFade();
   window.scrollTo(0,0);
 }
 tabs.forEach(function(t){ t.addEventListener("click", function(){ show(t.dataset.pane); }); });
@@ -1690,29 +1890,260 @@ document.getElementById("homeSigs").innerHTML = DISHES.slice()
       "</span></p></div>";
   }).join("");
 
-// --- the hundred ---------------------------------------------------------
-document.getElementById("menuBody").innerHTML = ORDER.map(function(cat){
-  var rows = DISHES.filter(function(d){ return d.category === cat; });
-  return "<div class='sec-head'><h2>" + esc(LABELS[cat]) + "</h2>" +
-    "<span class='pill-count tnum'>" + rows.length + "</span></div>" +
-    "<div class='tscroll'><table><thead><tr>" +
-      "<th>#</th><th>Dish</th><th style='text-align:right'>Est. cost</th>" +
-      "<th style='text-align:right'>From recipe</th>" +
-      "<th style='text-align:right'>Menu value</th><th style='text-align:right'>FC%</th><th>Source</th>" +
-    "</tr></thead><tbody>" + rows.map(function(d){
-      return "<tr><td class='dish-n tnum'>" + d.id + "</td><td>" +
-        "<span class='dish-t'>" + esc(d.name) + "</span>" +
-        "<span class='dish-b'>" + esc(d.fusion) + "</span>" +
-        "<span class='dna'><span class='u'>" + esc(d.origin) +
-          "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.subOrigin) + "</span></span>" +
-        "</td>" +
-        "<td class='money tnum muted'>" + soles(d.cost) + "</td>" +
-        "<td class='money tnum'>" + realCostCell(d) + "</td>" +
-        "<td class='money tnum' style='font-weight:600'>" + soles(d.price) + "</td>" +
-        "<td class='fc tnum " + flag(d) + "'>" + Math.round(ratio(d)*100) + "%</td>" +
-        "<td class='src'>" + esc(d.source) + "</td></tr>";
-    }).join("") + "</tbody></table></div>";
-}).join("");
+// --- the matrix ----------------------------------------------------------
+// 223 rows with no way through them was the single biggest usability hole in
+// the app. Search, filter by course and by lineage, sort on any column, and
+// on a phone the same rows render as cards rather than a sideways scroll.
+var mx = { q: "", cat: "", origin: "", flag: "", sort: "id", dir: 1 };
+
+/**
+ * Search that ignores accents, because the menu is half Spanish.
+ *
+ * Typing "lucuma" has to find "lúcuma" and "aji" has to find "ají". Anything
+ * else makes a Peruvian buyer type accents to search their own language.
+ */
+function fold(v){
+  return String(v == null ? "" : v).toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+var MX_HAY = {};
+function dishHaystack(d){
+  if (MX_HAY[d.id]) return MX_HAY[d.id];
+  var r = RECIPE_BY_DISH[d.id];
+  var parts = [d.name, d.fusion, d.origin, d.subOrigin, d.source, d.keyIngredients,
+    LABELS[d.category], FORMATS[d.format], String(d.id)];
+  if (r) parts.push(r.ingredients.map(function(i){ return i.item; }).join(" "));
+  // The Spanish is searchable too, so the same box works in either language.
+  parts.push(ES[d.fusion] || "", ES_ING_ALL(d));
+  return (MX_HAY[d.id] = fold(parts.join(" ")));
+}
+function ES_ING_ALL(d){
+  var r = RECIPE_BY_DISH[d.id];
+  if (!r) return "";
+  return r.ingredients.map(function(i){ return ES_ING[canonIng(i.item)] || ""; }).join(" ");
+}
+
+function mxVariance(d){
+  var c = costRecipe(RECIPE_BY_DISH[d.id]);
+  if (!c || !c.perPortion) return null;
+  return Math.abs(c.perPortion - d.cost) / d.cost;
+}
+
+function mxMatches(d){
+  if (mx.cat && d.category !== mx.cat) return false;
+  if (mx.origin && lineOf(d) !== mx.origin) return false;
+  if (mx.flag === "over" && ratio(d) <= K.FC_MAX) return false;
+  if (mx.flag === "gap"){ var v = mxVariance(d); if (v === null || v <= 0.4) return false; }
+  if (mx.flag === "licence" && !d.needsLicence) return false;
+  if (mx.flag === "veg" && !d.veg) return false;
+  if (mx.q && dishHaystack(d).indexOf(mx.q) === -1) return false;
+  return true;
+}
+
+function lineOf(d){ return d.subOrigin.indexOf("Scottish") === 0 ? "Scottish" : d.subOrigin; }
+
+function mxSorted(list){
+  var k = mx.sort, dir = mx.dir;
+  var by = {
+    id:    function(a,b){ return a.id - b.id; },
+    name:  function(a,b){ return a.name.localeCompare(b.name); },
+    price: function(a,b){ return a.price - b.price; },
+    cost:  function(a,b){ return a.cost - b.cost; },
+    fc:    function(a,b){ return ratio(a) - ratio(b); },
+    gap:   function(a,b){ return (mxVariance(a) || 0) - (mxVariance(b) || 0); }
+  };
+  return list.slice().sort(function(a,b){ return by[k](a,b) * dir; });
+}
+
+function mxRow(d){
+  return "<tr><td class='dish-n tnum'>" + d.id + "</td><td>" +
+    "<span class='dish-t'>" + esc(d.name) + "</span>" +
+    "<span class='dish-b'>" + esc(d.fusion) + "</span>" +
+    "<span class='dna'><span class='u'>" + esc(d.origin) +
+      "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.subOrigin) + "</span></span>" +
+    "</td>" +
+    "<td class='money tnum muted'>" + soles(d.cost) + "</td>" +
+    "<td class='money tnum'>" + realCostCell(d) + "</td>" +
+    "<td class='money tnum' style='font-weight:600'>" + soles(d.price) + "</td>" +
+    "<td class='fc tnum " + flag(d) + "'>" + Math.round(ratio(d)*100) + "%</td>" +
+    "<td class='src'>" + esc(d.source) + "</td></tr>";
+}
+
+function mxCard(d){
+  return "<div class='dcard'><div class='dcard-top'>" +
+    "<div><span class='dish-n tnum'>" + String(d.id).padStart(3,"0") + " &middot; <span>" +
+      esc(LABELS[d.category]) + "</span></span>" +
+      "<h3 style='margin:3px 0 0;font-size:1.02rem'>" + esc(d.name) + "</h3></div>" +
+    "<span class='fc tnum " + flag(d) + "'>" + Math.round(ratio(d)*100) + "%</span></div>" +
+    "<p class='dish-b' style='margin:7px 0 0'>" + esc(d.fusion) + "</p>" +
+    "<p class='dna' style='margin:7px 0 0'><span class='u'>" + esc(d.origin) +
+      "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" +
+      esc(d.subOrigin) + "</span></p>" +
+    "<div class='dcard-nums'>" +
+      "<span><span>Est.</span> <b>" + soles(d.cost) + "</b></span>" +
+      // The number itself, not the table cell's markup stripped with a regex —
+      // that dragged the ×ratio badge in and read as "S/ 0.73 ×0.33".
+      "<span><span>From recipe</span> <b>" +
+        (REAL_COST[d.id] === undefined ? "\u2014" : soles(REAL_COST[d.id])) + "</b></span>" +
+      "<span><span>Menu value</span> <b>" + soles(d.price) + "</b></span>" +
+    "</div></div>";
+}
+
+function mxHead(){
+  var cols = [["id","#",""],["name","Dish",""],["cost","Est. cost","right"],
+    ["gap","From recipe","right"],["price","Menu value","right"],["fc","FC%","right"]];
+  return "<thead><tr>" + cols.map(function(c){
+    var on = mx.sort === c[0];
+    return "<th class='sortable' data-sort='" + c[0] + "'" +
+      (on ? " aria-sort='" + (mx.dir === 1 ? "ascending" : "descending") + "'" : "") +
+      (c[2] ? " style='text-align:right'" : "") + "><span>" + esc(c[1]) + "</span>" +
+      "<span class='arrow'>" + (on ? (mx.dir === 1 ? "\u2191" : "\u2193") : "\u2195") + "</span></th>";
+  }).join("") + "<th><span>Source</span></th></tr></thead>";
+}
+
+function renderMatrix(){
+  var hits = DISHES.filter(mxMatches);
+  var body = document.getElementById("menuBody");
+  var filtered = mx.q || mx.cat || mx.origin || mx.flag;
+
+  document.getElementById("mxCount").innerHTML =
+    "<span><b class='tnum'>" + hits.length + "</b> " +
+      (hits.length === 1 ? "<span>dish</span>" : "<span>dishes</span>") +
+      " <span>of</span> <span class='tnum'>" + DISHES.length + "</span></span>" +
+    (filtered ? "<button type='button' class='linkbtn' id='mxClear'>Clear all filters</button>" : "");
+  if (filtered){
+    document.getElementById("mxClear").addEventListener("click", function(){
+      mx.q = ""; mx.cat = ""; mx.origin = ""; mx.flag = "";
+      document.getElementById("mxQ").value = "";
+      syncMatrix();
+    });
+  }
+
+  if (!hits.length){
+    body.innerHTML = "<div class='empty'><h3>Nothing matches that</h3>" +
+      "<p>Try an ingredient rather than a dish name, or clear a filter.</p>" +
+      "<button type='button' class='chip' id='mxEmptyClear'>Clear all filters</button></div>";
+    document.getElementById("mxEmptyClear").addEventListener("click", function(){
+      mx.q = ""; mx.cat = ""; mx.origin = ""; mx.flag = "";
+      document.getElementById("mxQ").value = "";
+      syncMatrix();
+    });
+    return;
+  }
+
+  // Grouped by course while sorted by number, which is how you browse it.
+  // Any other sort is a question about the whole matrix, so it goes flat.
+  var groups = mx.sort === "id" && !mx.cat
+    ? ORDER.map(function(c){ return { label: LABELS[c],
+        rows: hits.filter(function(d){ return d.category === c; }) }; })
+        .filter(function(g){ return g.rows.length; })
+    : [{ label: "", rows: mxSorted(hits) }];
+
+  body.innerHTML = groups.map(function(g){
+    var rows = mx.sort === "id" ? mxSorted(g.rows) : g.rows;
+    return (g.label ? "<div class='sec-head'><h2>" + esc(g.label) + "</h2>" +
+        "<span class='pill-count tnum'>" + rows.length + "</span></div>" : "") +
+      "<div class='tscroll mxtable'><table>" + mxHead() + "<tbody>" +
+        rows.map(mxRow).join("") + "</tbody></table></div>" +
+      "<div class='dishcards'>" + rows.map(mxCard).join("") + "</div>";
+  }).join("");
+
+  [].forEach.call(body.querySelectorAll("[data-sort]"), function(th){
+    th.addEventListener("click", function(){
+      var k = th.dataset.sort;
+      if (mx.sort === k) mx.dir = -mx.dir; else { mx.sort = k; mx.dir = k === "gap" ? -1 : 1; }
+      document.getElementById("mxSort").value = mx.sort;
+      renderMatrix();
+    });
+  });
+}
+
+function mxChips(){
+  var cats = "<button type='button' class='chip" + (mx.cat === "" ? " on" : "") +
+    "' data-mxcat=''><span>All courses</span></button>" +
+    ORDER.map(function(c){
+      var n = DISHES.filter(function(d){ return d.category === c; }).length;
+      return "<button type='button' class='chip" + (mx.cat === c ? " on" : "") +
+        "' data-mxcat='" + c + "'><span>" + esc(LABELS[c]) + "</span>" +
+        "<span class='tnum'> " + n + "</span></button>";
+    }).join("");
+  document.getElementById("mxCats").innerHTML = cats;
+
+  var lines = {};
+  DISHES.forEach(function(d){ lines[lineOf(d)] = (lines[lineOf(d)] || 0) + 1; });
+  var order = Object.keys(lines).sort(function(a,b){ return lines[b] - lines[a]; });
+  document.getElementById("mxOrigins").innerHTML =
+    "<button type='button' class='chip" + (mx.origin === "" ? " on" : "") +
+      "' data-mxorigin=''><span>Every lineage</span></button>" +
+    order.map(function(o){
+      return "<button type='button' class='chip" + (mx.origin === o ? " on" : "") +
+        "' data-mxorigin='" + esc(o) + "'><span>" + esc(o) + "</span>" +
+        "<span class='tnum'> " + lines[o] + "</span></button>";
+    }).join("");
+
+  document.getElementById("mxFlags").innerHTML =
+    [["", "No flag"], ["over", "Over the food-cost ceiling"], ["gap", "More than 40% from its estimate"],
+     ["licence", "Needs the liquor licence"], ["veg", "Vegetarian"]].map(function(f){
+      return "<button type='button' class='chip" + (mx.flag === f[0] ? " on" : "") +
+        "' data-mxflag='" + f[0] + "'><span>" + esc(f[1]) + "</span></button>";
+    }).join("");
+
+  [["data-mxcat","cat"],["data-mxorigin","origin"],["data-mxflag","flag"]].forEach(function(pair){
+    [].forEach.call(document.querySelectorAll("[" + pair[0] + "]"), function(b){
+      b.addEventListener("click", function(){
+        var v = b.getAttribute(pair[0]);
+        mx[pair[1]] = (mx[pair[1]] === v) ? "" : v;
+        syncMatrix();
+      });
+    });
+  });
+}
+
+function filtBadge(id, n){
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = n ? String(n) : "";
+  el.classList.toggle("on", !!n);
+}
+
+function syncMatrix(){
+  mxChips();
+  renderMatrix();
+  filtBadge("mxFiltN", (mx.cat ? 1 : 0) + (mx.origin ? 1 : 0) + (mx.flag ? 1 : 0));
+  applyLanguage();
+}
+
+/**
+ * Filters open on a desktop, folded on a phone.
+ *
+ * Three rows of chips above the first dish is a wall on a 390px screen, and
+ * wasted whitespace on a 1280px one. The badge on the summary is what keeps a
+ * folded filter from being a hidden one.
+ */
+function initFilterBoxes(){
+  var wide = window.matchMedia("(min-width:701px)").matches;
+  ["mxFilters","recFilters"].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.open = wide;
+  });
+}
+
+document.getElementById("mxQ").addEventListener("input", function(e){
+  mx.q = fold(e.target.value.trim());
+  document.getElementById("mxQClear").classList.toggle("on", !!e.target.value);
+  renderMatrix(); applyLanguage();
+});
+document.getElementById("mxQClear").addEventListener("click", function(){
+  var i = document.getElementById("mxQ");
+  i.value = ""; mx.q = ""; i.focus();
+  document.getElementById("mxQClear").classList.remove("on");
+  renderMatrix(); applyLanguage();
+});
+document.getElementById("mxSort").addEventListener("change", function(e){
+  mx.sort = e.target.value; mx.dir = e.target.value === "gap" ? -1 : 1;
+  renderMatrix(); applyLanguage();
+});
 
 // --- recipes -------------------------------------------------------------
 // One card per dish, filtered by course and by a free-text search that reaches
@@ -1724,19 +2155,66 @@ DISHES.forEach(function(d){ DISH_BY_ID[d.id] = d; });
 
 var recCat = "";      // "" means every course
 var recQuery = "";
+var recDiet = "";     // "" means no dietary filter
+var recTime = "";     // "" means any total time
 
+var REC_HAY = {};
 function recipeHaystack(r, d){
-  return (d.name + " " + d.fusion + " " + d.keyIngredients + " " +
+  if (REC_HAY[r.dishId]) return REC_HAY[r.dishId];
+  var en = d.name + " " + d.fusion + " " + d.keyIngredients + " " +
     r.ingredients.map(function(i){ return i.qty + " " + i.item; }).join(" ") + " " +
-    r.method.join(" ") + " " + r.makeAhead + " " + r.holds).toLowerCase();
+    r.method.join(" ") + " " + r.makeAhead + " " + r.holds;
+  // The Spanish goes in the same haystack: a cook searching "avena" or
+  // "mantequilla" has to find the recipe whichever language the page is in.
+  var es = r.ingredients.map(function(i){ return ES_ING[canonIng(i.item)] || ""; }).join(" ") +
+    " " + r.method.map(function(m){ return ES[m] || ""; }).join(" ") +
+    " " + (ES[d.fusion] || "");
+  return (REC_HAY[r.dishId] = fold(en + " " + es));
 }
 
 function recipeMatches(r){
   var d = DISH_BY_ID[r.dishId];
   if (!d) return false;
   if (recCat && d.category !== recCat) return false;
+  if (recDiet && !suitsAll(d.id, [recDiet])) return false;
+  if (recTime && (r.prepMin + r.cookMin) > Number(recTime)) return false;
   if (recQuery && recipeHaystack(r, d).indexOf(recQuery) === -1) return false;
   return true;
+}
+
+function recFiltered(){ return recQuery || recCat || recDiet || recTime; }
+
+function recClearAll(){
+  recQuery = ""; recCat = ""; recDiet = ""; recTime = "";
+  document.getElementById("recSearch").value = "";
+  document.getElementById("recTime").value = "";
+  document.getElementById("recQClear").classList.remove("on");
+  renderRecCats(); renderRecDiets(); renderRecipes(); recBadge(); applyLanguage();
+}
+
+function recBadge(){
+  filtBadge("recFiltN", (recCat ? 1 : 0) + (recDiet ? 1 : 0) + (recTime ? 1 : 0));
+}
+
+function renderRecDiets(){
+  // Only the diets that actually rule anything out are worth a chip: an empty
+  // filter is a dead button and a filter nothing fails is a lie.
+  var html = "<button type='button' class='chip" + (recDiet === "" ? " on" : "") +
+    "' data-rdiet=''><span>Anyone</span></button>";
+  html += DIETS.map(function(row){
+    var n = RECIPES.filter(function(r){ return suitsAll(r.dishId, [row[0]]); }).length;
+    if (!n || n === RECIPES.length) return "";
+    return "<button type='button' class='chip" + (recDiet === row[0] ? " on" : "") +
+      "' data-rdiet='" + row[0] + "' title='" + esc(row[2]) + "'><span>" + esc(row[1]) + "</span>" +
+      "<span class='tnum'> " + n + "</span></button>";
+  }).join("");
+  document.getElementById("recDiets").innerHTML = html;
+  [].forEach.call(document.querySelectorAll("[data-rdiet]"), function(b){
+    b.addEventListener("click", function(){
+      recDiet = (recDiet === b.dataset.rdiet) ? "" : b.dataset.rdiet;
+      renderRecDiets(); renderRecipes(); recBadge(); applyLanguage();
+    });
+  });
 }
 
 function renderRecCats(){
@@ -1754,7 +2232,7 @@ function renderRecCats(){
   [].forEach.call(document.querySelectorAll("[data-rcat]"), function(b){
     b.addEventListener("click", function(){
       recCat = (recCat === b.dataset.rcat) ? "" : b.dataset.rcat;
-      renderRecCats(); renderRecipes();
+      renderRecCats(); renderRecipes(); recBadge(); applyLanguage();
     });
   });
 }
@@ -1809,12 +2287,17 @@ function dietaryPanel(dishId){
 function renderRecipes(){
   var hits = RECIPES.filter(recipeMatches);
   document.getElementById("recCount").innerHTML =
-    "<b class='tnum'>" + hits.length + "</b> of " + RECIPES.length + " recipes" +
-    (recQuery ? " matching &ldquo;" + esc(recQuery) + "&rdquo;" : "");
+    "<span><b class='tnum'>" + hits.length + "</b> <span>of</span> " +
+      "<span class='tnum'>" + RECIPES.length + "</span> <span>recipes</span></span>" +
+    (recFiltered() ? "<button type='button' class='linkbtn' id='recClear'>Clear all filters</button>" : "");
+  if (recFiltered()) document.getElementById("recClear").addEventListener("click", recClearAll);
 
   if (!hits.length){
     document.getElementById("recBody").innerHTML =
-      "<p class='muted'>Nothing matches that. Try an ingredient rather than a dish name.</p>";
+      "<div class='empty'><h3>Nothing matches that</h3>" +
+      "<p>Try an ingredient rather than a dish name, or loosen a filter.</p>" +
+      "<button type='button' class='chip' id='recEmptyClear'>Clear all filters</button></div>";
+    document.getElementById("recEmptyClear").addEventListener("click", recClearAll);
     return;
   }
 
@@ -1859,9 +2342,20 @@ function renderRecipes(){
   }).join("");
 }
 
+document.getElementById("recTime").addEventListener("change", function(e){
+  recTime = e.target.value; renderRecipes(); recBadge(); applyLanguage();
+});
+document.getElementById("recQClear").addEventListener("click", function(){
+  var i = document.getElementById("recSearch");
+  i.value = ""; recQuery = ""; i.focus();
+  document.getElementById("recQClear").classList.remove("on");
+  renderRecipes(); applyLanguage();
+});
 document.getElementById("recSearch").addEventListener("input", function(e){
-  recQuery = e.target.value.trim().toLowerCase();
-  renderRecipes();
+  // Folded, so "lucuma" finds "lúcuma" here exactly as it does in the matrix.
+  recQuery = fold(e.target.value.trim());
+  document.getElementById("recQClear").classList.toggle("on", !!e.target.value);
+  renderRecipes(); applyLanguage();
 });
 renderRecCats();
 renderRecipes();
@@ -1961,7 +2455,12 @@ document.addEventListener("input", function(e){
 });
 
 document.addEventListener("click", function(e){
-  if (e.target && e.target.id === "clearFind"){ evtId = null; flav = []; fmts = []; diets = []; renderFind(); }
+  if (e.target && e.target.id === "clearFind"){
+    evtId = null; flav = []; fmts = []; diets = []; findQ = "";
+    var fq = document.getElementById("findQ");
+    if (fq){ fq.value = ""; document.getElementById("findQClear").classList.remove("on"); }
+    renderFind(); applyLanguage();
+  }
 });
 
 // --- the palate compass ---------------------------------------------------
@@ -2072,6 +2571,8 @@ function renderCompass(base, matchCount){
   svg.innerHTML = parts.join("");
 }
 
+var findQ = "";
+
 function renderFind(){
   var ev = null;
   for (var i = 0; i < EVENTS.length; i++) if (EVENTS[i].id === evtId) ev = EVENTS[i];
@@ -2080,6 +2581,7 @@ function renderFind(){
   // Flavour counts must respect the format axis, or the compass lies.
   var base = fmts.length ? eventBase.filter(function(d){ return fmts.indexOf(d.format) > -1; }) : eventBase;
   var out = base;
+  if (findQ) out = out.filter(function(d){ return dishHaystack(d).indexOf(findQ) > -1; });
   if (diets.length) out = out.filter(function(d){ return suitsAll(d.id, diets); });
   if (flav.length){
     out = out.filter(function(d){
@@ -2127,14 +2629,15 @@ function renderFind(){
   document.getElementById("findCount").innerHTML =
     "<span class='mono' style='font-size:14px'><b class='tnum'>" + out.length +
     "</b> <span class='muted'>of " + DISHES.length + " dishes</span></span>" +
-    ((ev || flav.length || fmts.length)
-      ? " <button id='clearFind' class='linkbtn mono'>clear filters</button>"
+    ((ev || flav.length || fmts.length || diets.length || findQ)
+      ? " <button id='clearFind' class='linkbtn mono'>Clear all filters</button>"
       : "");
 
   if (!out.length){
     document.getElementById("findResults").innerHTML =
-      "<p class='card'>Nothing matches that combination. Switch the match mode to " +
-      "<strong>any</strong>, or drop a flavour.</p>";
+      "<div class='empty'><h3>Nothing matches that combination</h3>" +
+      "<p>Switch the match mode to any, drop a flavour, or clear the search.</p>" +
+      "<button type='button' class='chip' id='clearFind'>Clear all filters</button></div>";
     return;
   }
 
@@ -3095,9 +3598,175 @@ function quoteText(q, selected){
   return text;
 }
 
+document.getElementById("findQ").addEventListener("input", function(e){
+  findQ = fold(e.target.value.trim());
+  document.getElementById("findQClear").classList.toggle("on", !!e.target.value);
+  renderFind(); applyLanguage();
+});
+document.getElementById("findQClear").addEventListener("click", function(){
+  var i = document.getElementById("findQ");
+  i.value = ""; findQ = ""; i.focus();
+  document.getElementById("findQClear").classList.remove("on");
+  renderFind(); applyLanguage();
+});
 renderFind();
 renderDay();
+syncMatrix();
+renderRecDiets();
+initQuickSearch();
+initFilterBoxes();
+recBadge();
+navFade = initNavFade();
 render();
+
+/* ---- quick search -------------------------------------------------------
+ *
+ * One box that reaches everything: a dish, an ingredient, a recipe step, a
+ * section of the app. Opens on "/" or Cmd-K from anywhere, arrows to move,
+ * Enter to go. The point is that nobody has to know which pane a thing lives
+ * on before they can look for it.
+ */
+var qsSel = 0, qsHits = [];
+
+function qsIndex(){
+  var out = [];
+  DISHES.forEach(function(d){
+    out.push({ kind: "dish", label: d.name, sub: LABELS[d.category] + " \u00b7 " + soles(d.price),
+      hay: dishHaystack(d), go: function(){ goToDish(d); } });
+  });
+  INGS.forEach(function(i){
+    out.push({ kind: "ingredient", label: i.name,
+      sub: i.dishes.length + " " + (i.dishes.length === 1 ? "dish" : "dishes"),
+      hay: fold(i.name + " " + i.note),
+      go: function(){ show("seasonal"); } });
+  });
+  [["home","Home"],["moments","The evening"],["find","Find dishes"],["menu","The matrix"],
+   ["seasonal","Season"],["compare","Compare"],["graph","Ingredients"],["recipes","Recipes"],
+   ["day","The day"],["packages","Packages"],["builder","Build a menu"]].forEach(function(t){
+    out.push({ kind: "section", label: t[1], sub: "", hay: fold(t[1] + " " + (ES[t[1]] || "")),
+      go: function(){ show(t[0]); } });
+  });
+  return out;
+}
+var QS_ALL = null;
+
+/** Send the reader to the dish itself, not merely to the pane it lives on. */
+function goToDish(d){
+  show("recipes");
+  recClearAll();
+  var box = document.getElementById("recSearch");
+  box.value = d.name;
+  recQuery = fold(d.name);
+  document.getElementById("recQClear").classList.add("on");
+  renderRecipes();
+  applyLanguage();
+}
+
+function qsRender(){
+  var el = document.getElementById("qsList");
+  if (!qsHits.length){
+    el.innerHTML = "<p class='qs-none'>Nothing matches that.</p>";
+    return;
+  }
+  var last = "", html = "";
+  qsHits.forEach(function(h, i){
+    if (h.kind !== last){
+      last = h.kind;
+      html += "<p class='qs-grp'><span>" +
+        (h.kind === "dish" ? "Dishes" : h.kind === "ingredient" ? "Ingredients" : "Sections") +
+        "</span></p>";
+    }
+    html += "<button type='button' class='qs-item" + (i === qsSel ? " sel" : "") +
+      "' role='option' aria-selected='" + (i === qsSel) + "' data-qs='" + i + "'>" +
+      "<span class='qs-t'>" + esc(h.label) + "</span>" +
+      (h.sub ? "<span class='qs-s'>" + esc(h.sub) + "</span>" : "") + "</button>";
+  });
+  el.innerHTML = html;
+  [].forEach.call(el.querySelectorAll("[data-qs]"), function(b){
+    b.addEventListener("click", function(){ qsGo(Number(b.dataset.qs)); });
+  });
+  var sel = el.querySelector(".sel");
+  if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: "nearest" });
+}
+
+function qsSearch(v){
+  var q = fold(v.trim());
+  QS_ALL = QS_ALL || qsIndex();
+  if (!q){
+    // An empty box is not an empty result: offer the sections, which is what
+    // somebody who opened this by accident is looking for.
+    qsHits = QS_ALL.filter(function(h){ return h.kind === "section"; });
+  } else {
+    var starts = [], contains = [];
+    QS_ALL.forEach(function(h){
+      var at = h.hay.indexOf(q);
+      if (at === -1) return;
+      (fold(h.label).indexOf(q) === 0 ? starts : contains).push(h);
+    });
+    qsHits = starts.concat(contains).slice(0, 40);
+  }
+  qsSel = 0;
+  qsRender();
+  applyLanguage();
+}
+
+function qsOpen(){
+  var back = document.getElementById("qsBack");
+  if (!back.hidden) return;
+  back.hidden = false;
+  var box = document.getElementById("qsQ");
+  box.value = "";
+  qsSearch("");
+  box.focus();
+}
+function qsClose(){
+  document.getElementById("qsBack").hidden = true;
+}
+function qsGo(i){
+  var h = qsHits[i];
+  if (!h) return;
+  qsClose();
+  h.go();
+}
+
+/** Show the fade only on the side that actually has more tabs. */
+function initNavFade(){
+  var wrap = document.querySelector(".navwrap");
+  var nav = wrap.querySelector("nav");
+  function upd(){
+    var max = nav.scrollWidth - nav.clientWidth;
+    wrap.classList.toggle("more-right", nav.scrollLeft < max - 2);
+    wrap.classList.toggle("more-left", nav.scrollLeft > 2);
+  }
+  nav.addEventListener("scroll", upd, { passive: true });
+  window.addEventListener("resize", upd);
+  upd();
+  return upd;
+}
+var navFade = null;
+
+function initQuickSearch(){
+  var back = document.getElementById("qsBack");
+  var box = document.getElementById("qsQ");
+  box.addEventListener("input", function(e){ qsSearch(e.target.value); });
+  back.addEventListener("mousedown", function(e){ if (e.target === back) qsClose(); });
+  box.addEventListener("keydown", function(e){
+    if (e.key === "ArrowDown"){ e.preventDefault(); qsSel = Math.min(qsSel + 1, qsHits.length - 1); qsRender(); }
+    else if (e.key === "ArrowUp"){ e.preventDefault(); qsSel = Math.max(qsSel - 1, 0); qsRender(); }
+    else if (e.key === "Enter"){ e.preventDefault(); qsGo(qsSel); }
+    else if (e.key === "Escape"){ e.preventDefault(); qsClose(); }
+  });
+  document.addEventListener("keydown", function(e){
+    var t = e.target, tag = t && t.tagName;
+    var typing = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+    if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)){ e.preventDefault(); qsOpen(); }
+    else if (e.key === "/" && !typing){ e.preventDefault(); qsOpen(); }
+    else if (e.key === "Escape" && !back.hidden) qsClose();
+  });
+  [].forEach.call(document.querySelectorAll("[data-openqs]"), function(b){
+    b.addEventListener("click", qsOpen);
+  });
+}
 
 // Everything is painted; translate what is on screen and label the toggle.
 applyLanguage();

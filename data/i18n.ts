@@ -844,6 +844,97 @@ export const ES: Record<string, string> = {
   "Total": "Total",
   "beef mince": "carne molida de res",
   "beef/pork mince": "carne molida de res y cerdo",
+  // ---- search, filters and the quick-search overlay ----
+  "Filters": "Filtros",
+  "How to read these numbers": "Cómo leer estos números",
+  "Search a dish, an ingredient, a supplier":
+    "Busque un plato, un insumo, un proveedor",
+  "Search the matrix":
+    "Buscar en la matriz",
+  "Clear the search":
+    "Borrar la búsqueda",
+  "Clear all filters":
+    "Borrar todos los filtros",
+  "Sort":
+    "Ordenar",
+  "Number":
+    "Número",
+  "Name":
+    "Nombre",
+  "Estimated cost":
+    "Costo estimado",
+  "Food cost %":
+    "Costo de insumos %",
+  "Furthest from its estimate":
+    "Más lejos de su estimado",
+  "All courses":
+    "Todos los tiempos",
+  "Every lineage":
+    "Todo linaje",
+  "No flag":
+    "Sin marca",
+  "Over the food-cost ceiling":
+    "Sobre el techo de costo de insumos",
+  "More than 40% from its estimate":
+    "Más de 40% lejos de su estimado",
+  "Needs the liquor licence":
+    "Requiere licencia de licores",
+  "Nothing matches that":
+    "Nada coincide con eso",
+  "Try an ingredient rather than a dish name, or clear a filter.":
+    "Pruebe con un insumo en lugar del nombre de un plato, o quite un filtro.",
+  "Try an ingredient rather than a dish name, or loosen a filter.":
+    "Pruebe con un insumo en lugar del nombre de un plato, o afloje un filtro.",
+  "Est.":
+    "Est.",
+  "dish":
+    "plato",
+  "dishes":
+    "platos",
+  "of":
+    "de",
+  "recipes":
+    "recetas",
+  "Search a dish, an ingredient or a technique":
+    "Busque un plato, un insumo o una técnica",
+  "Search recipes":
+    "Buscar recetas",
+  "Total time":
+    "Tiempo total",
+  "Any":
+    "Cualquiera",
+  "Under 45 min":
+    "Menos de 45 min",
+  "Under 90 min":
+    "Menos de 90 min",
+  "Under 3 hours":
+    "Menos de 3 horas",
+  "Anyone":
+    "Cualquiera",
+  "Search a dish or an ingredient":
+    "Busque un plato o un insumo",
+  "Search dishes":
+    "Buscar platos",
+  "Nothing matches that combination":
+    "Nada coincide con esa combinación",
+  "Switch the match mode to any, drop a flavour, or clear the search.":
+    "Cambie el modo de coincidencia a «cualquiera», quite un sabor o borre la búsqueda.",
+  "Search everything — a dish, an ingredient, a section":
+    "Busque en todo — un plato, un insumo, una sección",
+  "Search everything":
+    "Buscar en todo",
+  "Dishes":
+    "Platos",
+  "Sections":
+    "Secciones",
+  "Nothing matches that.":
+    "Nada coincide con eso.",
+  "to move":
+    "para moverse",
+  "to open":
+    "para abrir",
+  "to search from anywhere":
+    "para buscar desde cualquier lugar",
   // ---- sending the quote out ----
   "Send this quote":
     "Enviar esta cotización",
