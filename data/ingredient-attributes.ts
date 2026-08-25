@@ -61,6 +61,8 @@ export const INGREDIENT_ATTRS: Record<string, IngredientAttrs> = {
   "puff pastry": { allergens: ["gluten", "milk"], vegan: false },
   "puff": { allergens: ["gluten", "milk"], vegan: false },
   "shortcrust pastry": { allergens: ["gluten", "milk"], vegan: false },
+  // Hot water crust is made with lard, so it is neither vegetarian nor pork-free.
+  "hot water crust pastry": { allergens: ["gluten", "pork"], vegetarian: false },
   "sweet shortcrust pastry": { allergens: ["gluten", "milk"], vegan: false, sugary: true },
   "cacao shortcrust pastry": { allergens: ["gluten", "milk"], vegan: false, sugary: true },
   "empanada dough": { allergens: ["gluten"], vegan: false },
@@ -100,6 +102,7 @@ export const INGREDIENT_ATTRS: Record<string, IngredientAttrs> = {
   "egg and pearl sugar": { allergens: ["eggs"], vegan: false, sugary: true },
   "mayonnaise": { allergens: ["eggs", "mustard"], vegan: false },
   "huacatay aioli": { allergens: ["eggs", "mustard"], vegan: false },
+  "aji amarillo mayonnaise": { allergens: ["eggs", "mustard"], vegan: false, hot: true },
 
   // ---- meat ----
   "lamb": { vegetarian: false }, "lamb leg": { vegetarian: false },
@@ -116,6 +119,8 @@ export const INGREDIENT_ATTRS: Record<string, IngredientAttrs> = {
   "haggis mix": { vegetarian: false, allergens: ["gluten"] },
   "leftover stovie": { vegetarian: false },
   "beef stock": { vegetarian: false, allergens: ["celery"] },
+  // Almost every vegetable stock, cube or fresh, is built on celery.
+  "vegetable stock": { allergens: ["celery"] },
   "chicken stock": { vegetarian: false, allergens: ["celery"] },
   "lamb stock": { vegetarian: false, allergens: ["celery"] },
   "stock": { vegetarian: false, allergens: ["celery"] },
@@ -263,7 +268,27 @@ export const INGREDIENT_ATTRS: Record<string, IngredientAttrs> = {
   "quinoa": {}, "tri-colour quinoa": {}, "quinoa flour": {},
   "long-grain rice": {}, "rice flour": {}, "cornflour": {},
   "dried split pea": {}, "bean": {},
-  "large cloth and flour for dusting": { allergens: ["gluten"] }
+  "large cloth and flour for dusting": { allergens: ["gluten"] },
+
+  // ---- added with dishes 192-223 ----
+  // Alpaca is the Peruvian stand-in for Highland venison. Nothing declarable
+  // in it beyond being meat, which is what most of these rows say.
+  "alpaca": { vegetarian: false },
+  "beef topside": { vegetarian: false },
+  // A bought haggis: offal, oats and suet. Oats mean gluten unless the
+  // butcher certifies otherwise, and no butcher in Lima does.
+  "haggis": { allergens: ["gluten"], vegetarian: false },
+  "whole salmon": { allergens: ["fish"], vegetarian: false },
+  // Scallop is a mollusc, crab a crustacean. They are separate declarable
+  // allergens and a guest allergic to one is very often fine with the other.
+  "concha de abanico": { allergens: ["molluscs"], vegetarian: false },
+  "crab meat": { allergens: ["crustaceans"], vegetarian: false },
+  "crab shell": { allergens: ["crustaceans"], vegetarian: false },
+  // Barley is a gluten cereal. It gets missed constantly because the label
+  // says "barley" rather than "wheat".
+  "pearl barley": { allergens: ["gluten"] },
+  "barley flour": { allergens: ["gluten"] },
+  "small whole trout": { allergens: ["fish"], vegetarian: false },
 };
 
 /**
@@ -274,10 +299,11 @@ export const INGREDIENT_ATTRS: Record<string, IngredientAttrs> = {
  * neither list fails the tests rather than being quietly assumed safe.
  */
 export const PLANT_PLAIN = [
-  "aguaymanto", "apple", "aubergine", "beetroot", "berro", "boiling water",
+  "achiote", "aguaymanto", "apple", "aubergine", "beetroot", "berro", "boiling water",
   "camote", "caper", "carrot", "chirimoya", "chive", "choclo kernel", "cinnamon",
   "cinnamon stick", "clove", "coarse salt", "cold water", "coriander", "cucumber",
-  "cucumber and tomato", "culantro", "cumin", "dill", "dried oregano", "fine salt",
+  "cucumber and tomato", "culantro", "cumin", "banana leaf", "brown lentil",
+  "juniper berry", "dill", "dried oregano", "fine salt",
   "flaked salt", "flat parsley", "frying oil", "garlic clove", "ginger",
   "good olive oil", "ground allspice", "ground cardamom", "ground cinnamon",
   "ground coriander", "ground cumin", "ground ginger", "ground mace",
@@ -309,7 +335,9 @@ export const PLANT_PLAIN = [
 export const HARD_TEXTURE_DISHES: number[] = [
   1, 3, 7, 12, 13, 14, 16, 18, 20, 21, 22, 25, 33, 38, 40, 42, 49, 52, 53,
   59, 62, 66, 67, 69, 71, 72, 76, 77, 78, 79, 80, 81, 82, 95, 96, 99, 103,
-  105, 107, 108, 115, 116, 120, 123, 124, 125, 136, 148
+  105, 107, 108, 115, 116, 120, 123, 124, 125, 136, 148,
+  // added with the 2026 extension
+  192, 195, 196, 197, 204, 216, 221, 222
 ];
 
 /**
@@ -318,7 +346,9 @@ export const HARD_TEXTURE_DISHES: number[] = [
  * bone, and offal, which is a hard sell at eight years old.
  */
 export const NOT_FOR_CHILDREN: number[] = [
-  1, 13, 16, 21, 26, 41, 42, 43, 44, 74, 118, 123, 124, 128, 133, 135
+  1, 13, 16, 21, 26, 41, 42, 43, 44, 74, 118, 123, 124, 128, 133, 135,
+  // added with the 2026 extension: offal, whole fish with bones, skewers
+  198, 202, 211, 221
 ];
 
 /**
@@ -347,7 +377,8 @@ export const HIGH_FODMAP = [
   "dried fig", "raisin", "sultana", "currant", "raisin and currant", "date",
   "mushroom", "cauliflower", "honey", "golden syrup", "chirimoya", "quince",
   "aguaymanto", "dried aguaymanto", "camote", "yuca", "choclo cob", "choclo kernel",
-  "mango chutney", "tomato ketchup", "beetroot"
+  "mango chutney", "tomato ketchup", "beetroot",
+  "pearl barley", "barley flour", "brown lentil"
 ];
 
 /**
@@ -378,5 +409,7 @@ export const HIGH_CARB = [
   "wonton wrapper", "bean", "dried split pea", "raisin", "sultana", "currant",
   "raisin and currant", "date", "dried fig", "prune", "glace cherry", "mixed peel",
   "70% dark chocolate", "70% peruvian dark chocolate", "peruvian dark chocolate",
-  "irn bru", "chicha morada", "chicha de jora", "very ripe banana"
+  "irn bru", "chicha morada", "chicha de jora", "very ripe banana",
+  "pearl barley", "barley flour", "brown lentil", "hot water crust pastry",
+  "haggis"
 ];

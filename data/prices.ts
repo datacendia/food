@@ -55,6 +55,23 @@ export const PRICES: Record<string, Price> = {
   "sunflower oil": { per: "L", soles: 9 },
   "frying oil": { per: "L", soles: 9 },
 
+  // ---- added with the 2026 matrix extension (dishes 192-223) ----
+  // Alpaca is the Peruvian stand-in for Highland venison: comparably lean,
+  // widely farmed, and roughly the price of a good beef cut rather than game.
+  "alpaca": { per: "kg", soles: 42, note: "lomo or shoulder; Magdalena and the Andean butchers, not Makro" },
+  "beef topside": { per: "kg", soles: 28, note: "asked for in slices and beaten thin, for beef olives" },
+  "haggis": { per: "kg", soles: 26, note: "made to brief by the butcher; dearer than building it in-house" },
+  "whole salmon": { per: "kg", soles: 46, note: "imported Chilean; the single dearest line on the sheet" },
+  "concha de abanico": { per: "kg", soles: 38, note: "roe on; carries a veda - check the month before ordering" },
+  "crab meat": { per: "kg", soles: 55, note: "picked. Buying whole crab is cheaper per kilo and much dearer in labour" },
+  "crab shell": { per: "kg", soles: 4, note: "the stall will usually give these away with a picked order" },
+  "pearl barley": { per: "kg", soles: 7 },
+  "barley flour": { per: "kg", soles: 9 },
+  "brown lentil": { per: "kg", soles: 7 },
+  "juniper berry": { per: "kg", soles: 90, note: "imported and used by the spoon; the per-kilo figure looks alarming and costs pennies" },
+  "achiote": { per: "kg", soles: 24 },
+  "vegetable stock": { per: "L", soles: 3 },
+
   "panko": { per: "kg", soles: 12 },
   "cumin": { per: "kg", soles: 45 },
   "ginger": { per: "kg", soles: 8 },
@@ -343,6 +360,9 @@ export const PRICES: Record<string, Price> = {
   // ---- fish and shellfish ----
   "trout fillet": { per: "kg", soles: 42 },
   "whole trout": { per: "each", soles: 24 },
+  // The big farmed trout above is a 1 kg fish. The Terminal also sells a
+  // 300 g one, which is the size you butterfly and kipper whole.
+  "small whole trout": { per: "each", soles: 8, unitGrams: 300 },
   "hot-smoked trout": { per: "kg", soles: 65 },
   "hot-smoked andean trout": { per: "kg", soles: 65 },
   "cured": { per: "kg", soles: 60 },
@@ -420,6 +440,8 @@ export const SUB_RECIPE_OF: Record<string, number> = {
 export const SUB_PREP_PRICES: Record<string, Price> = {
   "salsa criolla": { per: "kg", soles: 6, unitGrams: 800 },
   "huacatay aioli": { per: "kg", soles: 22, unitGrams: 500 },
+  "aji amarillo mayonnaise": { per: "kg", soles: 20, unitGrams: 500 },
+  "hot water crust pastry": { per: "kg", soles: 9, unitGrams: 1000 },
   "hovmastarsa": { per: "kg", soles: 20, unitGrams: 500 },
   "rocoto piccalilli": { per: "kg", soles: 14, unitGrams: 800 },
   "shortbread base": { per: "kg", soles: 18, unitGrams: 1200 },
@@ -449,7 +471,7 @@ export const COMPOUND_ALIAS: Record<string, string> = {
 /** On the invoice, but not food. Costed, but never counted as food cost. */
 export const NON_FOOD = [
   "wooden skewer", "bamboo skewer", "cocktail stick",
-  "large cloth and flour for dusting"
+  "large cloth and flour for dusting", "banana leaf"
 ] as const;
 
 /** Sundry prices for the non-food lines above. */
@@ -457,5 +479,6 @@ export const NON_FOOD_PRICES: Record<string, Price> = {
   "wooden skewer": { per: "each", soles: 0.03 },
   "bamboo skewer": { per: "each", soles: 0.03 },
   "cocktail stick": { per: "each", soles: 0.02 },
-  "large cloth and flour for dusting": { per: "each", soles: 2 }
+  "large cloth and flour for dusting": { per: "each", soles: 2 },
+  "banana leaf": { per: "each", soles: 0.3, note: "sold by the leaf at Surquillo; a wrapper, not an ingredient" }
 };

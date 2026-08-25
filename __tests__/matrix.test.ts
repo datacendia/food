@@ -75,24 +75,20 @@ describe("the matrix", () => {
     if (sticky) expect(sticky.contested).toBe(true);
   });
 
-  it("keeps Scottish the largest single line, by a clear margin", () => {
+  it("keeps Scottish above half the matrix", () => {
     /*
-     * THIS RULE CHANGED, DELIBERATELY.
+     * The brand thesis, asserted arithmetically: this is a Scottish caterer in
+     * Lima, so Scottish has to be more than half of what is cooked - not the
+     * largest line, not the plurality, more than half.
      *
-     * It used to be "Scottish above half the matrix", written when the matrix
-     * ran one direction only - a British dish rebuilt with Peruvian produce.
-     * Under that shape, Scottish-above-half and a real Peruvian-base presence
-     * are arithmetically incompatible: holding 50% while taking Peruvian to a
-     * third would need a 220-dish menu, which is a business problem rather
-     * than a feature.
+     * This rule was briefly relaxed to "largest line" when Scottish-above-half
+     * and a real Peruvian-base block looked incompatible on a 191-dish menu.
+     * They are not incompatible; they just need a bigger menu. The matrix was
+     * grown instead, which is the honest fix: 112 Scottish of 223 holds the
+     * half while Peruvian sits at 50.
      *
-     * What the brand thesis actually needs is that Scottish leads. So that is
-     * what is asserted: the largest line, and at least double the next
-     * non-Peruvian one. Peruvian is allowed to be the clear second, because
-     * the buyers are Peruvian and a Lima client wants their own food treated
-     * as a base rather than as a pantry.
-     *
-     * If you disagree, this is the line to change back.
+     * If this fails, the answer is to cook more Scottish dishes, not to move
+     * the line.
      */
     const byLine = new Map<string, number>();
     for (const d of DISHES) {
@@ -100,14 +96,14 @@ describe("the matrix", () => {
       byLine.set(line, (byLine.get(line) ?? 0) + 1);
     }
     const scottish = byLine.get("Scottish") ?? 0;
-    const others = [...byLine.entries()].filter(([k]) => k !== "Scottish");
 
-    for (const [line, n] of others) {
+    for (const [line, n] of byLine) {
+      if (line === "Scottish") continue;
       expect(scottish).toBeGreaterThan(n);
       // Peruvian may be a strong second; nothing else may come close.
       if (line !== "Peruvian") expect(scottish).toBeGreaterThanOrEqual(n * 2);
     }
-    expect(scottish / DISHES.length).toBeGreaterThan(0.4);
+    expect(scottish / DISHES.length).toBeGreaterThan(0.5);
   });
 
   it("gives the Peruvian base enough of the menu to be a real half of the fusion", () => {

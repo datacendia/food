@@ -670,6 +670,71 @@ export const ES: Record<string, string> = {
     "Base peruana, giro escocés: capas de galleta con proporciones de shortbread y manjar de lúcuma. Más firme que el original lambayecano y se encaja bien.",
   "Peruvian base, Scottish move: oats in the champus alongside the maiz morado. Vegan, served warm, and it is a winter product.":
     "Base peruana, giro escocés: avena en el champús junto al maíz morado. Vegano, servido tibio, y es un producto de invierno.",
+  // ---- dish descriptions added with dishes 192-223 ----
+  "Hot-smoked Andean trout stands in for the Arbroath smokie - the same hard smoke, from a fish that reaches Lima fresh. Rocoto in the butter is the heat the original never had.":
+    "La trucha andina ahumada en caliente reemplaza al Arbroath smokie: el mismo ahumado fuerte, con un pescado que llega fresco a Lima. El rocoto en la mantequilla es el picante que el original nunca tuvo.",
+  "The Aberdeenshire crab soup poured into shot glasses, thickened with rice as the original is, and finished with choclo instead of croutons.":
+    "La sopa de cangrejo de Aberdeenshire servida en vasitos, espesada con arroz como manda el original, y terminada con choclo en lugar de crutones.",
+  "Quinoa skirlie packed into field mushrooms with aji amarillo. Vegetarian, and the toasted oats do the work the sausage meat would.":
+    "Skirlie de quinua rellenando champiñones con ají amarillo. Vegetariano, y la avena tostada hace el trabajo que haría la carne de chorizo.",
+  "Alpaca replaces the Highland venison - lean, dark, and the closest thing Peru raises to it. Juniper and a little pork fat keep it from drying out in the oven.":
+    "La alpaca reemplaza al venado de las Highlands: magra, oscura, y lo más parecido que cría el Perú. El enebro y algo de grasa de cerdo evitan que se seque en el horno.",
+  "Steak and oyster in a raised crust; conchas de abanico take the oyster's place. The scallop veda closes it for part of the year, which the planner flags before it is quoted.":
+    "Carne y ostras en masa levantada; las conchas de abanico ocupan el lugar de la ostra. La veda de la concha lo cierra parte del año, y el planificador lo advierte antes de cotizar.",
+  "The oat pudding with no blood in it, rolled small and fried, with an aji amarillo dip. Cheapest piece on the canape list by a distance.":
+    "El pudding de avena sin sangre, formado pequeño y frito, con una salsa de ají amarillo. La pieza más barata de toda la lista de bocaditos, por lejos.",
+  "The plate itself, unaltered in shape. Papa amarilla goes into the tatties and the whisky sauce carries chancaca, so the sweetness is Peruvian and the structure is not.":
+    "El plato mismo, sin alterar su forma. La papa amarilla entra en el puré y la salsa de whisky lleva chancaca, así que el dulzor es peruano y la estructura no.",
+  "Quinoa, kiwicha, lentils and oats built to the same spice line as the meat haggis. It sells to more of the room than the original and costs half as much to make.":
+    "Quinua, kiwicha, lentejas y avena armados con la misma línea de especias que el haggis de carne. Le vende a más gente en la sala que el original y cuesta la mitad hacerlo.",
+  "Thin beef rolled round an oat and onion stuffing and braised long. Aji panca in the braise turns the gravy a colour a Scottish butcher would recognise anyway.":
+    "Bistec fino enrollado sobre un relleno de avena y cebolla, y braseado largo. El ají panca en el braseado le da a la salsa un color que un carnicero escocés reconocería igual.",
+  "Cold-smoked haddock has no Lima equivalent, so corvina is smoked to order. Mustard cream and a wholegrain crust; the corvina veda closes it two months a year.":
+    "El abadejo ahumado en frío no tiene equivalente en Lima, así que la corvina se ahúma por encargo. Crema de mostaza y costra de mostaza en grano; la veda de la corvina lo cierra dos meses al año.",
+  "The centrepiece a Scottish wedding expects, poached in a court-bouillon with muna in place of dill and served cold with a huacatay mayonnaise.":
+    "La pieza central que espera una boda escocesa, pochada en court-bouillon con muña en lugar de eneldo y servida fría con mayonesa de huacatay.",
+  "Alpaca braised in stout with juniper under a suet crust - the leanest red meat in the country doing the job Highland venison does at home.":
+    "Alpaca braseada en cerveza negra con enebro bajo una costra de sebo: la carne roja más magra del país haciendo el trabajo que el venado hace en casa.",
+  "Smoked trout and potato bound tight, crumbed in panko cut with choclo meal. The choclo makes the crust sweeter and coarser than a Scottish chip shop would.":
+    "Trucha ahumada y papa bien ligadas, apanadas en panko mezclado con harina de choclo. El choclo hace la costra más dulce y más gruesa de lo que la haría una freiduría escocesa.",
+  "Turnip mashed hard with a chancaca butter stirred through at the end. The molasses note is what Scottish cooks reach for sugar and white pepper to get.":
+    "Nabo bien machacado con una mantequilla de chancaca incorporada al final. Esa nota de melaza es lo que los cocineros escoceses buscan con azúcar y pimienta blanca.",
+  "Kale under an oat and paria crumb, baked hard. It travels better than any creamed green and reheats without collapsing into water.":
+    "Kale bajo un crumble de avena y queso paria, horneado fuerte. Viaja mejor que cualquier verdura en crema y se recalienta sin deshacerse en agua.",
+  "Small waxy potatoes boiled in their skins and rolled in huacatay butter. Papa nativa gives them colours an Ayrshire crop never had.":
+    "Papas chicas y firmes hervidas con cáscara y rodadas en mantequilla de huacatay. La papa nativa les da colores que una cosecha de Ayrshire nunca tuvo.",
+  "Griddled barley bannocks - the bread that predates the oven in Scotland - with a whipped muna butter. Warm they are a side; cold they are a canape base.":
+    "Bannocks de cebada a la plancha - el pan que en Escocia es anterior al horno - con mantequilla batida de muña. Tibios son guarnición; fríos son base de bocadito.",
+  "The crab soup at bowl size with the rice cooked into it, choclo and a rocoto oil. Rich enough to be lunch, and only sellable in a month the crab veda is open.":
+    "La sopa de cangrejo en tamaño bowl con el arroz cocido dentro, choclo y un aceite de rocoto. Lo bastante contundente para ser almuerzo, y solo vendible en un mes con la veda del cangrejo abierta.",
+  "Pearl barley, kale and roast squash under an aji verde dressing. Vegan, cheap to build, and the barley is what keeps it eating like a Scottish bowl rather than a salad.":
+    "Cebada perlada, kale y zapallo asado bajo un aderezo de ají verde. Vegano, barato de armar, y la cebada es lo que hace que se coma como un bowl escocés y no como una ensalada.",
+  "A whole trout butterflied and hard-smoked the way a herring is kippered, then grilled to order under muna butter. The Lima fish that gets closest to a Loch Fyne kipper.":
+    "Una trucha entera abierta en mariposa y ahumada fuerte como se hace un kipper de arenque, luego a la plancha al momento bajo mantequilla de muña. El pescado limeño que más se acerca a un kipper de Loch Fyne.",
+  "Oatmeal soaked raw overnight rather than cooked - the older, plainer cousin of porridge - with aguaymanto and honey. Ready in the box, no heat needed at the venue.":
+    "Avena remojada cruda toda la noche en lugar de cocida - la prima más vieja y más simple del porridge - con aguaymanto y miel. Lista en la caja, sin necesidad de calor en el local.",
+  "Cranachan taken off the dessert list and sold as breakfast: oats, cream, honey and chirimoya, with the whisky left out. Same build, different hour.":
+    "El cranachan sacado de la lista de postres y vendido como desayuno: avena, crema, miel y chirimoya, sin el whisky. El mismo armado, a otra hora.",
+  "A custard ice cream with single malt folded in late so it stays soft, over a warm chancaca sauce. The only frozen product on the list, and the one that needs a freezer plan.":
+    "Un helado de crema inglesa con single malt incorporado al final para que quede suave, sobre una salsa tibia de chancaca. El único producto congelado de la carta, y el que exige un plan de congelación.",
+  "A steamed sponge with Dundee marmalade in the base, the marmalade cut with naranja agria. It steams ahead and reheats better than any plated dessert here.":
+    "Un bizcocho al vapor con mermelada de Dundee en la base, cortada con naranja agria. Se cocina con anticipación y se recalienta mejor que cualquier postre emplatado de esta carta.",
+  "The plain caraway biscuit from Abernethy, rebuilt with anise - the seed a Peruvian bakery actually stocks, and the one already in pan chuta.":
+    "La galleta simple de alcaravea de Abernethy, rehecha con anís: la semilla que una panadería peruana sí tiene, y la que ya está en el pan chuta.",
+  "The flat sugared bun from every Scottish baker's window, topped with chancaca sugar instead of nibbed white. Cheap, sweet, and it sells to children first.":
+    "El bollo plano azucarado de la vitrina de toda panadería escocesa, cubierto con azúcar de chancaca en vez de azúcar perlada blanca. Barato, dulce, y le vende primero a los niños.",
+  "Peruvian base, Scottish move: pearl barley in place of the fideo, which turns Lima's fastest soup into something much closer to a Scotch broth.":
+    "Base peruana, giro escocés: cebada perlada en lugar del fideo, lo que convierte a la sopa más rápida de Lima en algo mucho más cercano a un Scotch broth.",
+  "Peruvian base, Scottish move: oats thicken the chupe instead of rice, the way a partan bree is thickened. Crab is veda-bound, so the planner blocks it outright in closed months.":
+    "Base peruana, giro escocés: la avena espesa el chupe en lugar del arroz, como se espesa un partan bree. El cangrejo está sujeto a veda, así que el planificador lo bloquea de plano en los meses cerrados.",
+  "Peruvian base, Scottish move: the green tamalito served the way a Scottish table serves a bannock - warm, with a whipped herb butter rather than salsa criolla.":
+    "Base peruana, giro escocés: el tamalito verde servido como una mesa escocesa sirve un bannock - tibio, con mantequilla batida de hierbas en vez de salsa criolla.",
+  "Peruvian base, Scottish move: alpaca in a panca marinade cut with juniper, skewered and grilled. The Highland game plate written as street food.":
+    "Base peruana, giro escocés: alpaca en un adobo de panca cortado con enebro, en brocheta y a la parrilla. El plato de caza de las Highlands escrito como comida de calle.",
+  "Peruvian base, Scottish move: the Huacho sausage bound with oats the way a Lorne square is, then cut in squares and griddled rather than crumbled.":
+    "Base peruana, giro escocés: la salchicha huachana ligada con avena como se liga un Lorne square, luego cortada en cuadrados y hecha a la plancha en vez de desmenuzada.",
+  "Peruvian base, Scottish move: a quinoa-flour sponge built to the density of a Scottish tea loaf, with lucuma buttercream. It slices for a stand rather than a plate.":
+    "Base peruana, giro escocés: un bizcocho de harina de quinua armado con la densidad de un tea loaf escocés, con buttercream de lúcuma. Se corta para una mesa de pie, no para un plato.",
 
   // ---- flavour axes ----
   "sweet": "dulce", "savoury": "salado", "rich": "untuoso",

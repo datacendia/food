@@ -4973,5 +4973,963 @@ export const RECIPES: Recipe[] = [
     ],
     makeAhead: "Make the base two days ahead. Chirimoya goes in at the venue or it browns.",
     holds: "Two hours held warm. Vegan, and a winter product rather than a year-round one."
+  },
+  {
+    dishId: 192,
+    yields: "60 pieces",
+    prepMin: 40,
+    cookMin: 0,
+    ingredients: [
+      { qty: "900 g", item: "hot-smoked Andean trout", note: "ask for it smoked hard; a light smoke disappears under the butter" },
+      { qty: "350 g", item: "butter", note: "softened, not melted" },
+      { qty: "200 g", item: "cream cheese" },
+      { qty: "2", item: "large rocoto", note: "deseeded; one if the batch is going to a mixed room" },
+      { qty: "3", item: "limes", note: "juice and zest" },
+      { qty: "2 tsp", item: "ground white pepper" },
+      { qty: "1 tsp", item: "ground mace" },
+      { qty: "60", item: "oatcakes", note: "the thin cut; the thick one fights the pâté" }
+    ],
+    method: [
+      "Flake the trout by hand and pick it hard for pin bones — a bone in a canapé is the only unforgivable one.",
+      "Beat the butter and cream cheese together until pale, then fold the trout through in three additions.",
+      "Blitz a third of the mix smooth and stir it back in. That gives body without losing the flake.",
+      "Add rocoto, lime juice and zest, white pepper and mace. Taste for salt last: the smoke carries a lot of it already.",
+      "Pipe or quenelle 15 g onto each oatcake no more than 40 minutes before service."
+    ],
+    makeAhead:
+      "The pâté keeps 4 days chilled and improves on day two. Do not freeze it — the butter splits and the trout goes grainy.",
+    holds:
+      "Assembled, 40 minutes before the oatcake softens. Carry the pâté and the oatcakes separately and build at the venue.",
+    scaling: "Above 4 kg the butter warms faster than you can beat it. Work in 2 kg batches over ice."
+  },
+  {
+    dishId: 193,
+    yields: "50 shots",
+    prepMin: 50,
+    cookMin: 45,
+    ingredients: [
+      { qty: "1.2 kg", item: "crab meat", note: "brown and white together; the brown is where the flavour is" },
+      { qty: "1.5 kg", item: "crab shell", note: "ask the stall to keep the shells — this is the stock" },
+      { qty: "200 g", item: "long-grain rice", note: "the traditional thickener; no flour goes near a partan bree" },
+      { qty: "1.5 L", item: "whole milk" },
+      { qty: "400 ml", item: "double cream" },
+      { qty: "2", item: "onions" },
+      { qty: "2", item: "choclo cobs", note: "kernels only, blanched" },
+      { qty: "1 tsp", item: "ground white pepper" },
+      { qty: "1", item: "large rocoto", note: "for the oil that finishes it" },
+      { qty: "100 ml", item: "olive oil" }
+    ],
+    method: [
+      "Roast the crab shells hard at 200 °C for 20 minutes, then simmer them in the milk with the onion for 30 minutes.",
+      "Strain that milk through muslin — twice, because shell grit is the fault a shot glass shows up immediately.",
+      "Cook the rice in the crab milk until it collapses, about 20 minutes, then blitz the whole lot smooth.",
+      "Fold in the brown crab meat, blitz again, and pass through a sieve. Stir the white meat through whole.",
+      "Warm the cream in and correct with white pepper and salt. It should coat a spoon and still pour.",
+      "Blitz rocoto with the olive oil and let it settle; float a few drops on each shot with blanched choclo."
+    ],
+    makeAhead:
+      "The soup base keeps 3 days chilled or a month frozen. The white meat goes in on the day it is served, never before.",
+    holds:
+      "Two hours in a bain-marie at 65 °C. Above that it splits, and once split it does not come back.",
+    scaling: "Sieving is the bottleneck, not cooking. Budget an extra 20 minutes per 5 litres."
+  },
+  {
+    dishId: 194,
+    yields: "50 caps",
+    prepMin: 40,
+    cookMin: 25,
+    ingredients: [
+      { qty: "2.5 kg", item: "mushrooms", note: "50 flat field mushrooms about 6 cm across; stalks kept for the stuffing" },
+      { qty: "300 g", item: "medium oatmeal" },
+      { qty: "250 g", item: "quinoa", note: "cooked and cooled" },
+      { qty: "200 g", item: "butter" },
+      { qty: "3", item: "onions" },
+      { qty: "60 g", item: "ají amarillo paste" },
+      { qty: "1 tbsp", item: "ground white pepper" },
+      { qty: "2 tbsp", item: "flat parsley" },
+      { qty: "150 g", item: "queso paria", note: "grated, for the top" }
+    ],
+    method: [
+      "Toast the oatmeal dry until it smells of biscuit, then set it aside. This is the whole trick of a skirlie.",
+      "Melt the butter and cook the onion and chopped mushroom stalks slowly until sweet and dry, 15 minutes.",
+      "Stir in the ají amarillo and cook it out two minutes so it stops tasting raw.",
+      "Add the toasted oatmeal and the cooked quinoa off the heat; it should be crumbly, never a paste.",
+      "Season hard with white pepper and salt, then fold the parsley through.",
+      "Pack 25 g into each cap, scatter paria over, and bake at 190 °C for 12 minutes until the tops catch."
+    ],
+    makeAhead:
+      "Stuff the caps a day ahead and keep them chilled on trays. The skirlie itself keeps 3 days and reheats dry in a pan.",
+    holds:
+      "Best in the first 30 minutes. After an hour the mushroom weeps and the base goes soft, so bake in waves.",
+    scaling: "Two trays at a time, no more. A crowded oven steams the caps instead of roasting them."
+  },
+  {
+    dishId: 195,
+    yields: "50 rolls",
+    prepMin: 60,
+    cookMin: 25,
+    ingredients: [
+      { qty: "1.2 kg", item: "alpaca", note: "shoulder, coarse minced; ask the butcher, it is too lean to mince at home" },
+      { qty: "300 g", item: "pork belly", note: "minced with the alpaca; without this fat the roll is sawdust" },
+      { qty: "150 g", item: "medium oatmeal", note: "toasted" },
+      { qty: "2", item: "onions" },
+      { qty: "2 tbsp", item: "juniper berries", note: "crushed in a mortar, not ground to dust" },
+      { qty: "2 tsp", item: "ground mace" },
+      { qty: "1 tbsp", item: "black pepper" },
+      { qty: "1.2 kg", item: "puff pastry" },
+      { qty: "3", item: "eggs", note: "egg wash" }
+    ],
+    method: [
+      "Sweat the onion until soft and completely cold before it meets the meat, or the fat smears.",
+      "Mix alpaca, pork belly, onion, oatmeal, juniper, mace and pepper. Fry a spoonful and taste it before you roll anything.",
+      "Roll the pastry to 3 mm and cut long strips 12 cm wide. Pipe the filling down one side in a 3 cm rope.",
+      "Egg wash the far edge, roll, and seal seam-side down. Chill the logs 30 minutes so they cut cleanly.",
+      "Cut into 5 cm rolls, snip the tops twice, egg wash and bake at 200 °C for 22–25 minutes."
+    ],
+    makeAhead:
+      "Freeze the uncooked logs up to a month. Bake from frozen at 190 °C, adding 10 minutes, and they come out better than fresh.",
+    holds:
+      "Crisp for an hour on a rack. Boxed hot they steam themselves soft, so cool 10 minutes before the lid goes on.",
+    scaling: "Alpaca is lean enough that overmixing turns it rubbery. Mix each 3 kg batch by hand and stop early."
+  },
+  {
+    dishId: 196,
+    yields: "40 pies",
+    prepMin: 90,
+    cookMin: 40,
+    ingredients: [
+      { qty: "1.4 kg", item: "asado de tira", note: "boned and diced small" },
+      { qty: "600 g", item: "conchas de abanico", note: "the roe left on; check the veda before you order" },
+      { qty: "400 ml", item: "cerveza negra" },
+      { qty: "2", item: "onions" },
+      { qty: "2 tbsp", item: "plain flour" },
+      { qty: "1 tbsp", item: "worcestershire sauce" },
+      { qty: "1 tsp", item: "ground mace" },
+      { qty: "1.4 kg", item: "hot water crust pastry", note: "made with lard; a shortcrust collapses at this size" },
+      { qty: "2", item: "eggs", note: "egg wash" }
+    ],
+    method: [
+      "Brown the beef hard in batches. A grey pan here gives a grey pie, and no amount of stout fixes it.",
+      "Sweat the onion in the same pan, dust with flour, then deglaze with the cerveza negra and scrape everything up.",
+      "Braise covered at 150 °C for 2 hours until the beef pulls apart, then cool completely and set with its own jelly.",
+      "Raise the crusts around a 5 cm dolly while the pastry is still warm — cold hot-water crust will not stretch.",
+      "Fill with the cold beef, press one scallop into each, lid, crimp and cut a steam hole.",
+      "Egg wash and bake at 190 °C for 35–40 minutes. The scallop cooks in the pie, not before it."
+    ],
+    makeAhead:
+      "The braise keeps 3 days or freezes a month. Raise and fill on the day: a filled raw pie standing overnight goes soggy at the base.",
+    holds:
+      "Warm for 90 minutes in a covered box, and they are honestly better at room temperature than hot.",
+    scaling: "Raising crusts is the slow step — about 40 an hour by hand. Two people or a smaller order."
+  },
+  {
+    dishId: 197,
+    yields: "60 bites",
+    prepMin: 45,
+    cookMin: 20,
+    ingredients: [
+      { qty: "700 g", item: "pinhead oatmeal" },
+      { qty: "400 g", item: "suet" },
+      { qty: "5", item: "onions", note: "the sweetness is doing all the work; do not skimp" },
+      { qty: "1 tbsp", item: "ground white pepper" },
+      { qty: "2 tsp", item: "ground mace" },
+      { qty: "500 ml", item: "beef stock" },
+      { qty: "150 g", item: "plain flour" },
+      { qty: "3", item: "eggs" },
+      { qty: "250 g", item: "panko" },
+      { qty: "300 ml", item: "ají amarillo mayonnaise", note: "mayonnaise, ají amarillo paste, lime" }
+    ],
+    method: [
+      "Toast the pinhead oatmeal dry until it darkens a shade and smells nutty. This is the only flavour step there is.",
+      "Sweat the onion in the suet over a low heat for 25 minutes until it is sweet and almost jam.",
+      "Stir in the oatmeal, pepper and mace, then the hot stock. Cook 15 minutes until it thickens and pulls off the pan.",
+      "Spread on a tray, chill 4 hours, then roll into 20 g balls.",
+      "Flour, egg and panko, then fry at 175 °C for 3 minutes until deep gold. Serve with the ají amarillo mayonnaise."
+    ],
+    makeAhead:
+      "The mix keeps 4 days chilled; crumbed and raw they freeze a month and fry straight from the freezer.",
+    holds:
+      "Crisp for 40 minutes on a rack. Suet sets hard as it cools, so serve these warm or they go waxy.",
+    scaling: "Cook the base in 3 kg batches. Any bigger and the oatmeal on the bottom catches before the top swells."
+  },
+  {
+    dishId: 198,
+    yields: "20 portions",
+    prepMin: 45,
+    cookMin: 90,
+    ingredients: [
+      { qty: "3 kg", item: "haggis", note: "bought from the butcher who makes it to the brief, or built from the dish 1 base" },
+      { qty: "3 kg", item: "turnip", note: "nabo; peeled weight" },
+      { qty: "3 kg", item: "papa amarilla" },
+      { qty: "400 g", item: "butter" },
+      { qty: "300 ml", item: "double cream" },
+      { qty: "250 ml", item: "single malt whisky" },
+      { qty: "80 g", item: "chancaca" },
+      { qty: "500 ml", item: "beef stock" },
+      { qty: "1 tbsp", item: "ground white pepper" }
+    ],
+    method: [
+      "Steam or bake the haggis wrapped in foil at 160 °C for 75 minutes. Never boil it hard; the skin bursts every time.",
+      "Boil the turnip in salted water until it gives completely, then drain and dry it out in the pan for two minutes.",
+      "Mash the turnip with a third of the butter and a heavy hand of white pepper. It should be coarse, not smooth.",
+      "Steam the papa amarilla rather than boiling it — it is wet enough already — then rice it with butter and cream.",
+      "Reduce the whisky by half, add stock and chancaca, and simmer to a sauce that just coats the back of a spoon.",
+      "Plate a scoop of each, split the haggis at the table if it is a whole one, and pour the sauce over at the pass."
+    ],
+    makeAhead:
+      "Both mashes hold 2 days chilled and reheat in a bain-marie. The sauce keeps a week and reheats without splitting.",
+    holds:
+      "An hour in hot cupboards. The tatties skin over after that, so cover them with a butter paper.",
+    scaling: "Mashes are what slow this down at 200 covers. Rice the potato into hotel pans and bain-marie them, never a pot."
+  },
+  {
+    dishId: 199,
+    yields: "24 portions",
+    prepMin: 50,
+    cookMin: 60,
+    ingredients: [
+      { qty: "700 g", item: "quinoa" },
+      { qty: "300 g", item: "kiwicha" },
+      { qty: "600 g", item: "brown lentils" },
+      { qty: "500 g", item: "medium oatmeal", note: "toasted" },
+      { qty: "5", item: "onions" },
+      { qty: "500 g", item: "carrots" },
+      { qty: "2 L", item: "vegetable stock" },
+      { qty: "2 tbsp", item: "ground white pepper", note: "the dominant spice in any haggis; do not treat it as background" },
+      { qty: "1 tbsp", item: "ground mace" },
+      { qty: "1 tbsp", item: "ground coriander" },
+      { qty: "200 ml", item: "vegetable oil" },
+      { qty: "3 kg", item: "turnip" }
+    ],
+    method: [
+      "Toast the oatmeal dry, then toast the quinoa and kiwicha the same way. Three separate pans, three different smells.",
+      "Sweat the onion and grated carrot in the oil for 20 minutes until they are sweet and have given up their water.",
+      "Add the lentils and stock and simmer 30 minutes until the lentils are soft but still whole.",
+      "Fold in the grains and oatmeal off the heat, then the spices. It should be loose; it tightens as it stands.",
+      "Press into lined trays 5 cm deep, bake at 170 °C for 30 minutes, and rest an hour before cutting.",
+      "Serve with turnip mashed in oil rather than butter, which keeps the whole plate vegan."
+    ],
+    makeAhead:
+      "The tray keeps 4 days chilled and cuts far better cold than warm. It freezes a month, portioned.",
+    holds:
+      "Ninety minutes covered. Drier than the meat version, so send a jug of stock gravy with it.",
+    scaling: "It is the toasting that scales badly, not the cooking. Do the grains in a low oven on trays above 5 kg."
+  },
+  {
+    dishId: 200,
+    yields: "20 portions",
+    prepMin: 70,
+    cookMin: 150,
+    ingredients: [
+      { qty: "3.5 kg", item: "beef topside", note: "cut in 90 g slices and beaten thin between sheets" },
+      { qty: "400 g", item: "medium oatmeal", note: "toasted" },
+      { qty: "4", item: "onions" },
+      { qty: "200 g", item: "suet" },
+      { qty: "60 g", item: "ají panca paste" },
+      { qty: "1.5 L", item: "beef stock" },
+      { qty: "300 ml", item: "red wine" },
+      { qty: "3 tbsp", item: "plain flour" },
+      { qty: "2 tsp", item: "ground mace" },
+      { qty: "1 tbsp", item: "black pepper" }
+    ],
+    method: [
+      "Make the stuffing first: sweat half the onion in the suet, stir in the toasted oatmeal, mace and pepper, and cool it.",
+      "Lay each beaten slice flat, put 30 g of stuffing at one end, roll and tie once with string.",
+      "Brown the rolls hard on all sides in batches and lift them out. Crowding the pan is what makes them grey.",
+      "Sweat the rest of the onion, add the ají panca and cook it out, dust with flour, then wine and stock.",
+      "Return the rolls, cover, and braise at 150 °C for two hours until a knife goes through with no resistance.",
+      "Rest, cut the strings, and reduce the braising liquor by a third before it goes back over."
+    ],
+    makeAhead:
+      "Braise a day ahead and cool in the liquor — it is genuinely better on day two. Freezes a month in its sauce.",
+    holds:
+      "Two hours in the sauce at 70 °C. Out of the sauce they dry in twenty minutes, so never hold them plated.",
+    scaling: "Tying is the labour: about 60 rolls an hour. Cost the extra hands into anything above 40 portions."
+  },
+  {
+    dishId: 201,
+    yields: "20 portions",
+    prepMin: 40,
+    cookMin: 30,
+    ingredients: [
+      { qty: "4 kg", item: "corvina fillet", note: "check the veda before ordering; September and October are closed" },
+      { qty: "200 g", item: "coarse salt", note: "for the overnight cure" },
+      { qty: "100 g", item: "demerara sugar", note: "for the cure" },
+      { qty: "1 L", item: "whole milk" },
+      { qty: "500 ml", item: "double cream" },
+      { qty: "80 g", item: "wholegrain mustard" },
+      { qty: "40 g", item: "dijon mustard" },
+      { qty: "3", item: "leeks" },
+      { qty: "100 g", item: "butter" },
+      { qty: "2 kg", item: "papa amarilla" },
+      { qty: "2 tbsp", item: "flat parsley" }
+    ],
+    method: [
+      "Cure the corvina in salt and sugar for 4 hours, rinse, dry, and cold-smoke it 40 minutes over oak dust.",
+      "Poach the smoked fillets gently in the milk with the leek greens for 8 minutes, then lift them out and keep them warm.",
+      "Strain the poaching milk, reduce it by a third, then add cream and both mustards and simmer to a sauce.",
+      "Sweat the leek whites in butter until soft with no colour and fold them through the sauce.",
+      "Steam and crush the papa amarilla with butter — crushed, not mashed, so the sauce has somewhere to sit.",
+      "Plate fish on potato, sauce over, parsley on top. Do not sauce until the plate is going out."
+    ],
+    makeAhead:
+      "Smoke the fish a day ahead; it is better rested. The sauce holds 3 days and reheats without splitting if you go slowly.",
+    holds:
+      "Twenty minutes once sauced, and no longer. This is the least forgiving plate on the list and it is worth saying so to the client.",
+    scaling: "The smoker is the ceiling, not the stove. Above 30 portions smoke in two sittings the day before."
+  },
+  {
+    dishId: 202,
+    yields: "40 portions",
+    prepMin: 60,
+    cookMin: 45,
+    ingredients: [
+      { qty: "8 kg", item: "whole salmon", note: "two fish about 4 kg each, gutted and scaled, heads on" },
+      { qty: "4 L", item: "water" },
+      { qty: "500 ml", item: "white wine vinegar" },
+      { qty: "3", item: "onions" },
+      { qty: "4", item: "carrots" },
+      { qty: "2", item: "bay leaves" },
+      { qty: "1 tbsp", item: "white peppercorns" },
+      { qty: "3 tbsp", item: "muña", note: "in place of the dill a Scottish kitchen would use" },
+      { qty: "600 ml", item: "huacatay aioli" },
+      { qty: "2", item: "cucumbers", note: "sliced paper thin for the scales" },
+      { qty: "4", item: "limes" }
+    ],
+    method: [
+      "Build the court-bouillon and simmer it 20 minutes before the fish goes near it, or the vegetables taste raw.",
+      "Lower the salmon in, bring it back to a bare tremble, then take the pot off the heat entirely.",
+      "Leave it to cool in the liquor for two hours. It cooks through on residual heat and never overcooks that way.",
+      "Lift it out on the cloth, peel the skin from the top side, and scrape the brown line away with the back of a knife.",
+      "Tile the cucumber over the flesh from tail to head so it reads as scales, and press it down lightly.",
+      "Serve cold with huacatay aioli, muña scattered over and lime on the side."
+    ],
+    makeAhead:
+      "Poach the day before and keep it whole and covered. Skin and dress it on the morning of the event, never earlier.",
+    holds:
+      "Four hours on a buffet under 20 °C. Above that it is off the table at two hours and that is a hard limit.",
+    scaling: "A fish kettle takes one salmon. Two fish means two sittings or a deep roasting tray and foil."
+  },
+  {
+    dishId: 203,
+    yields: "20 portions",
+    prepMin: 60,
+    cookMin: 180,
+    ingredients: [
+      { qty: "3.5 kg", item: "alpaca", note: "shoulder or leg, diced 4 cm" },
+      { qty: "300 g", item: "streaky bacon", note: "the fat alpaca does not have" },
+      { qty: "700 ml", item: "stout" },
+      { qty: "1 L", item: "beef stock" },
+      { qty: "2 tbsp", item: "juniper berries" },
+      { qty: "4", item: "onions" },
+      { qty: "400 g", item: "carrots" },
+      { qty: "3 tbsp", item: "plain flour" },
+      { qty: "2", item: "bay leaves" },
+      { qty: "700 g", item: "plain flour", note: "for the suet crust" },
+      { qty: "350 g", item: "suet", note: "for the suet crust" },
+      { qty: "1", item: "egg", note: "egg wash" }
+    ],
+    method: [
+      "Render the bacon, then brown the alpaca in that fat in small batches. Lean meat catches fast, so watch it.",
+      "Sweat onion and carrot, dust with flour, add stout and stock, and scrape the base clean.",
+      "Return the meat with juniper and bay, cover, and braise at 150 °C for three hours until it gives to a spoon.",
+      "Cool the braise completely. A warm filling melts the suet crust before it ever reaches the oven.",
+      "Rub suet into flour with cold water to a rough dough, roll to 5 mm, and lid the filled dishes.",
+      "Egg wash, cut a vent, and bake at 190 °C for 35 minutes until the crust is set and pale gold."
+    ],
+    makeAhead:
+      "The braise keeps 3 days or freezes a month. Lid and bake on the day; a raw suet crust standing overnight goes grey.",
+    holds:
+      "An hour covered. Suet crust softens rather than going hard, so it forgives a slow room better than shortcrust.",
+    scaling: "Alpaca varies more than beef between animals. Taste the braise at two hours and give it another hour if it needs it."
+  },
+  {
+    dishId: 204,
+    yields: "40 portions",
+    prepMin: 60,
+    cookMin: 30,
+    ingredients: [
+      { qty: "2.5 kg", item: "hot-smoked Andean trout" },
+      { qty: "3 kg", item: "papa blanca", note: "floury, steamed and dried out" },
+      { qty: "3", item: "choclo cobs", note: "kernels blanched, half of them blitzed coarse for the crust" },
+      { qty: "4", item: "spring onions" },
+      { qty: "2 tbsp", item: "flat parsley" },
+      { qty: "2", item: "lemons", note: "zest" },
+      { qty: "1 tbsp", item: "ground white pepper" },
+      { qty: "300 g", item: "plain flour" },
+      { qty: "5", item: "eggs" },
+      { qty: "400 g", item: "panko" },
+      { qty: "1 L", item: "frying oil" }
+    ],
+    method: [
+      "Steam the potato in its skin, peel it hot, and rice it. A boiled potato makes a wet cake that will not hold.",
+      "Dry the riced potato in a low oven for ten minutes. This is the step everyone skips and it is the one that matters.",
+      "Fold in the flaked trout, blanched choclo, spring onion, parsley, zest and white pepper. Do not beat it.",
+      "Shape 100 g cakes, chill an hour on trays, then flour, egg and crumb them in panko cut with the blitzed choclo.",
+      "Fry at 175 °C for 4 minutes a side until the crust is deep gold, and finish in the oven if they are thick."
+    ],
+    makeAhead:
+      "Shape and crumb a day ahead, or freeze them raw for a month and fry from frozen with four minutes added.",
+    holds:
+      "Forty minutes crisp on a rack, an hour warm in a low oven. Never stack them; the weight collapses the crust.",
+    scaling: "Fry in batches of eight. A dozen at once drops the oil below 160 °C and the crust drinks it."
+  },
+  {
+    dishId: 205,
+    yields: "30 portions",
+    prepMin: 25,
+    cookMin: 35,
+    ingredients: [
+      { qty: "6 kg", item: "turnip", note: "nabo; peeled weight, cut in even 3 cm chunks" },
+      { qty: "400 g", item: "butter" },
+      { qty: "120 g", item: "chancaca", note: "grated, melted into the butter" },
+      { qty: "2 tbsp", item: "ground white pepper" },
+      { qty: "1 tbsp", item: "ground ginger" },
+      { qty: "2 tsp", item: "fine salt" }
+    ],
+    method: [
+      "Boil the turnip in well-salted water until it collapses under a spoon — undercooked neeps will not bash smooth.",
+      "Drain hard and return to the dry pan over heat for two minutes to steam off the water it is holding.",
+      "Melt the chancaca into the butter over a low heat until it dissolves completely, then beat it in.",
+      "Bash with a masher, not a blender. A blended neep goes gluey and loses the whole point of the texture.",
+      "Season with a heavier hand of white pepper than feels right, taste, and season again."
+    ],
+    makeAhead:
+      "Two days chilled, and it reheats in a bain-marie without any loss. It also freezes a month.",
+    holds:
+      "Two hours in a bain-marie covered. Uncovered it skins over in twenty minutes.",
+    scaling: "Above 10 kg boil in two pots. One overloaded pot cooks the outside to mush before the middle gives."
+  },
+  {
+    dishId: 206,
+    yields: "30 portions",
+    prepMin: 35,
+    cookMin: 40,
+    ingredients: [
+      { qty: "4 kg", item: "kale", note: "stripped from the stalk; that is about 6 kg on the stem" },
+      { qty: "1.2 L", item: "whole milk" },
+      { qty: "400 ml", item: "double cream" },
+      { qty: "150 g", item: "butter" },
+      { qty: "150 g", item: "plain flour" },
+      { qty: "300 g", item: "queso paria", note: "grated" },
+      { qty: "300 g", item: "medium oatmeal", note: "for the crumb" },
+      { qty: "150 g", item: "cold butter", note: "for the crumb" },
+      { qty: "1 tsp", item: "nutmeg" },
+      { qty: "2 tsp", item: "ground white pepper" }
+    ],
+    method: [
+      "Blanch the kale 3 minutes, refresh in cold water, and squeeze it dry hard. Wet kale waters the gratin down.",
+      "Make a béchamel with butter, flour and milk, cook it out ten minutes, then add cream, nutmeg and pepper.",
+      "Melt two-thirds of the paria into the sauce and fold the kale through so every leaf is coated.",
+      "Rub the cold butter into the oatmeal with the rest of the paria until it clumps like coarse gravel.",
+      "Spread the kale into trays, crumb over, and bake at 190 °C for 30 minutes until the top is set and brown."
+    ],
+    makeAhead:
+      "Build the trays a day ahead unbaked and keep them cold. Baked, it reheats at 170 °C for 20 minutes without suffering.",
+    holds:
+      "Ninety minutes covered, and it is one of the few greens that survives a van. That is why it is on the list.",
+    scaling: "Squeezing kale dry is the slow step — about 4 kg an hour by hand. Budget for it."
+  },
+  {
+    dishId: 207,
+    yields: "30 portions",
+    prepMin: 20,
+    cookMin: 30,
+    ingredients: [
+      { qty: "6 kg", item: "papa nativa", note: "small ones, skins on, scrubbed not peeled" },
+      { qty: "400 g", item: "butter", note: "softened" },
+      { qty: "6 tbsp", item: "huacatay", note: "paste or fresh leaves blitzed with a little oil" },
+      { qty: "3", item: "limes", note: "zest and juice" },
+      { qty: "3 tbsp", item: "mara salt" },
+      { qty: "2 tbsp", item: "flat parsley" }
+    ],
+    method: [
+      "Beat the huacatay, lime zest and juice into the softened butter and leave it at room temperature to loosen.",
+      "Boil the potatoes in heavily salted water — as salty as soup — until a knife slides in without pressure.",
+      "Drain and let them steam dry in the colander for three minutes so the butter clings rather than slides.",
+      "Roll them in the huacatay butter while they are hot enough to melt it on contact.",
+      "Finish with Maras salt and parsley at the pass, not in the kitchen; the salt dissolves if it waits."
+    ],
+    makeAhead:
+      "Boil in the morning and hold at room temperature; roll in the butter at the venue. The butter itself keeps a week.",
+    holds:
+      "Ninety minutes warm. They are also good cold, which makes them one of the safest sides for a long buffet.",
+    scaling: "Papa nativa varies in size more than a commercial potato. Sort by size before boiling or half will be raw."
+  },
+  {
+    dishId: 208,
+    yields: "40 bannocks",
+    prepMin: 30,
+    cookMin: 25,
+    ingredients: [
+      { qty: "700 g", item: "barley flour" },
+      { qty: "500 g", item: "plain flour" },
+      { qty: "2 tbsp", item: "baking powder" },
+      { qty: "2 tsp", item: "fine salt" },
+      { qty: "150 g", item: "butter" },
+      { qty: "700 ml", item: "buttermilk" },
+      { qty: "300 g", item: "butter", note: "for the muña butter" },
+      { qty: "4 tbsp", item: "muña" },
+      { qty: "1 tsp", item: "flaked salt" }
+    ],
+    method: [
+      "Rub the butter into both flours with the baking powder and salt until it looks like coarse meal.",
+      "Add buttermilk and bring it together with a knife. Handle it as little as you can bear; barley has no gluten to spare.",
+      "Roll to 1.5 cm, cut 7 cm rounds, and rest them 15 minutes before they go on the heat.",
+      "Griddle on a dry plancha at a moderate heat for 5 minutes a side until they sound hollow and are speckled brown.",
+      "Beat the muña and flaked salt into the second lot of butter and serve it soft alongside."
+    ],
+    makeAhead:
+      "Best the day they are made. The dough can be cut and frozen raw for a month and griddled from frozen, slower.",
+    holds:
+      "Two hours wrapped in a cloth, which is how a Scottish kitchen has always held them. In plastic they sweat.",
+    scaling: "A plancha holds about twelve. Above 100 bannocks bake them at 220 °C instead, and say so on the sheet."
+  },
+  {
+    dishId: 209,
+    yields: "20 portions",
+    prepMin: 50,
+    cookMin: 50,
+    ingredients: [
+      { qty: "2 kg", item: "crab meat", note: "brown and white; confirm the veda month before ordering" },
+      { qty: "2 kg", item: "crab shell" },
+      { qty: "400 g", item: "long-grain rice" },
+      { qty: "2.5 L", item: "whole milk" },
+      { qty: "600 ml", item: "double cream" },
+      { qty: "3", item: "onions" },
+      { qty: "4", item: "choclo cobs" },
+      { qty: "2", item: "large rocoto" },
+      { qty: "150 ml", item: "olive oil" },
+      { qty: "1 tbsp", item: "ground white pepper" },
+      { qty: "2 tbsp", item: "chives" }
+    ],
+    method: [
+      "Roast the shells, then infuse them in the milk with onion for 30 minutes and strain twice through muslin.",
+      "Cook the rice into the crab milk until it falls apart — 25 minutes — then blitz and pass through a sieve.",
+      "Fold the brown meat in, blitz again, and finish with cream and white pepper until it coats a spoon.",
+      "Keep the white meat back and stir it through only when the bowls are going out, so it stays in strands.",
+      "Blitz rocoto with olive oil, let it settle, and spoon the clear red oil over with blanched choclo and chives."
+    ],
+    makeAhead:
+      "The base keeps 3 days chilled or a month frozen. Buy and pick the white meat on the day of the event.",
+    holds:
+      "Two hours at 65 °C in a bain-marie. Over direct heat it catches and the whole batch tastes burnt.",
+    scaling: "Picking crab is the labour, not the soup: about 1 kg of meat an hour per person. Buy it picked if you can."
+  },
+  {
+    dishId: 210,
+    yields: "24 portions",
+    prepMin: 35,
+    cookMin: 50,
+    ingredients: [
+      { qty: "1.6 kg", item: "pearl barley" },
+      { qty: "3 kg", item: "zapallo macre", note: "peeled, 3 cm dice" },
+      { qty: "2 kg", item: "kale" },
+      { qty: "4", item: "onions" },
+      { qty: "3 L", item: "vegetable stock" },
+      { qty: "200 ml", item: "vegetable oil" },
+      { qty: "150 g", item: "ají amarillo paste" },
+      { qty: "1 bunch", item: "coriander" },
+      { qty: "3", item: "limes" },
+      { qty: "2 tsp", item: "ground cumin" }
+    ],
+    method: [
+      "Rinse the barley until the water runs clear, then simmer it in the stock for 35 minutes until tender with a bite.",
+      "Roast the zapallo at 210 °C with oil and cumin for 25 minutes until the edges char. Steamed squash makes this dull.",
+      "Sweat the onion soft and stir it through the drained barley while both are still warm.",
+      "Blanch the kale 2 minutes, squeeze it dry, chop it roughly and fold it in.",
+      "Blitz ají amarillo, coriander, lime juice and oil into a loose dressing and dress the bowl warm, not hot.",
+      "Check the salt twice. Barley absorbs seasoning as it cools and a bowl that tasted right at noon will not at two."
+    ],
+    makeAhead:
+      "All three components keep 3 days apart. Dress within an hour of service or the kale dulls and the lime deadens.",
+    holds:
+      "Four hours cold, which makes it the safest vegan bowl here for a long drop-off.",
+    scaling: "Roast the squash in single layers. Two trays deep and it steams, and the char is the whole flavour."
+  },
+  {
+    dishId: 211,
+    yields: "30 portions",
+    prepMin: 45,
+    cookMin: 12,
+    ingredients: [
+      { qty: "30", item: "small whole trout", note: "about 300 g each, butterflied through the back, heads left on" },
+      { qty: "400 g", item: "coarse salt" },
+      { qty: "150 g", item: "demerara sugar" },
+      { qty: "400 g", item: "butter", note: "softened" },
+      { qty: "4 tbsp", item: "muña" },
+      { qty: "3", item: "lemons" },
+      { qty: "1 tbsp", item: "black pepper" }
+    ],
+    method: [
+      "Brine the butterflied trout in salt and sugar for 90 minutes, then rinse and dry them on racks until tacky.",
+      "Cold-smoke over oak or algarrobo for 3 hours. The skin should go bronze and the flesh stay raw to the touch.",
+      "Beat muña, lemon zest and pepper into the softened butter and roll it in paper. Chill until firm, then slice into discs.",
+      "Grill skin-side down on the plancha for 4 minutes, then flip for barely one. It is thin and it overcooks in seconds.",
+      "Put a disc of muña butter on as it comes off, with a lemon half on the side."
+    ],
+    makeAhead:
+      "Brine and smoke the day before; smoked trout is better rested overnight. The butter keeps two weeks.",
+    holds:
+      "Cooked to order at the station and eaten in minutes. It does not hold at all, which is why it is a live station.",
+    scaling: "The plancha takes six at a time. Above 60 covers you need a second plancha, not a bigger one."
+  },
+  {
+    dishId: 212,
+    yields: "30 portions",
+    prepMin: 25,
+    cookMin: 0,
+    ingredients: [
+      { qty: "1.5 kg", item: "pinhead oatmeal" },
+      { qty: "3 L", item: "whole milk", note: "or water for a plainer, older version" },
+      { qty: "1 kg", item: "aguaymanto", note: "half left whole, half crushed with sugar" },
+      { qty: "300 g", item: "honey" },
+      { qty: "200 ml", item: "double cream" },
+      { qty: "1 tsp", item: "fine salt" }
+    ],
+    method: [
+      "Toast the pinhead oatmeal dry until it smells of biscuit and let it cool completely before anything wet touches it.",
+      "Stir the oatmeal into the milk with the salt and leave it covered overnight in the fridge. No heat, ever — that is what brose is.",
+      "Crush half the aguaymanto with a little honey and leave it to weep into a syrup.",
+      "In the morning loosen the brose with more milk; it thickens far more overnight than you expect.",
+      "Layer brose, aguaymanto syrup, cream and whole berries into pots and lid them."
+    ],
+    makeAhead:
+      "Soak overnight, build in the morning, serve within 12 hours. Beyond that the oatmeal goes claggy and sour.",
+    holds:
+      "Four hours cold in a lidded pot. No reheating, no station, no equipment at the venue at all.",
+    scaling: "Soak in the containers the pots are portioned from. Decanting cold brose between vessels is a waste of an hour."
+  },
+  {
+    dishId: 213,
+    yields: "30 portions",
+    prepMin: 30,
+    cookMin: 10,
+    ingredients: [
+      { qty: "1.2 kg", item: "rolled oats" },
+      { qty: "2.5 L", item: "whole milk" },
+      { qty: "800 ml", item: "double cream" },
+      { qty: "400 g", item: "honey" },
+      { qty: "6", item: "chirimoya", note: "seeded and scooped; the season is April to September" },
+      { qty: "200 g", item: "pinhead oatmeal", note: "toasted, for the crunch on top" },
+      { qty: "3", item: "limes" }
+    ],
+    method: [
+      "Toast the pinhead oatmeal until dark gold. Keep it separate and dry; folded in early it goes soft by morning.",
+      "Stir the rolled oats into the milk with half the honey and soak overnight, covered and cold.",
+      "Whip the cream to soft peaks with the rest of the honey — soft, not stiff, or it sits on top like a lid.",
+      "Scoop the chirimoya at the last moment, picking out every seed, and dress it in lime juice to stop it browning.",
+      "Layer oats, chirimoya and cream in pots and send the toasted oatmeal in a separate twist of paper."
+    ],
+    makeAhead:
+      "Soak the night before and build on the morning of delivery. The chirimoya is what dates it, not the oats.",
+    holds:
+      "Six hours cold. The whole design of it is that nothing needs heat, a station or a plate at the other end.",
+    scaling: "Chirimoya is the constraint, not the oats. Out of season this dish comes off the list rather than swapping the fruit."
+  },
+  {
+    dishId: 214,
+    yields: "40 portions",
+    prepMin: 40,
+    cookMin: 20,
+    ingredients: [
+      { qty: "2 L", item: "whole milk" },
+      { qty: "1.5 L", item: "double cream" },
+      { qty: "20", item: "egg yolks" },
+      { qty: "600 g", item: "caster sugar" },
+      { qty: "300 ml", item: "single malt whisky", note: "something peated; a soft malt disappears entirely" },
+      { qty: "400 g", item: "chancaca" },
+      { qty: "150 ml", item: "water" },
+      { qty: "100 g", item: "butter" },
+      { qty: "1 tsp", item: "fine salt" }
+    ],
+    method: [
+      "Bring milk and cream to a bare simmer. Whisk yolks and sugar pale, temper, and cook to 82 °C stirring constantly.",
+      "Strain the custard and chill it overnight. A rested custard churns finer and tastes less of egg.",
+      "Churn, and add the whisky in the last minute of churning only. Alcohol early stops the whole thing freezing.",
+      "Freeze hard for four hours in shallow trays, which sets faster and scoops better than a deep tub.",
+      "Melt chancaca with the water, butter and salt into a sauce that pours warm and sets sticky as it cools."
+    ],
+    makeAhead:
+      "Churn up to two weeks ahead and hold at −18 °C. The chancaca sauce keeps a month chilled and reheats in a pan.",
+    holds:
+      "Twenty minutes on a buffet in Lima, and less in summer. This needs a freezer at the venue or it does not go on the quote.",
+    scaling: "Churn capacity is the whole limit. Above 60 portions hire a second machine or change the dessert."
+  },
+  {
+    dishId: 215,
+    yields: "24 portions",
+    prepMin: 35,
+    cookMin: 120,
+    ingredients: [
+      { qty: "600 g", item: "butter" },
+      { qty: "600 g", item: "caster sugar" },
+      { qty: "10", item: "eggs" },
+      { qty: "700 g", item: "self-raising flour" },
+      { qty: "500 g", item: "bitter orange marmalade", note: "Dundee cut, thick peel" },
+      { qty: "3", item: "naranja agria", note: "juice and zest, to cut the marmalade" },
+      { qty: "2 tsp", item: "mixed spice" },
+      { qty: "200 ml", item: "whole milk" },
+      { qty: "300 ml", item: "double cream", note: "to serve" }
+    ],
+    method: [
+      "Butter the basins hard and spoon 60 g of marmalade into the bottom of each before any batter goes in.",
+      "Cream butter and sugar until genuinely pale, six or seven minutes, then add the eggs one at a time.",
+      "Fold in the flour and mixed spice, then loosen with the milk and the naranja agria juice and zest.",
+      "Fill the basins two-thirds, cover with pleated paper and foil, and tie them down properly.",
+      "Steam for two hours, topping the water up from the kettle so the pan never drops off the boil.",
+      "Turn out onto the plate so the marmalade runs down the sides, and pour cream over at the table."
+    ],
+    makeAhead:
+      "Steam up to 5 days ahead and keep them in the basins. They reheat by steaming 25 minutes, and improve for the rest.",
+    holds:
+      "An hour warm in the basin. Turned out they cool fast, so turn out at the pass and not before.",
+    scaling: "Steamer space, not oven space, is the limit. Above 24 basins steam in two sittings the day before."
+  },
+  {
+    dishId: 216,
+    yields: "80 biscuits",
+    prepMin: 30,
+    cookMin: 15,
+    ingredients: [
+      { qty: "900 g", item: "plain flour" },
+      { qty: "350 g", item: "butter", note: "cold, diced" },
+      { qty: "250 g", item: "caster sugar" },
+      { qty: "3 tbsp", item: "anise seed", note: "lightly crushed; caraway if you can find it, but you will not" },
+      { qty: "2 tsp", item: "baking powder" },
+      { qty: "1 tsp", item: "fine salt" },
+      { qty: "2", item: "eggs" },
+      { qty: "80 ml", item: "whole milk" }
+    ],
+    method: [
+      "Rub the cold butter into the flour, sugar, baking powder, salt and anise until it looks like fine breadcrumbs.",
+      "Bind with the egg and just enough milk to bring it together. It should be firm, not soft — this is a biscuit, not a scone.",
+      "Rest the dough 30 minutes chilled, then roll to 5 mm and cut 6 cm rounds. Dock each one with a fork.",
+      "Bake at 180 °C for 13–15 minutes until pale gold at the edges and still blond in the middle.",
+      "Cool on the tray for five minutes before moving them, or they break at the dock marks."
+    ],
+    makeAhead:
+      "The dough freezes a month, rolled and cut. Baked, they keep two weeks in a tin and are better after two days.",
+    holds:
+      "Indefinitely in a sealed tin, which is exactly why this one is on the list for long drop-offs.",
+    scaling: "Cheapest piece per unit on the whole sheet. Roll and cut in 3 kg batches; the dough does not mind waiting."
+  },
+  {
+    dishId: 217,
+    yields: "40 buns",
+    prepMin: 45,
+    cookMin: 18,
+    ingredients: [
+      { qty: "1.4 kg", item: "strong white flour" },
+      { qty: "20 g", item: "dried yeast" },
+      { qty: "180 g", item: "caster sugar" },
+      { qty: "250 g", item: "butter", note: "softened" },
+      { qty: "3", item: "eggs" },
+      { qty: "600 ml", item: "warm milk" },
+      { qty: "2 tsp", item: "fine salt" },
+      { qty: "200 g", item: "chancaca", note: "grated coarse, for the top" },
+      { qty: "1", item: "egg", note: "egg wash" }
+    ],
+    method: [
+      "Mix flour, yeast, sugar and salt, then work in the eggs and warm milk to a soft dough and knead 10 minutes.",
+      "Add the softened butter in three additions and keep kneading until it is glossy and pulls off the bowl.",
+      "Prove until doubled, knock back, and divide into 90 g pieces rolled into flat ovals about 1 cm thick.",
+      "Prove again on trays for 40 minutes — they should spread outwards rather than up. A Paris bun is a flat bun.",
+      "Egg wash, scatter the grated chancaca thickly over the tops, and bake at 200 °C for 16–18 minutes."
+    ],
+    makeAhead:
+      "Freeze the shaped dough a month and prove from frozen overnight in the fridge. Baked they are a one-day product.",
+    holds:
+      "A day in a paper bag. In plastic the chancaca dissolves into a wet patch within a couple of hours.",
+    scaling: "Chancaca burns faster than white sugar. Above two trays drop the oven to 190 °C and give them two minutes more."
+  },
+  {
+    dishId: 218,
+    yields: "24 portions",
+    prepMin: 30,
+    cookMin: 45,
+    ingredients: [
+      { qty: "2 kg", item: "beef mince", note: "coarse; a fine mince disappears into the broth" },
+      { qty: "800 g", item: "pearl barley" },
+      { qty: "1.5 L", item: "whole milk" },
+      { qty: "3 L", item: "beef stock" },
+      { qty: "1.5 kg", item: "ripe tomatoes" },
+      { qty: "4", item: "onions" },
+      { qty: "500 g", item: "carrots" },
+      { qty: "1 kg", item: "papa blanca" },
+      { qty: "60 g", item: "ají panca paste" },
+      { qty: "2 tsp", item: "dried oregano" },
+      { qty: "2 tbsp", item: "flat parsley" }
+    ],
+    method: [
+      "Rinse the barley and simmer it separately in stock for 30 minutes. Cooked in the soup it makes the whole pot cloudy.",
+      "Brown the mince hard in a dry pan until it catches, then lift it out and keep the fat.",
+      "Sweat onion and carrot in that fat, add ají panca and oregano, and cook them out two minutes.",
+      "Add grated tomato and cook it down to a paste, then the stock, the mince and the diced potato.",
+      "Simmer 20 minutes, add the cooked barley and the milk, and bring it back gently without boiling.",
+      "Finish with parsley. Season late — the barley keeps drinking salt as it sits."
+    ],
+    makeAhead:
+      "Best made the day of service. Cook the barley and the base separately a day ahead and marry them at the venue.",
+    holds:
+      "Two hours in a bain-marie. Longer and the barley swells until it is a stew rather than a soup.",
+    scaling: "Barley roughly triples in volume. Measure the pot before you cook, not after."
+  },
+  {
+    dishId: 219,
+    yields: "20 portions",
+    prepMin: 50,
+    cookMin: 40,
+    ingredients: [
+      { qty: "2 kg", item: "crab meat", note: "check the veda month before you order; the planner blocks it in closed months" },
+      { qty: "1.5 kg", item: "crab shell" },
+      { qty: "500 g", item: "rolled oats", note: "the Scottish move: oats where the chupe would use rice" },
+      { qty: "2.5 L", item: "whole milk" },
+      { qty: "500 ml", item: "double cream" },
+      { qty: "150 g", item: "ají amarillo paste" },
+      { qty: "3", item: "onions" },
+      { qty: "6", item: "garlic cloves" },
+      { qty: "3", item: "choclo cobs" },
+      { qty: "500 g", item: "papa amarilla" },
+      { qty: "6", item: "eggs", note: "poached, one per two bowls" },
+      { qty: "3 tbsp", item: "huacatay" }
+    ],
+    method: [
+      "Roast the crab shells and infuse them in the milk with onion and garlic for 30 minutes, then strain twice.",
+      "Fry the ají amarillo in oil until it darkens and smells sweet — the aderezo is the backbone of any chupe.",
+      "Add the crab milk and the oats and simmer 20 minutes until the oats break down and thicken it.",
+      "Add the diced papa amarilla and the choclo and cook until the potato is just soft, no further.",
+      "Fold the crab meat and cream through off the heat, then the huacatay, which must never boil.",
+      "Serve with half a poached egg per bowl, which is how a chupe is finished in Lima and how it should stay."
+    ],
+    makeAhead:
+      "The oat and crab-milk base keeps 2 days. Crab meat, egg and huacatay all go in on the day.",
+    holds:
+      "Ninety minutes at 65 °C. The oats keep thickening, so hold a jug of the crab milk back to loosen it.",
+    scaling: "Oats catch far more readily than rice. Above 10 litres use a bain-marie insert, never a direct flame."
+  },
+  {
+    dishId: 220,
+    yields: "40 tamalitos",
+    prepMin: 60,
+    cookMin: 60,
+    ingredients: [
+      { qty: "12", item: "choclo cobs", note: "kernels blitzed coarse; the husks kept for wrapping" },
+      { qty: "2 bunch", item: "coriander" },
+      { qty: "1 bunch", item: "culantro" },
+      { qty: "200 ml", item: "vegetable oil" },
+      { qty: "3", item: "onions" },
+      { qty: "80 g", item: "ají amarillo paste" },
+      { qty: "2 tsp", item: "fine salt" },
+      { qty: "40", item: "banana leaf", note: "cut into 20 cm squares and passed over a flame to soften" },
+      { qty: "300 g", item: "butter", note: "for the muña butter" },
+      { qty: "4 tbsp", item: "muña" },
+      { qty: "1 tsp", item: "flaked salt" }
+    ],
+    method: [
+      "Blitz the choclo coarse — grainy, not smooth. A smooth purée steams into something closer to a custard.",
+      "Blitz the coriander and culantro with a little oil into a bright green paste and set it aside.",
+      "Fry the onion and ají amarillo in the rest of the oil until sweet, then stir the choclo in and cook it 10 minutes.",
+      "Take it off the heat, fold the herb paste through, and season. It should be spoonable and hold a soft shape.",
+      "Spoon 60 g onto each softened leaf, fold into parcels, tie, and steam upright for 50 minutes.",
+      "Beat muña and flaked salt into the butter and serve it soft alongside, the way a bannock is buttered."
+    ],
+    makeAhead:
+      "Wrap a day ahead and steam on the day, or steam ahead and re-steam 15 minutes. They freeze a month wrapped.",
+    holds:
+      "Two hours warm in their leaves, which is the best insulation on the whole list. Unwrapped they dry in 20 minutes.",
+    scaling: "Wrapping is the labour: about 50 an hour by hand. Two people from 100 parcels up."
+  },
+  {
+    dishId: 221,
+    yields: "60 portions",
+    prepMin: 45,
+    cookMin: 15,
+    ingredients: [
+      { qty: "5 kg", item: "alpaca", note: "loin or top of the leg, cut in 3 cm cubes" },
+      { qty: "400 g", item: "ají panca paste" },
+      { qty: "3 tbsp", item: "juniper berries", note: "crushed; the Scottish move, and it belongs with game" },
+      { qty: "300 ml", item: "red wine vinegar" },
+      { qty: "10", item: "garlic cloves" },
+      { qty: "2 tbsp", item: "ground cumin" },
+      { qty: "2 tbsp", item: "dried oregano" },
+      { qty: "200 ml", item: "vegetable oil" },
+      { qty: "60", item: "bamboo skewers", note: "soaked an hour or they burn through on the grill" },
+      { qty: "2 tbsp", item: "black pepper" }
+    ],
+    method: [
+      "Blitz ají panca, garlic, juniper, cumin, oregano, vinegar and oil into a marinade thick enough to cling.",
+      "Marinate the alpaca 6 hours, and no longer than 12 — the vinegar starts to cure lean meat past that.",
+      "Thread three cubes per skewer, leaving a gap between each so the heat gets all the way round.",
+      "Grill hot and fast, 3 minutes a side, basting once with the reserved marinade boiled for two minutes first.",
+      "Rest 2 minutes off the heat. Alpaca is lean enough that another minute on the grill is the difference between rare and grey."
+    ],
+    makeAhead:
+      "Marinate and skewer the day before and keep them flat on trays. The marinade itself keeps a week chilled.",
+    holds:
+      "Grilled to order at the station. Ten minutes on a tray is the limit before they go from rare to leathery.",
+    scaling: "A parrilla takes about 20 skewers. Above 120 portions you need a second grill and a second cook."
+  },
+  {
+    dishId: 222,
+    yields: "60 squares",
+    prepMin: 40,
+    cookMin: 15,
+    ingredients: [
+      { qty: "3 kg", item: "pork shoulder", note: "coarse minced with its own fat" },
+      { qty: "400 g", item: "medium oatmeal", note: "toasted; the Lorne binding, in a Huacho sausage" },
+      { qty: "200 g", item: "ají amarillo paste" },
+      { qty: "3 tbsp", item: "achiote", note: "ground; it is the colour a huachana has to be" },
+      { qty: "150 ml", item: "red wine vinegar" },
+      { qty: "8", item: "garlic cloves" },
+      { qty: "2 tbsp", item: "ground cumin" },
+      { qty: "1 tbsp", item: "black pepper" },
+      { qty: "300 ml", item: "cold water" },
+      { qty: "2 tsp", item: "fine salt" }
+    ],
+    method: [
+      "Mix the achiote into a little warm oil first so it blooms; stirred in dry it stays speckled rather than colouring.",
+      "Work the mince with ají amarillo, achiote oil, garlic, cumin, pepper, vinegar and salt until it turns sticky.",
+      "Add the toasted oatmeal and the cold water and mix hard for two minutes. This is what makes it a Lorne square.",
+      "Press into lined 5 cm-deep trays, cover, and chill overnight so it sets firm enough to cut.",
+      "Turn out and cut into 5 cm squares 1.5 cm thick, then griddle on a hot plancha 3 minutes a side."
+    ],
+    makeAhead:
+      "The set block keeps 3 days chilled and freezes a month. Cut squares freeze flat between sheets of paper.",
+    holds:
+      "Cooked to order on the plancha and served straight off it. Held on a tray they weep fat and go greasy.",
+    scaling: "Chilling overnight is not optional at any scale. A warm block cuts into rubble instead of squares."
+  },
+  {
+    dishId: 223,
+    yields: "2 cakes, 24 slices",
+    prepMin: 40,
+    cookMin: 45,
+    ingredients: [
+      { qty: "500 g", item: "quinoa flour" },
+      { qty: "400 g", item: "plain flour" },
+      { qty: "500 g", item: "butter", note: "softened" },
+      { qty: "500 g", item: "caster sugar" },
+      { qty: "9", item: "eggs" },
+      { qty: "3 tsp", item: "baking powder" },
+      { qty: "250 ml", item: "whole milk" },
+      { qty: "1 tsp", item: "fine salt" },
+      { qty: "600 g", item: "lucuma pulp", note: "for the buttercream; frozen pulp is fine and often better" },
+      { qty: "400 g", item: "butter", note: "for the buttercream" },
+      { qty: "700 g", item: "icing sugar", note: "for the buttercream" }
+    ],
+    method: [
+      "Toast the quinoa flour dry in a low oven for 8 minutes. Untoasted it tastes green and slightly bitter in a sponge.",
+      "Cream butter and sugar pale, then add the eggs one at a time with a spoon of the flour to stop it curdling.",
+      "Fold in both flours, the baking powder and salt, then loosen with the milk to a slow dropping consistency.",
+      "Bake in two lined 23 cm tins at 175 °C for 40–45 minutes. Quinoa flour browns faster, so cover at 30 minutes.",
+      "Beat the lucuma pulp into the butter and icing sugar until it holds a peak, and fill and top the cooled cakes.",
+      "Chill an hour before slicing so the buttercream sets enough to cut clean edges."
+    ],
+    makeAhead:
+      "The sponges keep 3 days wrapped or freeze a month. Fill on the day; lucuma buttercream weeps after 24 hours.",
+    holds:
+      "Six hours at room temperature, less in Lima's summer. The buttercream is the limit, not the sponge.",
+    scaling: "Denser than a wheat sponge, so it needs longer and lower. Never bake it above 175 °C to save time."
   }
 ];

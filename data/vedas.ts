@@ -65,6 +65,24 @@ export const VEDAS: Veda[] = [
     verified: false
   },
   {
+    id: "cangrejo",
+    species: "Cangrejo (crab)",
+    closed: [9, 10, 11],
+    ingredientKeys: ["crab meat", "crab shell"],
+    note:
+      "The partan bree and the chupe de cangrejo both live or die on this one. Peru closes crab on a reproductive veda that also carries a minimum carapace width, and a female carrying eggs is illegal in any month. Buy picked meat and you cannot see either, so buy from someone who can show you the landing paperwork.",
+    verified: false
+  },
+  {
+    id: "concha-de-abanico",
+    species: "Concha de abanico (scallop)",
+    closed: [7, 8, 9],
+    ingredientKeys: ["concha de abanico"],
+    note:
+      "Scallop vedas are set by bank rather than nationally - Sechura, Paracas and Bahía Independencia all close on their own resoluciones - so a month that is closed for one bank is open for another. The months here are the usual overlap and nothing more.",
+    verified: false
+  },
+  {
     id: "pulpo",
     species: "Pulpo (octopus)",
     closed: [7, 8],

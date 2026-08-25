@@ -610,10 +610,24 @@ if (!subsOk) failures++;
 console.log(`\nsubstitution rows: ${subRows} for ${offCount} off-menu dishes ${subsOk ? "✓" : "✗"}`);
 
 // Dishes with no substitute must sort to the top - they are the actual work.
-const firstRow = await page.locator("#seasonSubs tbody tr").first().innerText();
-const stuckFirst = /nothing fits/.test(firstRow);
-if (!stuckFirst) failures++;
-console.log(`dishes with no answer sort first: ${stuckFirst ? "✓" : "✗"}`);
+// Since the matrix grew to 223 dishes there is usually something for every
+// gap, so "none stuck" is a real outcome and not a failure. What is checked
+// is the sort: fewest options first, and no answer at all right at the top.
+const subCounts = await page.$$eval("#seasonSubs tbody tr", (rows) =>
+  rows.map((r) => {
+    const cell = r.children[2];
+    return /nothing fits/.test(cell.textContent || "") ? 0 : cell.querySelectorAll("strong").length;
+  })
+);
+const sortedAsc = subCounts.every((n, i) => i === 0 || subCounts[i - 1] <= n);
+const stuck = subCounts.filter((n) => n === 0).length;
+const stuckFirst = stuck === 0 || subCounts[0] === 0;
+const subSortOk = sortedAsc && stuckFirst;
+if (!subSortOk) failures++;
+console.log(
+  `fewest options first: ${subSortOk ? "✓" : "✗"}` +
+  ` (${stuck} with no answer at all${stuck === 0 ? " — the wider matrix covers every October gap" : ""})`
+);
 
 // A substitute must never itself be out of season this month.
 const suggested = await page.$$eval("#seasonSubs tbody tr td:nth-child(3) strong",

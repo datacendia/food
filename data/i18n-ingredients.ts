@@ -241,5 +241,28 @@ export const ES_INGREDIENTS: Record<string, string> = {
   // ---- not food ----
   "wooden skewer": "palitos de brocheta", "bamboo skewer": "palitos de bambú",
   "cocktail stick": "palitos de cóctel",
-  "large cloth and flour for dusting": "paño grande y harina para espolvorear"
+  "large cloth and flour for dusting": "paño grande y harina para espolvorear",
+  "banana leaf": "hoja de plátano",
+
+  // ---- added with dishes 192-223 ----
+  // Alpaca is asked for by cut at an Andean butcher, not as "alpaca" alone.
+  "alpaca": "lomo o pierna de alpaca",
+  // "Beef topside" gets a blank look; the cut beaten thin for beef olives is
+  // sold as bistec de tapa.
+  "beef topside": "bistec de tapa (para enrollar)",
+  "haggis": "haggis (encargado al carnicero)",
+  "whole salmon": "salmón entero (importado)",
+  "small whole trout": "trucha entera chica, unos 300 g",
+  // Conchas de abanico carry a veda. Ask for the month, not just the price.
+  "concha de abanico": "conchas de abanico",
+  "crab meat": "carne de cangrejo desmenuzada",
+  "crab shell": "caparazón de cangrejo (para el fondo)",
+  "pearl barley": "cebada perlada",
+  "barley flour": "harina de cebada",
+  "brown lentil": "lenteja",
+  "juniper berry": "bayas de enebro",
+  "achiote": "achiote molido",
+  "vegetable stock": "caldo de verduras",
+  "aji amarillo mayonnaise": "mayonesa de ají amarillo",
+  "hot water crust pastry": "masa de agua caliente con manteca"
 };
