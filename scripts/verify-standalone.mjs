@@ -474,6 +474,25 @@ console.log(
   `\ncategory labels match lib/dishes.ts: ${labelDrift.length ? "✗ " + labelDrift.join(", ") : "✓"}`
 );
 
+// --- The quote has to be sendable, or it is not a quote ------------------
+await page.getByRole("tab", { name: "Build a menu" }).click();
+await page.waitForTimeout(600);
+const waText = await page.locator("#waText").inputValue();
+const waHref = await page.locator("#waSend").getAttribute("href");
+const waQuoted = [...waText.matchAll(/S\/ ([\d,.]+)/g)].map((m) => Number(m[1].replace(/,/g, "")));
+const waGross = Number((await page.locator("#quote .qrow.tot").last().innerText()).replace(/[^\d.]/g, ""));
+const waOk =
+  waHref.startsWith("https://wa.me/?text=") &&
+  decodeURIComponent(waHref.slice("https://wa.me/?text=".length)) === waText &&
+  waQuoted.length === 4 &&
+  Math.abs(waQuoted[3] - waGross) < 0.01 &&
+  /estimate, not a contract/i.test(waText);
+if (!waOk) failures++;
+console.log(
+  `\nWhatsApp quote carries the same total as the panel: ${waOk ? "✓" : "✗"}` +
+  ` (S/ ${waQuoted[3]} vs S/ ${waGross})`
+);
+
 // --- Spanish: the toggle works, and coverage is reported honestly ---------
 const esPage = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
 await esPage.addInitScript(() => {

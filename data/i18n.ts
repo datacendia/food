@@ -673,6 +673,15 @@ export const ES: Record<string, string> = {
   "Quantities are batch quantities, not domestic ones. Cross-check them against the run sheet in Build a menu before a real service.":
     "Las cantidades son de tanda, no domésticas. Contrástelas con la hoja de servicio en Armar el menú antes de un servicio real.",
 
+  // ---- sending the quote out ----
+  "Send this quote":
+    "Enviar esta cotización",
+  "Copy the quote":
+    "Copiar la cotización",
+  "Open in WhatsApp":
+    "Abrir en WhatsApp",
+  "Opens WhatsApp with the text ready to send. Read it before you send it — it is an estimate, not a contract.":
+    "Abre WhatsApp con el texto listo para enviar. Léalo antes de enviarlo — es un estimado, no un contrato.",
   // ---- allergen names, as the kitchen book and the diet panel print them ----
   "gluten": "gluten",
   "crustaceans": "crustáceos",

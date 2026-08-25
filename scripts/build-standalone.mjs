@@ -1468,7 +1468,9 @@ try { LANG = localStorage.getItem("ayesicena-lang") || "es"; } catch (e) { LANG 
 
 // Text nodes inside these never get touched: dish names, supplier names and
 // the numbers are the same in both languages.
-var NO_TRANSLATE = "SCRIPT,STYLE,CODE".split(",");
+// A textarea holds a message the user is about to send, already written in
+// their language. The walker must not go near it.
+var NO_TRANSLATE = "SCRIPT,STYLE,CODE,TEXTAREA".split(",");
 
 function translateNode(root){
   if (LANG !== "es") return;
@@ -2937,6 +2939,21 @@ function render(){
       "% of net. Food and service costs are already out.</p></div>" +
     "<p class='note'>Kitchen rent, insurance and your own wage come out of this figure. " +
       "Estimates only — not a binding quote.</p>" +
+    // The quote has to leave the app to be worth anything, and in Lima it
+    // leaves on WhatsApp. Plain text, in the language the page is in, with
+    // the estimate caveat carried along rather than left behind.
+    "<div style='margin-top:17px;border-top:1px solid var(--line);padding-top:13px'>" +
+      "<p class='mono grouphead' style='margin:0 0 8px'>Send this quote</p>" +
+      "<textarea id='waText' readonly rows='8' class='mono' style='width:100%;resize:vertical;" +
+        "background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;" +
+        "padding:9px 10px;font-size:11px;line-height:1.5'>" + esc(quoteText(q, selected)) + "</textarea>" +
+      "<div style='display:flex;gap:8px;margin-top:8px;flex-wrap:wrap'>" +
+        "<button class='btn' id='waCopy' type='button'>Copy the quote</button>" +
+        "<a class='btn' id='waSend' target='_blank' rel='noopener' href='#'>Open in WhatsApp</a>" +
+      "</div>" +
+      "<p class='muted' style='font-size:.78rem;margin:8px 0 0'>Opens WhatsApp with the text " +
+        "ready to send. Read it before you send it — it is an estimate, not a contract.</p>" +
+    "</div>" +
     "<div style='margin-top:17px;border-top:1px solid var(--line);padding-top:13px'>" +
       "<div style='display:flex;justify-content:space-between;align-items:baseline;gap:8px'>" +
         "<span class='mono grouphead' style='margin:0'>Run sheet</span>" +
@@ -2955,6 +2972,55 @@ function render(){
             st.dishes.map(esc).join(", ") + "</span>" : "") +
           "</span></li>";
       }).join("") + "</ol></div>";
+
+  var copyBtn = document.getElementById("waCopy");
+  var sendLink = document.getElementById("waSend");
+  var text = quoteText(q, selected);
+  if (sendLink) sendLink.href = "https://wa.me/?text=" + encodeURIComponent(text);
+  if (copyBtn) copyBtn.addEventListener("click", function(){
+    var ta = document.getElementById("waText");
+    ta.focus(); ta.select();
+    // navigator.clipboard needs a secure context and this file is opened from
+    // disk, so the older API is the one that actually works here.
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    var label = copyBtn.textContent;
+    copyBtn.textContent = ok ? (LANG === "es" ? "Copiado" : "Copied")
+                             : (LANG === "es" ? "Presione Ctrl+C" : "Press Ctrl+C");
+    setTimeout(function(){ copyBtn.textContent = label; }, 2200);
+  });
+}
+
+/**
+ * The quote as a message, not a screen.
+ *
+ * A quote nobody can send is not a quote, and in Lima it goes out on
+ * WhatsApp. Head count, the menu by name, and the three numbers a client
+ * actually asks about: per guest, IGV, and what they pay.
+ */
+function quoteText(q, selected){
+  var es = LANG === "es";
+  var L = es
+    ? { head: "Aye, Si, Cena \u2014 cotizaci\u00f3n", guests: "invitados", menu: "Men\u00fa",
+        per: "Por invitado (neto)", net: "Neto", igv: "IGV 18%", pay: "Total a pagar",
+        note: "Estimado, no es un contrato. Precios sujetos a confirmar los insumos." }
+    : { head: "Aye, Si, Cena \u2014 quote", guests: "guests", menu: "Menu",
+        per: "Per guest (net)", net: "Net", igv: "IGV at 18%", pay: "Client pays",
+        note: "An estimate, not a contract. Prices subject to confirming the ingredients." };
+  var lines = [L.head, q.tier.name + " \u00b7 " + q.guests + " " + L.guests, "", L.menu + ":"];
+  selected.forEach(function(d){ lines.push("\u2022 " + d.name); });
+  lines.push("");
+  lines.push(L.per + ": " + soles(q.netPerGuest));
+  lines.push(L.net + ": " + soles(q.netTotal));
+  lines.push(L.igv + ": " + soles(q.igvTotal));
+  lines.push(L.pay + ": " + soles(q.grossTotal));
+  lines.push("");
+  lines.push(L.note);
+  var text = lines.join("\n");
+  // Written in the viewer's language here rather than by the dictionary
+  // walker, so record it or the coverage figure reports Spanish as English.
+  if (es) APPLIED[text.replace(/\s+/g, " ").trim()] = 1;
+  return text;
 }
 
 // Data labels first, so headings are built in Spanish rather than patched
