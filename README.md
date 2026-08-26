@@ -8,8 +8,8 @@ explanation, not the title.
 ## Picking this up on another machine
 
 ```
-git clone https://github.com/datacendia/food.git ayesicena
-cd ayesicena
+git clone https://github.com/datacendia/aye_si_cena.git
+cd aye_si_cena
 npm install
 npm run dev          # http://localhost:3000
 ```
