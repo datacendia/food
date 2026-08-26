@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Dish, Ingredient } from "@/lib/dishes";
+import type { KitchenDish } from "@/lib/permissions";
 import { MONTH_NAMES, inSeason, dishesOutOfSeason } from "@/lib/dishes";
 
 const SHORT = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
@@ -10,7 +11,7 @@ export default function Seasonal({
   dishes,
   ingredients
 }: {
-  dishes: Dish[];
+  dishes: KitchenDish[];
   ingredients: Ingredient[];
 }) {
   // Default to the real current month rather than a hardcoded one.

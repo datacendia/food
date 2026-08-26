@@ -1,9 +1,28 @@
+# The app runs as a server now: it has logins, a database, and pages whose
+# content depends on who is asking. That rules out a static export - a static
+# build would have to bake every role's view into files and hope the right one
+# is served, which is not a permission model.
+
 [build]
   command = "npm run build"
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# DATABASE_URL, AUTH_SECRET and AUTH_URL are set in Netlify's own environment
+# variables panel, never here. This file is public; those three are not.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # The page carries the cost base. Keep it out of caches and out of frames,
+    # and stop a referrer leaking which quote was being looked at.
+    Cache-Control = "private, no-store"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "same-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"

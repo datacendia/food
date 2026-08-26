@@ -1,10 +1,14 @@
+import { visibleDishes } from "@/lib/permissions";
+import { requireCan, CAN } from "@/lib/session";
 import type { Metadata } from "next";
 import Graph from "@/components/Graph";
 import { DISHES } from "@/data/dishes";
 
 export const metadata: Metadata = { title: "Ingredient graph" };
 
-export default function GraphPage() {
+export default async function GraphPage() {
+  const me = await requireCan(CAN.seeKitchen, "see the ingredient network");
+
   return (
     <>
       <section className="border-b border-line py-12">
@@ -18,7 +22,7 @@ export default function GraphPage() {
         </p>
       </section>
       <section className="py-10">
-        <Graph dishes={DISHES} />
+        <Graph dishes={visibleDishes(DISHES, me.role)} />
       </section>
     </>
   );

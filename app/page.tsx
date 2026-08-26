@@ -1,3 +1,4 @@
+import { requireViewer } from "@/lib/session";
 import Link from "next/link";
 import { DISHES } from "@/data/dishes";
 import { TIERS } from "@/lib/pricing";
@@ -5,7 +6,9 @@ import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 
 
 
-export default function HomePage() {
+export default async function HomePage() {
+  await requireViewer();
+
   // Cheapest food cost with the widest tier reach reads as the strongest sellers.
   const signatures = [...DISHES]
     .filter((d) => d.tiers.length === 3)

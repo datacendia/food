@@ -1,3 +1,5 @@
+import { visibleDishes } from "@/lib/permissions";
+import { requireViewer } from "@/lib/session";
 import type { Metadata } from "next";
 import Moments from "@/components/Moments";
 import { DISHES } from "@/data/dishes";
@@ -5,7 +7,9 @@ import { MOMENTS } from "@/data/moments";
 
 export const metadata: Metadata = { title: "The evening" };
 
-export default function MomentsPage() {
+export default async function MomentsPage() {
+  const me = await requireViewer();
+
   return (
     <>
       <section className="border-b border-line py-12">
@@ -18,7 +22,7 @@ export default function MomentsPage() {
         </p>
       </section>
       <section className="py-10">
-        <Moments dishes={DISHES} moments={MOMENTS} />
+        <Moments dishes={visibleDishes(DISHES, me.role)} moments={MOMENTS} />
       </section>
     </>
   );

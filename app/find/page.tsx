@@ -1,3 +1,5 @@
+import { visibleDishes } from "@/lib/permissions";
+import { requireViewer } from "@/lib/session";
 import type { Metadata } from "next";
 import Finder from "@/components/Finder";
 import { DISHES } from "@/data/dishes";
@@ -6,7 +8,9 @@ import { FLAVOURS } from "@/data/flavours";
 
 export const metadata: Metadata = { title: "Find dishes" };
 
-export default function FindPage() {
+export default async function FindPage() {
+  const me = await requireViewer();
+
   return (
     <>
       <section className="border-b border-line py-12">
@@ -19,7 +23,7 @@ export default function FindPage() {
         </p>
       </section>
       <section className="py-10">
-        <Finder dishes={DISHES} events={EVENTS} flavours={FLAVOURS} />
+        <Finder dishes={visibleDishes(DISHES, me.role)} events={EVENTS} flavours={FLAVOURS} />
       </section>
     </>
   );

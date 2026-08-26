@@ -15,33 +15,47 @@
     "import-matrix": "python3 scripts/import-matrix.py data/ayesicena-matrix.xlsx && npm run derive-allergens",
     "derive-allergens": "node --experimental-strip-types --import ./scripts/ts-alias.mjs scripts/derive-allergens.mjs",
     "fetch-fonts": "node scripts/fetch-fonts.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "user:create": "node --experimental-strip-types --import ./scripts/ts-alias.mjs scripts/create-user.mjs",
     "book": "node scripts/build-book.mjs",
     "book:es": "node scripts/build-book.mjs --lang es",
     "market-run": "node --experimental-strip-types --import ./scripts/ts-alias.mjs scripts/build-market-run.mjs",
     "market-run:es": "node --experimental-strip-types --import ./scripts/ts-alias.mjs scripts/build-market-run.mjs --lang es"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.11.3",
+    "@neondatabase/serverless": "^1.1.0",
+    "bcryptjs": "^3.0.3",
     "clsx": "2.1.1",
+    "drizzle-orm": "^0.45.2",
     "jose": "5.9.6",
     "next": "^14.2.35",
+    "next-auth": "^5.0.0-beta.32",
+    "pg": "^8.23.0",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
+    "@types/bcryptjs": "^2.4.6",
     "@types/jest": "^29.5.12",
     "@types/node": "20.14.12",
+    "@types/pg": "^8.23.1",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "autoprefixer": "10.4.19",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.5",
     "jest": "^29.7.0",
     "jest-environment-node": "^29.7.0",
     "postcss": "^8.5.10",
     "tailwindcss": "3.4.7",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "5.5.4",
-    "ts-jest": "^29.2.5"
+    "typescript": "5.5.4"
   }
 }

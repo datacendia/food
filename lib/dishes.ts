@@ -106,7 +106,15 @@ export const FORMAT_LABEL: Record<ServiceFormat, string> = {
 };
 
 /** A dish matches when it satisfies every clause the filter sets. */
-export function matchesEvent(dish: Dish, filter: EventFilter): boolean {
+/**
+ * Takes the fields it reads rather than a whole Dish, so a caller holding a
+ * cost-stripped dish can still filter. Demanding the full shape here would have
+ * forced every page to hand a chef the cost base just to count canapés.
+ */
+export function matchesEvent(
+  dish: Pick<Dish, "tiers" | "category" | "format" | "needsLicence" | "veg" | "subOrigin">,
+  filter: EventFilter
+): boolean {
   if (filter.tier && !dish.tiers.includes(filter.tier)) return false;
   if (filter.categories && !filter.categories.includes(dish.category)) return false;
   if (filter.formats && !filter.formats.includes(dish.format)) return false;

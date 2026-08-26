@@ -1,3 +1,4 @@
+import { requireViewer } from "@/lib/session";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TIERS, STAFF_SHIFT_COST, CHEF_SHIFT_COST, IGV_RATE, soles } from "@/lib/pricing";
@@ -5,7 +6,9 @@ import { DISHES } from "@/data/dishes";
 
 export const metadata: Metadata = { title: "Packages" };
 
-export default function PackagesPage() {
+export default async function PackagesPage() {
+  await requireViewer();
+
   return (
     <>
       <section className="border-b border-line py-12">

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Dish, EventType, Flavour, ServiceFormat } from "@/lib/dishes";
+import type { VisibleDish } from "@/lib/permissions";
 import {
   CATEGORY_LABEL,
   CATEGORY_ORDER,
@@ -12,7 +13,7 @@ import {
 import { soles } from "@/lib/pricing";
 
 interface Props {
-  dishes: Dish[];
+  dishes: VisibleDish[];
   events: EventType[];
   flavours: Record<number, Flavour[]>;
 }
@@ -80,7 +81,7 @@ export default function Finder({ dishes, events, flavours }: Props) {
   };
 
   const grouped = useMemo(() => {
-    const g: Record<string, Dish[]> = {};
+    const g: Record<string, VisibleDish[]> = {};
     for (const d of results) (g[d.category] ??= []).push(d);
     return g;
   }, [results]);
@@ -219,7 +220,7 @@ export default function Finder({ dishes, events, flavours }: Props) {
                     <div className="flex items-baseline justify-between gap-2">
                       <h4 className="text-sm font-bold leading-tight">{d.name}</h4>
                       <span className="tnum shrink-0 font-mono text-xs text-ink-2">
-                        {soles(d.price)}
+                        {"price" in d ? soles(d.price) : null}
                       </span>
                     </div>
                     <p className="mt-1.5 text-xs">

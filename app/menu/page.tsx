@@ -1,3 +1,4 @@
+import { requireCan, CAN } from "@/lib/session";
 import type { Metadata } from "next";
 import { DISHES } from "@/data/dishes";
 import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
@@ -13,7 +14,9 @@ const FLAG_STYLE = {
   over: "text-bad"
 } as const;
 
-export default function MenuPage() {
+export default async function MenuPage() {
+  await requireCan(CAN.seeMoney, "see the matrix, which carries every cost and margin");
+
   return (
     <>
       <section className="border-b border-line py-12">

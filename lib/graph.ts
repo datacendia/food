@@ -29,13 +29,24 @@ function splitIngredients(raw: string): string[] {
     .filter(Boolean);
 }
 
-export function buildIngredientGraph(dishes: Dish[]): IngredientNode[] {
+/**
+ * Reads names and key ingredients, and a price only if the caller has one.
+ *
+ * `value` is the menu value an ingredient unlocks - the sum of the prices of
+ * the dishes that use it. That is a price by aggregation, so a caller holding
+ * price-stripped dishes gets nodes ranked by how many dishes use them and
+ * nothing more, which is the right answer for a kitchen and no answer at all
+ * about money.
+ */
+export function buildIngredientGraph(
+  dishes: (Pick<Dish, "id" | "name" | "keyIngredients"> & { price?: number })[]
+): IngredientNode[] {
   const map = new Map<string, IngredientNode>();
   for (const d of dishes) {
     for (const name of new Set(splitIngredients(d.keyIngredients))) {
       const node = map.get(name) ?? { name, dishes: [], value: 0 };
       node.dishes.push(d.id);
-      node.value += d.price;
+      node.value += d.price ?? 0;
       map.set(name, node);
     }
   }
@@ -48,10 +59,10 @@ export function buildIngredientGraph(dishes: Dish[]): IngredientNode[] {
  * Dishes that are the only consumer of at least one ingredient. Cooking one of
  * these means buying something nothing else on the menu will use up.
  */
-export function orphanDishes(
-  dishes: Dish[],
+export function orphanDishes<D extends Pick<Dish, "id">>(
+  dishes: D[],
   graph: IngredientNode[]
-): { dish: Dish; soleUseOf: string[] }[] {
+): { dish: D; soleUseOf: string[] }[] {
   const sole = new Map<number, string[]>();
   for (const node of graph) {
     if (node.dishes.length !== 1) continue;

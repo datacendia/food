@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Dish } from "@/lib/dishes";
+import type { VisibleDish } from "@/lib/permissions";
 import { buildIngredientGraph, orphanDishes, buyList } from "@/lib/graph";
 import { soles } from "@/lib/pricing";
 
@@ -10,7 +11,7 @@ import { soles } from "@/lib/pricing";
  * and a fixed dataset, physics adds jitter and no information. Node area
  * encodes how many dishes the ingredient unlocks.
  */
-export default function Graph({ dishes }: { dishes: Dish[] }) {
+export default function Graph({ dishes }: { dishes: VisibleDish[] }) {
   const graph = useMemo(() => buildIngredientGraph(dishes), [dishes]);
   const top = useMemo(() => buyList(graph, 24), [graph]);
   const orphans = useMemo(() => orphanDishes(dishes, graph), [dishes, graph]);

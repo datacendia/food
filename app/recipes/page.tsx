@@ -1,3 +1,5 @@
+import { visibleDishes } from "@/lib/permissions";
+import { requireCan, CAN } from "@/lib/session";
 import type { Metadata } from "next";
 import Recipes from "@/components/Recipes";
 import { DISHES } from "@/data/dishes";
@@ -5,7 +7,9 @@ import { RECIPES } from "@/data/recipes";
 
 export const metadata: Metadata = { title: "Recipes" };
 
-export default function RecipesPage() {
+export default async function RecipesPage() {
+  const me = await requireCan(CAN.seeKitchen, "open the recipes");
+
   return (
     <>
       <section className="border-b border-line py-12">
@@ -19,7 +23,7 @@ export default function RecipesPage() {
         </p>
       </section>
       <section className="py-10">
-        <Recipes dishes={DISHES} recipes={RECIPES} />
+        <Recipes dishes={visibleDishes(DISHES, me.role)} recipes={RECIPES} />
       </section>
     </>
   );

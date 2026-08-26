@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Dish, EventType } from "@/lib/dishes";
+import type { VisibleDish } from "@/lib/permissions";
 import { FORMAT_LABEL, matchesEvent } from "@/lib/dishes";
 import { soles } from "@/lib/pricing";
 
@@ -9,7 +10,7 @@ export default function Moments({
   dishes,
   moments
 }: {
-  dishes: Dish[];
+  dishes: VisibleDish[];
   moments: EventType[];
 }) {
   const [openId, setOpenId] = useState<string>(moments[0]?.id ?? "");
@@ -78,7 +79,7 @@ export default function Moments({
                 <div className="flex items-baseline justify-between gap-2">
                   <h3 className="text-sm font-bold leading-tight">{d.name}</h3>
                   <span className="tnum shrink-0 font-mono text-xs text-ink-2">
-                    {soles(d.price)}
+                    {"price" in d ? soles(d.price) : null}
                   </span>
                 </div>
                 <p className="mt-1.5 text-xs">

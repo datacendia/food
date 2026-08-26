@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from "react";
 import type { Dish, Recipe } from "@/lib/dishes";
+import type { KitchenDish } from "@/lib/permissions";
 import { CATEGORY_LABEL, FORMAT_LABEL } from "@/lib/dishes";
 
 export default function Recipes({
   dishes,
   recipes
 }: {
-  dishes: Dish[];
+  dishes: KitchenDish[];
   recipes: Recipe[];
 }) {
   const byId = useMemo(() => new Map(dishes.map((d) => [d.id, d])), [dishes]);

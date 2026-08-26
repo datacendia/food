@@ -18,7 +18,7 @@ Needs Node 20 or newer (built on 22). The spreadsheet importer additionally
 needs Python 3 with `openpyxl` — `pip install openpyxl` — but only if you are
 re-importing the matrix. Everything else runs on Node alone.
 
-Before you start work: `npm run validate`. It should say 431 passing.
+Before you start work: `npm run validate`. It should say 454 passing.
 
 ## Where things stand
 
@@ -46,6 +46,88 @@ Before you start work: `npm run validate`. It should say 431 passing.
 | `/recipes` | Ingredients and method for every dish |
 | `/seasonal` | What comes off the menu each month, and why |
 | `/graph` | Which dishes share ingredients, and which stand alone |
+
+## Two products, one engine
+
+There are two front ends, and they are not rivals.
+
+`standalone.html` is the tool you carry. One file, no server, opens offline in
+under 100ms from a phone in a market. It is complete - all fourteen modules in
+`lib/` - and it is the one to use when you are standing at a stall.
+
+The Next.js app is the one with a lock on it. It has logins, a database and
+roles, because it does what a single file structurally cannot: remember a quote,
+tell one person from another, and carry a price that changed this morning.
+
+**Never send `standalone.html` to a client.** It carries all 223 costs, all 223
+suppliers and every food-cost percentage. It is your commercial position in one
+file. The WhatsApp quote export is the client-facing artefact; that is why it
+exists.
+
+## Who can see what
+
+Three roles, and the gap between them is money.
+
+| | owner | chef | client |
+|---|---|---|---|
+| Cost, margin, food-cost %, supplier | yes | **no** | **no** |
+| Menu price | yes | no | their own quote |
+| Recipes, quantities, run sheet | yes | yes | no |
+| Build and price a quote | yes | no | no |
+| Record a verified market price | yes | yes | no |
+| Other clients' work | yes | yes | **no** |
+
+This is enforced on the server, in `lib/permissions.ts`, before anything is
+serialised. It is not a display concern: hiding a column in CSS leaves the
+number in the payload, and the payload is one keystroke away in devtools. Every
+dish that reaches a page goes through `visibleDishes(DISHES, role)` or
+`fullDishes(DISHES, role)`, and three tests hold that shut:
+
+- `__tests__/permissions.test.ts` — no cost value survives into a chef or
+  client payload, for any of the 223 dishes.
+- `__tests__/route-guards.test.ts` — every page checks the viewer, no page
+  passes `DISHES` raw, and nothing is prerendered.
+- Both fail loudly if the chokepoint is bypassed. They were written by
+  breaking it on purpose and watching them fail.
+
+The nav hides links a role cannot use. That protects nothing — a typed URL
+skips it — and the pages check again regardless.
+
+## Hosting it
+
+Netlify for the app, Neon for the database. Both free tiers permit commercial
+use, which matters: Vercel's Hobby tier does not, and a catering business on it
+would owe US$20 a month.
+
+```
+# 1. a database
+#    neon.tech → new project → Connection Details → the POOLED string
+# 2. locally
+cp .env.example .env.local        # paste DATABASE_URL, set AUTH_SECRET
+npm run db:migrate                # nine tables
+npm run user:create owner you@example.com "Your Name"
+npm run dev
+
+# 3. on Netlify
+#    Site configuration → Environment variables:
+#      DATABASE_URL   the same Neon string
+#      AUTH_SECRET    openssl rand -base64 32
+#      AUTH_URL       https://your-site.netlify.app
+```
+
+There is no sign-up page. Every account is made with `npm run user:create`,
+because every account can see something a stranger should not. The password is
+read from stdin rather than an argument, so it stays out of your shell history.
+
+A local Postgres works too — the driver follows the URL, so you do not need a
+Neon account to run the whole thing on your own machine:
+
+```
+DATABASE_URL="postgresql://postgres@localhost:5432/ayesicena"
+```
+
+Neon's free tier suspends a database that has been idle a few minutes, so the
+first page load after a quiet spell pays a second or two of cold start.
 
 ## The spreadsheet is the master
 
