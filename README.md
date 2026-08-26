@@ -18,7 +18,7 @@ Needs Node 20 or newer (built on 22). The spreadsheet importer additionally
 needs Python 3 with `openpyxl` — `pip install openpyxl` — but only if you are
 re-importing the matrix. Everything else runs on Node alone.
 
-Before you start work: `npm run validate`. It should say 426 passing.
+Before you start work: `npm run validate`. It should say 431 passing.
 
 ## Where things stand
 
@@ -59,6 +59,20 @@ npm run import-matrix
 That rewrites `data/dishes.ts`, `data/flavours.ts` and `data/sourcing.ts`. Do
 not hand-edit those three — they carry a GENERATED header and your changes
 will be overwritten on the next import.
+
+The import runs in two steps, and the second one matters. The spreadsheet no
+longer carries an allergen column: `scripts/import-matrix.py` writes
+`allergens: []` on every row and `npm run derive-allergens` fills it in from
+the recipes, through `lib/dietary.ts`. `npm run import-matrix` chains both, so
+you only need the second command if you edited a recipe rather than the
+spreadsheet.
+
+The column used to be hand-typed, derived by regex from each dish's marketing
+copy. It disagreed with the recipe on 165 of 223 dishes — of the 103 the menu
+offered as gluten-free, 50 contained gluten — and it could not name celery,
+mustard, sesame, soya, sulphites or lupin at all. Two tests in
+`__tests__/dietary.test.ts` fail if the derived file is ever left stale, so
+this cannot silently come apart again.
 
 After a market run, the loop is: update the cost column, flip "Cost verified?"
 to Yes, re-import, run the tests. Anything the new price pushes over the
@@ -205,6 +219,14 @@ so `npm run verify:standalone` drives it in a headless browser and checks its
 rendered figures against `lib/pricing.ts`. Run that after any pricing change.
 It needs Playwright's Chromium available locally.
 
+Self-contained means self-contained: the three typefaces are subsetted to the
+characters the page uses and embedded, and the verifier fails the build if the
+page asks the network for anything. It used to link Google Fonts from its head,
+which cost 13.2 seconds to first paint when that request failed — the exact
+situation the file exists for. It now paints in under 100 ms with no connection
+at all. `npm run fetch-fonts` refreshes the committed `.woff2` files, and is
+only needed after adding a language or a symbol the page did not use before.
+
 The verifier also holds the browser ports of the canonicaliser, the costing,
 the dietary rules, the vedas and the substitution planner to their TypeScript
 originals. They drifted once and the shopping list asked a butcher for two
@@ -224,7 +246,9 @@ npm run test               # pricing, matrix, recipes, seasonal, graph, conflict
 npm run typecheck
 npm run validate           # typecheck + test — run this before committing
 npm run build
-npm run import-matrix      # regenerate data files from the spreadsheet
+npm run import-matrix      # regenerate data files from the spreadsheet, then derive allergens
+npm run derive-allergens   # re-read allergens off the recipes (after a recipe edit)
+npm run fetch-fonts        # re-subset and re-commit the three embedded typefaces
 npm run standalone         # build the single-file HTML
 npm run verify:standalone  # build it, then check it in a real browser
 npm run book               # the kitchen book, English
