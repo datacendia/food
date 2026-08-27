@@ -83,7 +83,34 @@ export function portionsFromYield(yields: string): number | null {
 }
 
 /** What one ingredient line costs, or why it could not be costed. */
-export function costLine(qty: string, item: string, depth = 0): CostedLine {
+/**
+ * Where prices come from.
+ *
+ * data/prices.ts is the seed: every figure in it is an unverified estimate, and
+ * the whole matrix still says costVerified: false. Once somebody stands at a
+ * stall and writes down what they actually paid, that price lives in the
+ * database and supersedes the estimate - which is the difference between a
+ * market run reaching every device this afternoon and waiting for a rebuild.
+ *
+ * Passed in rather than reached for, so this module stays pure and testable and
+ * two requests can never see each other's prices.
+ */
+export interface PriceBook {
+  food: Record<string, Price>;
+  sub: Record<string, Price>;
+  nonFood: Record<string, Price>;
+}
+
+/** The estimates as shipped. The default, and the fallback for any key not verified. */
+export const ESTIMATES: PriceBook = {
+  food: PRICES,
+  sub: SUB_PREP_PRICES,
+  nonFood: NON_FOOD_PRICES
+};
+
+export function costLine(
+  qty: string, item: string, depth = 0, book: PriceBook = ESTIMATES
+): CostedLine {
   const raw = canonicalIngredient(item);
   const key = COMPOUND_ALIAS[raw] ?? raw;
   const base: CostedLine = { qty, item, key, status: "costed", soles: 0, nonFood: false };
@@ -92,14 +119,14 @@ export function costLine(qty: string, item: string, depth = 0): CostedLine {
   // a dish assembled from other dishes carries their cost rather than none.
   const subId = SUB_RECIPE_OF[raw];
   if (subId !== undefined) {
-    const soles = costSubPreparation(subId, qty, depth);
+    const soles = costSubPreparation(subId, qty, depth, book);
     return soles === null
       ? { ...base, status: "sub-preparation" }
       : { ...base, status: "costed", soles };
   }
 
   const nonFood = SUNDRIES.has(key);
-  const price = nonFood ? NON_FOOD_PRICES[key] : (PRICES[key] ?? SUB_PREP_PRICES[key]);
+  const price = nonFood ? book.nonFood[key] : (book.food[key] ?? book.sub[key]);
   if (!price) return { ...base, status: "unpriced", nonFood };
 
   const measure = parseQty(qty);
@@ -121,8 +148,10 @@ export function costLine(qty: string, item: string, depth = 0): CostedLine {
   return { ...base, nonFood, soles: (amount / spec.size) * price.soles };
 }
 
-export function costRecipe(recipe: Recipe, depth = 0): RecipeCost {
-  const lines = recipe.ingredients.map((i) => costLine(i.qty, i.item, depth));
+export function costRecipe(
+  recipe: Recipe, depth = 0, book: PriceBook = ESTIMATES
+): RecipeCost {
+  const lines = recipe.ingredients.map((i) => costLine(i.qty, i.item, depth, book));
   const foodTotal = lines
     .filter((l) => l.status === "costed" && !l.nonFood)
     .reduce((s, l) => s + l.soles, 0);
@@ -164,13 +193,15 @@ export interface CostVariance {
  * A ratio far from 1 means one of the two is wrong, and which one is a
  * question for a market run, not for this function.
  */
-export function costVariance(dishes: Dish[], recipes: Recipe[]): CostVariance[] {
+export function costVariance(
+  dishes: Dish[], recipes: Recipe[], book: PriceBook = ESTIMATES
+): CostVariance[] {
   const byId = new Map(dishes.map((d) => [d.id, d]));
   const out: CostVariance[] = [];
   for (const r of recipes) {
     const dish = byId.get(r.dishId);
     if (!dish) continue;
-    const c = costRecipe(r);
+    const c = costRecipe(r, 0, book);
     out.push({
       dishId: r.dishId,
       name: dish.name,
@@ -190,11 +221,13 @@ export function costVariance(dishes: Dish[], recipes: Recipe[]): CostVariance[] 
  * Depth-guarded: a sub-preparation that referred back to its own dish would
  * otherwise recurse until the stack gave out.
  */
-function costSubPreparation(dishId: number, qty: string, depth: number): number | null {
+function costSubPreparation(
+  dishId: number, qty: string, depth: number, book: PriceBook = ESTIMATES
+): number | null {
   if (depth >= 3) return null;
   const sub = RECIPES.find((r) => r.dishId === dishId);
   if (!sub) return null;
-  const cost = costRecipe(sub, depth + 1);
+  const cost = costRecipe(sub, depth + 1, book);
   if (cost.foodTotal <= 0) return null;
 
   const measure = parseQty(qty);

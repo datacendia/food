@@ -18,7 +18,7 @@ Needs Node 20 or newer (built on 22). The spreadsheet importer additionally
 needs Python 3 with `openpyxl` — `pip install openpyxl` — but only if you are
 re-importing the matrix. Everything else runs on Node alone.
 
-Before you start work: `npm run validate`. It should say 454 passing.
+Before you start work: `npm run validate`. It should say 461 passing.
 
 ## Where things stand
 
@@ -92,6 +92,40 @@ dish that reaches a page goes through `visibleDishes(DISHES, role)` or
 
 The nav hides links a role cannot use. That protects nothing — a typed URL
 skips it — and the pages check again regardless.
+
+## Quotes, and prices that change
+
+Two things the standalone file cannot do, and the reasons the server exists.
+
+**A quote keeps.** Price a menu on the builder, name it, and it is saved with
+its dish list and the totals as quoted. Reopen it in March and it still says
+what you charged, because the price and cost each dish carried at the moment of
+quoting are written down beside it — a quote is not recalculated when the menu
+is repriced under it. Mark it sent, won or lost. A client with a login sees
+their own quotes and gets a 404 on anyone else's.
+
+The totals are never accepted from the browser. The figures beside the save
+button were computed client-side and are deliberately not submitted; the server
+prices the dish ids again with the same `lib/pricing.ts`. A number that travels
+through a form is a number somebody can edit.
+
+**A price you verified applies immediately.** Every figure in `data/prices.ts`
+is an estimate — the whole matrix still says `costVerified: false`. Come back
+from Surquillo, put what you paid into `/prices`, and every cost in the app
+moves: no rebuild, nothing to redownload. The page shows what you paid against
+what the app guessed, so a wrong estimate stands out.
+
+```
+butter/kg   S/ 41.50   estimate S/ 32.00   +30%   Makro, 5kg block
+```
+
+Rows are never edited in place — a new price supersedes the last — so what you
+paid in March is still answerable in September, which is the only way to see a
+supplier drifting upward.
+
+Both the owner and a chef may record a price, because a chef does the buying.
+An ingredient the recipes do not name is refused with the nearest matches, since
+a price for something nothing buys would never reach a dish.
 
 ## Hosting it
 
