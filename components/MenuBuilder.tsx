@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import SaveQuote from "./SaveQuote";
 import type { Dish, ServiceTier } from "@/lib/dishes";
 import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 import { buildQuote, TIERS, soles, marginFlag } from "@/lib/pricing";
@@ -342,6 +343,16 @@ export default function MenuBuilder({ dishes }: { dishes: Dish[] }) {
             </>
           )}
         </div>
+
+        <SaveQuote
+          dishIds={selected.map((d) => d.id)}
+          guests={guests}
+          tier={tier}
+          district={DISTRICTS[distIdx]?.id ?? ""}
+          venue={VENUE_TYPES[venueIdx]?.id ?? ""}
+          peak={peak}
+          month={new Date().getMonth() + 1}
+        />
       </aside>
     </div>
   );

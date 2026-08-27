@@ -27,7 +27,7 @@
  * real query fails loudly instead.
  */
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-http";
-import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
+import { drizzle as drizzlePg, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import { neon } from "@neondatabase/serverless";
 import { Pool } from "pg";
 import * as schema from "./schema";
@@ -41,8 +41,17 @@ export const databaseConfigured = Boolean(process.env.DATABASE_URL);
 /** Neon's HTTP driver only speaks to Neon. Anything else gets a real socket. */
 const isNeon = /\.neon\.tech(:|\/|$)/.test(url) || url === PLACEHOLDER;
 
-export const db = isNeon
-  ? drizzleNeon(neon(url), { schema })
+/**
+ * One declared type, not a union of two.
+ *
+ * Both drivers expose the same Drizzle query builder; only the client
+ * underneath differs. Left as a union, TypeScript resolves every call against
+ * the intersection of the two builders - and `.returning()` promptly stops
+ * existing, because the overloads do not line up. Naming the type once keeps
+ * the call sites honest about the API they are actually using.
+ */
+export const db: NodePgDatabase<typeof schema> = isNeon
+  ? (drizzleNeon(neon(url), { schema }) as unknown as NodePgDatabase<typeof schema>)
   : drizzlePg(new Pool({ connectionString: url }), { schema });
 
 /**
