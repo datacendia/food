@@ -18,7 +18,7 @@ Needs Node 20 or newer (built on 22). The spreadsheet importer additionally
 needs Python 3 with `openpyxl` — `pip install openpyxl` — but only if you are
 re-importing the matrix. Everything else runs on Node alone.
 
-Before you start work: `npm run validate`. It should say 461 passing.
+Before you start work: `npm run validate`. It should say 473 passing.
 
 ## Where things stand
 
@@ -126,6 +126,42 @@ supplier drifting upward.
 Both the owner and a chef may record a price, because a chef does the buying.
 An ingredient the recipes do not name is refused with the nearest matches, since
 a price for something nothing buys would never reach a dish.
+
+## Clients, and the calendar
+
+**A diet recorded once catches the dish forever after.** An allergy is a fact
+about the people eating, not about one event — "didn't we do a coeliac last
+time?" is not a food safety process. Note it against the client and every menu
+quoted for them is checked against it, naming the ingredient:
+
+```
+Ferguson cannot eat 4 of these
+  COELIAC / GLUTEN-FREE
+    Haggis Bonbons              — pinhead oat, flour, panko
+    Morcilla & Apple Empanadas  — empanada dough, pinhead oat
+```
+
+The check asks `lib/dietary.ts` — the same engine behind the fifteen filters and
+the allergen declarations — so this warning and the `/find` filter can never
+disagree about the same dish. A test asserts exactly that. Only diets the engine
+can answer for are stored; free text would look like a check and be nothing of
+the kind.
+
+**The day check reads from real bookings.** `lib/capacity.ts` always knew
+whether one kitchen, one van and one crew could deliver two jobs — it just had
+nothing real to ask about, and compared examples typed into a form. Now it reads
+the calendar:
+
+```
+SATURDAY 12 SEPTEMBER · 2 jobs
+  CREW  13 people needed across both at once; you have 4.
+  VAN   One van cannot load in at San Isidro and La Molina in the same window.
+```
+
+A booking with no district comes back as *unjudgeable* rather than being
+defaulted to somewhere plausible. Guessing San Isidro would produce a confident
+answer about a journey nobody is making, which is the kind of wrong that reads
+as right.
 
 ## Hosting it
 

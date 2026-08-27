@@ -8,6 +8,7 @@ import { soles, TIERS, IGV_RATE } from "@/lib/pricing";
 import { DISHES } from "@/data/dishes";
 import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 import { markQuote, removeQuote } from "../actions";
+import { getClient, dietClashes } from "@/lib/repo/clients";
 import { QUOTE_STATUS } from "@/db/schema";
 
 export const metadata: Metadata = { title: "Quote" };
@@ -20,7 +21,17 @@ export default async function QuotePage({ params }: { params: { id: string } }) 
   if (!q) notFound();
 
   const money = CAN.seeMoney(me.role);
-  const chosen = visibleDishes(DISHES.filter((d) => q.dishIds.includes(d.id)), me.role);
+  const picked = DISHES.filter((d) => q.dishIds.includes(d.id));
+  const chosen = visibleDishes(picked, me.role);
+
+  /*
+   * The point of recording a diet against a client: it has to catch a dish on
+   * every menu quoted for them afterwards, not just the one where it was
+   * mentioned. Asked of lib/dietary.ts, so this and the /find filter cannot
+   * disagree about the same dish.
+   */
+  const client = q.clientId ? await getClient(me, q.clientId) : null;
+  const clashes = client ? dietClashes(client, picked) : [];
   const byCategory = CATEGORY_ORDER
     .map((cat) => ({ cat, rows: chosen.filter((d) => d.category === cat) }))
     .filter((g) => g.rows.length > 0);
@@ -40,6 +51,34 @@ export default async function QuotePage({ params }: { params: { id: string } }) 
           {q.district ? <> · {q.district}</> : null}
         </p>
       </section>
+
+      {clashes.length > 0 && (
+        <section className="mt-8 rounded-xl border border-bad bg-surface p-5">
+          <h2 className="font-display text-xl font-semibold tracking-tight text-bad">
+            {client!.name} cannot eat {clashes.reduce((n, c) => n + c.dishes.length, 0)} of these
+          </h2>
+          <p className="mt-1 text-sm text-ink-2">
+            From what is recorded against them, not from this menu. Swap the dish or take it off.
+          </p>
+          {clashes.map((c) => (
+            <div key={c.diet} className="mt-4">
+              <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-3">
+                {c.dietLabel}
+              </h3>
+              <ul className="mt-1.5 space-y-1 text-sm">
+                {c.dishes.map((d) => (
+                  <li key={d.id} className="flex flex-wrap gap-x-2">
+                    <span className="font-medium">{d.name}</span>
+                    {d.because.length > 0 && (
+                      <span className="text-ink-2">— {d.because.join(", ")}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+      )}
 
       <section className="grid gap-10 py-10 md:grid-cols-[1fr_320px]">
         <div>
