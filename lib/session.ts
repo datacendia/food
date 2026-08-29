@@ -11,6 +11,7 @@ import { auth } from "./auth";
 import { databaseConfigured } from "@/db";
 import { CAN } from "./permissions";
 import type { Role } from "@/db/schema";
+import type { Locale } from "./copy";
 
 export interface Viewer {
   id: string;
@@ -18,6 +19,8 @@ export interface Viewer {
   name: string | null;
   role: Role;
   clientId: string | null;
+  /** Which language this person reads. Stored on the account, not in a cookie. */
+  locale: Locale;
 }
 
 /** The viewer, or null if nobody is signed in. */
@@ -33,7 +36,8 @@ export async function viewer(): Promise<Viewer | null> {
     email: u.email ?? "",
     name: u.name ?? null,
     role: u.role,
-    clientId: u.clientId ?? null
+    clientId: u.clientId ?? null,
+    locale: u.locale ?? "es"
   };
 }
 

@@ -81,7 +81,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       const [row] = await db
         .select({
-          role: users.role, clientId: users.clientId,
+          role: users.role, clientId: users.clientId, locale: users.locale,
           active: users.active, email: users.email, name: users.name
         })
         .from(users).where(eq(users.id, id)).limit(1);
@@ -97,6 +97,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.name = row.name;
       session.user.role = row.role as Role;
       session.user.clientId = row.clientId ?? null;
+      session.user.locale = (row.locale ?? "es") as "es" | "en";
       session.user.active = true;
       return session;
     }

@@ -8,6 +8,13 @@
       "when": 1787736347899,
       "tag": "0000_flippant_talisman",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787975288778,
+      "tag": "0001_rapid_slapstick",
+      "breakpoints": true
     }
   ]
 }

@@ -8,6 +8,7 @@ declare module "next-auth" {
       role: Role;
       /** Set only for role = "client": the client record this login speaks for. */
       clientId: string | null;
+      locale: "es" | "en";
       active: boolean;
     } & DefaultSession["user"];
   }

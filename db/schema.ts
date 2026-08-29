@@ -47,6 +47,11 @@ export const users = pgTable("users", {
   /** Set for role = "client": which client record this login speaks for. */
   clientId: text("client_id").references(() => clients.id, { onDelete: "cascade" }),
   active: boolean("active").notNull().default(true),
+  /**
+   * Which language this person reads. Defaults to Spanish because the kitchen
+   * does, and the pages a chef uses were the ones in English.
+   */
+  locale: text("locale", { enum: ["es", "en"] }).notNull().default("es"),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow()
 });
 
@@ -77,6 +82,58 @@ export const verificationTokens = pgTable("verification_tokens", {
   token: text("token").notNull(),
   expires: timestamp("expires", { mode: "date" }).notNull()
 }, (t) => ({ pk: primaryKey({ columns: [t.identifier, t.token] }) }));
+
+/* ───────────────────────────── the words ───────────────────────────── */
+
+/**
+ * Every heading and paragraph on the site, in both languages.
+ *
+ * The English in the code is the fallback and the seed; a row here supersedes
+ * it. That makes the copy editable without a deploy - and, more importantly, it
+ * makes the Spanish a column rather than an afterthought.
+ *
+ * Both languages are NOT NULL. A save with an empty Spanish is refused, which
+ * is the only way a translation stays current: the app went months at 100%
+ * Spanish on the standalone and 0% here precisely because nothing ever forced
+ * the second column to be filled in.
+ */
+export const siteCopy = pgTable("site_copy", {
+  /** Stable id, e.g. "menu.heading". Never the English text - that changes. */
+  key: text("key").primaryKey(),
+  en: text("en").notNull(),
+  es: text("es").notNull(),
+  /** Where it appears, so the admin screen can group it usefully. */
+  section: text("section").notNull().default("general"),
+  updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
+  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow()
+});
+
+/**
+ * Editorial changes to a dish.
+ *
+ * Name, description, menu price, category, tiers, licence - business decisions,
+ * so they belong to whoever runs the business rather than to a deploy.
+ *
+ * What is NOT here, and never will be: allergens and the vegetarian flag. Those
+ * are derived from the recipe by lib/dietary.ts. A hand-editable allergen field
+ * is exactly what this repository already shipped once - it disagreed with its
+ * own recipe on 165 of 223 dishes and offered 50 gluten-bearing dishes as
+ * gluten-free. Change the recipe and the allergens follow; there is no screen
+ * that lets anybody type over them.
+ */
+export const dishEdits = pgTable("dish_edits", {
+  dishId: integer("dish_id").primaryKey(),
+  name: text("name"),
+  nameEs: text("name_es"),
+  fusion: text("fusion"),
+  fusionEs: text("fusion_es"),
+  price: real("price"),
+  category: text("category"),
+  needsLicence: boolean("needs_licence"),
+  tiers: jsonb("tiers").$type<string[]>(),
+  updatedBy: text("updated_by").references(() => users.id, { onDelete: "set null" }),
+  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow()
+});
 
 /* ───────────────────────────── the people ───────────────────────────── */
 

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { viewer } from "@/lib/session";
 import { CAN } from "@/lib/permissions";
 import { logout } from "./login/actions";
+import { setLocale } from "./admin/actions";
+import { loadCopy } from "@/lib/copy";
 import type { Role } from "@/db/schema";
 import { Fraunces, Karla, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
@@ -40,29 +42,31 @@ export const metadata: Metadata = {
  * security - hiding a link protects nothing, and every one of these pages
  * checks again on the server.
  */
-const NAV: { href: string; label: string; needs?: (r: Role) => boolean }[] = [
-  { href: "/", label: "Home" },
-  { href: "/moments", label: "The evening" },
-  { href: "/find", label: "Find dishes" },
-  { href: "/menu", label: "The matrix", needs: CAN.seeMoney },
-  { href: "/recipes", label: "Recipes", needs: CAN.seeKitchen },
-  { href: "/seasonal", label: "Season", needs: CAN.seeKitchen },
-  { href: "/compare", label: "Compare", needs: CAN.seeMoney },
-  { href: "/graph", label: "Ingredients", needs: CAN.seeKitchen },
-  { href: "/packages", label: "Packages" },
-  { href: "/builder", label: "Build a menu", needs: CAN.writeQuotes },
-  { href: "/quotes", label: "Quotes", needs: CAN.writeQuotes },
-  { href: "/clients", label: "Clients", needs: CAN.manageClients },
-  { href: "/bookings", label: "Bookings", needs: CAN.writeBookings },
-  { href: "/prices", label: "Prices", needs: CAN.writePrices }
+const NAV: { href: string; key: string; needs?: (r: Role) => boolean }[] = [
+  { href: "/", key: "nav.home" },
+  { href: "/moments", key: "nav.moments" },
+  { href: "/find", key: "nav.find" },
+  { href: "/menu", key: "nav.menu", needs: CAN.seeMoney },
+  { href: "/recipes", key: "nav.recipes", needs: CAN.seeKitchen },
+  { href: "/seasonal", key: "nav.seasonal", needs: CAN.seeKitchen },
+  { href: "/compare", key: "nav.compare", needs: CAN.seeMoney },
+  { href: "/graph", key: "nav.graph", needs: CAN.seeKitchen },
+  { href: "/packages", key: "nav.packages" },
+  { href: "/builder", key: "nav.builder", needs: CAN.writeQuotes },
+  { href: "/quotes", key: "nav.quotes", needs: CAN.writeQuotes },
+  { href: "/clients", key: "nav.clients", needs: CAN.manageClients },
+  { href: "/bookings", key: "nav.bookings", needs: CAN.writeBookings },
+  { href: "/prices", key: "nav.prices", needs: CAN.writePrices },
+  { href: "/admin", key: "nav.admin", needs: CAN.manageClients }
 ];
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await viewer();
   const links = me ? NAV.filter((n) => !n.needs || n.needs(me.role)) : [];
+  const t = await loadCopy(me?.locale ?? "es");
 
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+    <html lang={me?.locale ?? "es"} className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="font-sans">
         <header className="border-b border-line">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4">
@@ -72,10 +76,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <nav className="flex flex-wrap items-center gap-5 text-sm">
               {links.map((n) => (
                 <Link key={n.href} href={n.href} className="text-ink-2 hover:text-ink">
-                  {n.label}
+                  {t(n.key)}
                 </Link>
               ))}
               {me && (
+                <>
+                <form
+                  action={setLocale.bind(null, me.locale === "es" ? "en" : "es")}
+                  className="flex items-center"
+                >
+                  <button
+                    type="submit"
+                    className="font-mono text-[11px] uppercase tracking-wider text-ink-3
+                               hover:text-ink"
+                    title={me.locale === "es" ? "Read this in English" : "Léalo en español"}
+                  >
+                    {me.locale === "es" ? "EN" : "ES"}
+                  </button>
+                </form>
                 <form action={logout} className="flex items-center gap-3">
                   <span
                     className="font-mono text-[11px] uppercase tracking-wider text-ink-3"
@@ -84,9 +102,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     {me.role}
                   </span>
                   <button type="submit" className="text-ink-3 hover:text-ink">
-                    Sign out
+                    {t("chrome.signOut")}
                   </button>
                 </form>
+                </>
               )}
             </nav>
           </div>
@@ -97,12 +116,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <footer className="mt-20 border-t border-line">
           <div className="mx-auto max-w-6xl px-5 py-8 text-sm text-ink-3">
             {me && CAN.seeMoney(me.role) && (
-              <p className="mb-2 max-w-2xl">
-                All prices in soles, exclusive of IGV. Costs are planning estimates modelled to a
-                25–30% food cost, not verified supplier quotes.
-              </p>
+              <p className="mb-2 max-w-2xl">{t("chrome.footerCosts")}</p>
             )}
-            <p>Aye Si Cena · Lima · Scottish-Peruvian catering</p>
+            <p>{t("chrome.footerLine")}</p>
           </div>
         </footer>
       </body>
