@@ -64,6 +64,40 @@ suppliers and every food-cost percentage. It is your commercial position in one
 file. The WhatsApp quote export is the client-facing artefact; that is why it
 exists.
 
+## The file you can actually send someone
+
+`standalone.html` must never go to a client. It carries 223 costs, 223 supplier
+names, every food-cost percentage and every recipe — your commercial position in
+one file. This is the version that can:
+
+```
+npm run standalone:client        # writes menu-for-clients.html, then checks it
+```
+
+Stripped at the DATA level, not hidden in CSS. A hidden column is still in the
+document, one keystroke from view, and there is no point sending somebody a file
+and relying on them not to look:
+
+| | standalone.html | menu-for-clients.html |
+|---|---|---|
+| Dish cost, supplier, FC% | yes | **removed from the data** |
+| The three price tables | yes | **emptied** |
+| Recipe method, quantities, notes | yes | **removed** |
+| Ingredient names | yes | kept — the allergen engine reads them |
+| Panes | 11 | 5: home, the evening, find, menu, packages |
+| Spanish | full | full, minus the recipe dictionary |
+
+The dietary engine works untouched, so a guest can still filter for coeliac or
+check what is in a dish. What they cannot see is what it cost you, who you buy
+from, or how it is made.
+
+`scripts/verify-client-build.mjs` reads the bytes rather than the page, and it
+earned its place immediately: the first build stripped the recipe notes and
+still shipped their **Spanish translations**, which carry the same text —
+"Terminal Pesquero; smoke it yourself over tea and sugar if you can". The
+dictionary keys are the English strings, suppliers and all. Nothing that looks
+at the rendered page would have caught that.
+
 ## Who can see what
 
 Three roles, and the gap between them is money.

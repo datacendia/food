@@ -10,6 +10,9 @@ import { CATEGORY_LABEL, CATEGORY_ORDER } from "@/lib/dishes";
 import { markQuote, removeQuote } from "../actions";
 import { getClient, dietClashes } from "@/lib/repo/clients";
 import { QUOTE_STATUS } from "@/db/schema";
+import { db, bookings } from "@/db";
+import { eq } from "drizzle-orm";
+import BookIt from "./book";
 
 export const metadata: Metadata = { title: "Quote" };
 
@@ -31,6 +34,9 @@ export default async function QuotePage({ params }: { params: { id: string } }) 
    * disagree about the same dish.
    */
   const client = q.clientId ? await getClient(me, q.clientId) : null;
+  const [booked] = CAN.writeBookings(me.role)
+    ? await db.select({ id: bookings.id }).from(bookings).where(eq(bookings.quoteId, q.id)).limit(1)
+    : [];
   const clashes = client ? dietClashes(client, picked) : [];
   const byCategory = CATEGORY_ORDER
     .map((cat) => ({ cat, rows: chosen.filter((d) => d.category === cat) }))
@@ -158,6 +164,8 @@ export default async function QuotePage({ params }: { params: { id: string } }) 
                   </button>
                 ))}
               </form>
+              <BookIt id={q.id} alreadyBooked={Boolean(booked)} />
+
               <form action={removeQuote.bind(null, q.id)} className="mt-4">
                 <button type="submit" className="text-xs text-bad hover:underline">
                   Delete this quote

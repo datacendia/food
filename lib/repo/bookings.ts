@@ -10,6 +10,7 @@
 import { and, asc, eq, gte, lt } from "drizzle-orm";
 import { db, bookings, clients, quotes } from "@/db";
 import { CAN, assertCan } from "@/lib/permissions";
+import { getQuote } from "./quotes";
 import type { Viewer } from "@/lib/session";
 import { DISHES } from "@/data/dishes";
 import { DISTRICTS, VENUE_TYPES } from "@/data/venues";
@@ -117,6 +118,48 @@ export async function createBooking(me: Viewer, input: BookingInput): Promise<st
     notes: input.notes ?? null
   }).returning({ id: bookings.id });
   return row.id;
+}
+
+/**
+ * Turn a won quote into a booking.
+ *
+ * Everything the calendar needs is already on the quote - guests, tier,
+ * district, venue, the dish list - so retyping it is both tedious and a chance
+ * to get one of them wrong. The service time is the one thing a quote does not
+ * carry, because it is agreed after the price is.
+ *
+ * Idempotent by design: a quote already in the book returns its existing
+ * booking rather than a second one. Marking a quote won twice is a normal
+ * thing to do, and double-booking a Saturday is not a normal consequence.
+ */
+export async function bookFromQuote(
+  me: Viewer,
+  quoteId: string,
+  when: { eventDate: Date; serviceMinutes: number; durationMinutes?: number }
+): Promise<{ id: string; alreadyBooked: boolean }> {
+  assertCan(CAN.writeBookings, me.role, "put a quote in the book");
+
+  const [existing] = await db.select({ id: bookings.id }).from(bookings)
+    .where(eq(bookings.quoteId, quoteId)).limit(1);
+  if (existing) return { id: existing.id, alreadyBooked: true };
+
+  const quote = await getQuote(me, quoteId);
+  if (!quote) throw new Error("That quote is gone, or it was never yours.");
+
+  const id = await createBooking(me, {
+    eventDate: when.eventDate,
+    serviceMinutes: when.serviceMinutes,
+    durationMinutes: when.durationMinutes ?? 180,
+    guests: quote.guests,
+    tier: quote.tier as ServiceTier,
+    district: quote.district,
+    venue: quote.venue,
+    dishIds: quote.dishIds,
+    quoteId: quote.id,
+    clientId: quote.clientId,
+    notes: `From quote: ${quote.name}`
+  });
+  return { id, alreadyBooked: false };
 }
 
 export async function deleteBooking(me: Viewer, id: string): Promise<void> {

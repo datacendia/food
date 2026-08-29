@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireViewer } from "@/lib/session";
 import { createQuote, updateQuote, setQuoteStatus, deleteQuote } from "@/lib/repo/quotes";
+import { bookFromQuote } from "@/lib/repo/bookings";
 import { QUOTE_STATUS } from "@/db/schema";
 import type { ServiceTier } from "@/lib/dishes";
 
@@ -74,4 +75,28 @@ export async function removeQuote(id: string) {
   await deleteQuote(me, id);
   revalidatePath("/quotes");
   redirect("/quotes");
+}
+
+/** Won, and going in the book. The date and time are the only new facts. */
+const BookForm = z.object({
+  eventDate: z.string().min(8, "When is it?").transform((s) => new Date(s + "T00:00:00")),
+  serviceMinutes: z.string().regex(/^\d{1,2}:\d{2}$/, "Service time should look like 19:30")
+    .transform((s) => { const [h, m] = s.split(":").map(Number); return h * 60 + m; })
+});
+
+export async function bookQuote(id: string, _prev: string | undefined, form: FormData) {
+  const me = await requireViewer();
+  const parsed = BookForm.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return parsed.error.issues[0]?.message ?? "That did not look right.";
+
+  let result;
+  try {
+    result = await bookFromQuote(me, id, parsed.data);
+  } catch (err) {
+    return err instanceof Error ? err.message : "Could not put that in the book.";
+  }
+  await setQuoteStatus(me, id, "won");
+  revalidatePath("/bookings");
+  revalidatePath(`/quotes/${id}`);
+  redirect("/bookings");
 }

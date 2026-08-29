@@ -15,6 +15,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const require = createRequire(import.meta.url);
 
+/** See the client-build note beside OUT_DISHES below. */
+const CLIENT_BUILD = process.argv.includes("--client");
+
 // --- pull the real data out of the TypeScript sources ----------------------
 /** Strip the type annotations off a data module and require it for its value. */
 function loadData(file, exportName) {
@@ -53,8 +56,14 @@ const RECIPES = loadData("recipes.ts", "RECIPES");
 const ES = loadData("i18n.ts", "ES");
 // The recipe lines live in their own file because there are 1,590 of them and
 // they arrive in tranches. Merged here so one lookup serves both.
+//
+// Except in a client build. Stripping the recipe notes out of the data and then
+// shipping their Spanish translations would leak the very thing that was
+// removed - the dictionary keys ARE the English text, suppliers and all, and
+// four of those notes name the stall. The client build has no recipe pane, so
+// these translations have nothing to translate anyway.
 const ES_RECIPES = loadData("i18n-recipes.ts", "ES_RECIPES");
-Object.assign(ES, ES_RECIPES);
+if (!CLIENT_BUILD) Object.assign(ES, ES_RECIPES);
 const ES_INGREDIENTS = loadData("i18n-ingredients.ts", "ES_INGREDIENTS");
 const ES_PREP = loadData("i18n-prep.ts", "ES_PREP");
 const INGREDIENT_ATTRS = loadData("ingredient-attributes.ts", "INGREDIENT_ATTRS");
@@ -131,9 +140,63 @@ const CATEGORY_ORDER = ["canape","main","bowl","side","breakfast","bakery","dess
 
 const FLAVOUR_AXES = ["sweet","savoury","rich","tart","smoky","spiced","fresh"];
 
-const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL,
+/**
+ * The client build.
+ *
+ *   node scripts/build-standalone.mjs --client aye-si-cena-menu.html
+ *
+ * The ordinary file is a working tool and carries the whole business: 223
+ * costs, 223 supplier names, every food-cost percentage and every recipe. It
+ * is your commercial position in one file and it must never be sent to a
+ * client. This is the version that can be.
+ *
+ * What comes out is stripped at the DATA level, not hidden in the CSS. A
+ * hidden column is still in the document, one keystroke from view; there is no
+ * point shipping a file to somebody and relying on them not to look. So:
+ *
+ *   cost, source, costVerified   removed from every dish
+ *   the three price tables       emptied, so nothing can be recomputed
+ *   recipe method and quantities removed - the ingredient NAMES stay, because
+ *                                that is what the allergen engine reads and a
+ *                                client is owed the allergens
+ *   panes                        menu, the evening, find, packages, home
+ *
+ * The dietary engine therefore works untouched: a guest can still filter for
+ * coeliac or check what is in a dish. What they cannot see is what it cost you,
+ * who you buy it from, or how it is made.
+ */
+const OUT_DISHES = CLIENT_BUILD
+  ? DISHES.map(({ cost, source, costVerified, ...rest }) => rest)
+  : DISHES;
+
+/**
+ * Ingredient names survive; the method, the quantities and the notes do not.
+ *
+ * The notes were nearly the leak. They read as cooking guidance - "smoke it
+ * yourself over tea and sugar if you can" - and four of them name the stall in
+ * the same breath: Terminal Pesquero, Oregon Foods. scripts/verify-client-build
+ * caught it by grepping the bytes rather than looking at the page, which is the
+ * only way this kind of thing gets found.
+ */
+const OUT_RECIPES = CLIENT_BUILD
+  ? RECIPES.map((r) => ({
+      ...r,
+      method: [],
+      yields: "",
+      holds: "",
+      note: "",
+      ingredients: r.ingredients.map((i) => ({ qty: "", item: i.item }))
+    }))
+  : RECIPES;
+
+const EMPTY = {};
+const OUT_PANES = CLIENT_BUILD
+  ? ["home", "moments", "find", "menu", "packages"]
+  : ["home","moments","find","menu","recipes","seasonal","compare","graph","day","packages","builder"];
+
+const payload = JSON.stringify({ dishes: OUT_DISHES, clientBuild: CLIENT_BUILD, panes: OUT_PANES, tiers: TIERS, k: CONST, labels: CATEGORY_LABEL,
   flavours: FLAVOURS, events: EVENTS, axes: FLAVOUR_AXES,
-  ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: RECIPES,
+  ingredients: INGREDIENTS, order: CATEGORY_ORDER, moments: MOMENTS, recipes: OUT_RECIPES,
   districts: DISTRICTS, venues: VENUE_TYPES,
   es: ES, esPatterns: ES_PATTERNS, esIng: ES_INGREDIENTS, esPrep: ES_PREP,
   attrs: INGREDIENT_ATTRS, plain: PLANT_PLAIN,
@@ -157,8 +220,9 @@ const payload = JSON.stringify({ dishes: DISHES, tiers: TIERS, k: CONST, labels:
     ["soft-texture","Soft texture","For guests who cannot chew easily. Not an IDDSI assessment."]
   ],
   allergens: ALLERGENS, allergenLabel: ALLERGEN_LABEL,
-  prices: PRICES, subOf: SUB_RECIPE_OF, subPrices: SUB_PREP_PRICES,
-  sundryPrices: NON_FOOD_PRICES, alias: COMPOUND_ALIAS, sundries: NON_FOOD,
+  prices: CLIENT_BUILD ? EMPTY : PRICES, subOf: CLIENT_BUILD ? EMPTY : SUB_RECIPE_OF,
+  subPrices: CLIENT_BUILD ? EMPTY : SUB_PREP_PRICES,
+  sundryPrices: CLIENT_BUILD ? EMPTY : NON_FOOD_PRICES, alias: COMPOUND_ALIAS, sundries: NON_FOOD,
   trip: { vanHourly: 45, perKm: 1.8, crewHourly: 18, generator: 280,
           vanTrips: { scran:1, buffet:2, plated:2 }, loadCrew: { scran:1, buffet:2, plated:3 } },
   formats: { "drop-off": "Drop-off", buffet: "Buffet", plated: "Plated", "live-station": "Live station" },
@@ -356,6 +420,9 @@ h3{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.2rem;margin:0}
    keeps the outline honest without changing the design. */
 h2.h-sm{font-size:1.2rem;letter-spacing:0}
 h2.grouphead{font-size:11px;letter-spacing:.12em}
+/* A client build ships no cost, so the columns that would show one are not
+   drawn at all. Belt and braces: the data is already gone. */
+[data-client] .money,[data-client] .fc,[data-client] th.money,[data-client] th.fc{display:none}
 .eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
   letter-spacing:.17em;text-transform:uppercase;color:var(--ink-3);margin:0 0 16px}
 .lede{max-width:60ch;color:var(--ink-2);font-size:1.06rem;margin:0}
@@ -934,6 +1001,15 @@ function patternTranslate(key){
 var PRICES = D.prices, SUB_OF = D.subOf, SUB_PRICES = D.subPrices;
 var SUNDRY_PRICES = D.sundryPrices, ALIAS = D.alias, SUNDRIES = D.sundries;
 var ALLERGENS = D.allergens, ALLERGEN_LABEL = D.allergenLabel;
+/**
+ * A client build has had cost, suppliers, the price tables and the recipe
+ * method removed from its data before it ever reached the browser. This flag
+ * only decides what to draw; there is nothing left to leak either way, which
+ * is the point - a hidden column is still in the document.
+ */
+var CLIENT_BUILD = D.clientBuild === true;
+var PANES = D.panes;
+
 
 function soles(n){ return "S/ " + n.toFixed(2); }
 /**
@@ -947,8 +1023,17 @@ function soles(n){ return "S/ " + n.toFixed(2); }
  */
 function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-function ratio(d){ return d.cost / d.price; }
-function flag(d){ var r = ratio(d); return r > K.FC_MAX ? "over" : (r < K.FC_MIN ? "under" : "ok"); }
+/**
+ * A client build has no cost, so there is no ratio and no flag to give.
+ * Returning NaN here would paint "NaN%" across the matrix; returning 0 would
+ * claim a food cost of nothing. Both callers below check for null.
+ */
+function ratio(d){ return d.cost === undefined ? null : d.cost / d.price; }
+function flag(d){
+  var r = ratio(d);
+  if (r === null) return "";
+  return r > K.FC_MAX ? "over" : (r < K.FC_MIN ? "under" : "ok");
+}
 
 /**
  * A direct dictionary lookup, for a label the renderer glues into a longer
@@ -1908,7 +1993,7 @@ document.getElementById("langBtn").addEventListener("click", function(){
 var tabs = [].slice.call(document.querySelectorAll(".tab"));
 function show(name){
   tabs.forEach(function(t){ t.setAttribute("aria-selected", String(t.dataset.pane === name)); });
-  ["home","moments","find","menu","recipes","seasonal","compare","graph","day","packages","builder"].forEach(function(p){
+  PANES.forEach(function(p){
     document.getElementById("pane-" + p).hidden = (p !== name);
   });
   applyLanguage();
@@ -1978,7 +2063,7 @@ var MX_HAY = {};
 function dishHaystack(d){
   if (MX_HAY[d.id]) return MX_HAY[d.id];
   var r = RECIPE_BY_DISH[d.id];
-  var parts = [d.name, d.fusion, d.origin, d.subOrigin, d.source, d.keyIngredients,
+  var parts = [d.name, d.fusion, d.origin, d.subOrigin, d.source || "", d.keyIngredients,
     LABELS[d.category], FORMATS[d.format], String(d.id)];
   if (r) parts.push(r.ingredients.map(function(i){ return i.item; }).join(" "));
   // The Spanish is searchable too, so the same box works in either language.
@@ -2030,11 +2115,13 @@ function mxRow(d){
     "<span class='dna'><span class='u'>" + esc(d.origin) +
       "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" + esc(d.subOrigin) + "</span></span>" +
     "</td>" +
-    "<td class='money tnum muted'>" + soles(d.cost) + "</td>" +
-    "<td class='money tnum'>" + realCostCell(d) + "</td>" +
+    (CLIENT_BUILD ? "" :
+      "<td class='money tnum muted'>" + soles(d.cost) + "</td>" +
+      "<td class='money tnum'>" + realCostCell(d) + "</td>") +
     "<td class='money tnum' style='font-weight:600'>" + soles(d.price) + "</td>" +
-    "<td class='fc tnum " + flag(d) + "'>" + Math.round(ratio(d)*100) + "%</td>" +
-    "<td class='src'>" + esc(d.source) + "</td></tr>";
+    (CLIENT_BUILD ? "" :
+      "<td class='fc tnum " + flag(d) + "'>" + Math.round(ratio(d)*100) + "%</td>") +
+    (CLIENT_BUILD ? "" : "<td class='src'>" + esc(d.source) + "</td>") + "</tr>";
 }
 
 function mxCard(d){
@@ -2042,13 +2129,14 @@ function mxCard(d){
     "<div><span class='dish-n tnum'>" + String(d.id).padStart(3,"0") + " &middot; <span>" +
       esc(LABELS[d.category]) + "</span></span>" +
       "<h3 style='margin:3px 0 0;font-size:1.02rem'>" + esc(d.name) + "</h3></div>" +
-    "<span class='fc tnum " + flag(d) + "'>" + Math.round(ratio(d)*100) + "%</span></div>" +
+    (CLIENT_BUILD ? "" :
+      "<span class='fc tnum " + flag(d) + "'>" + Math.round(ratio(d)*100) + "%</span>") + "</div>" +
     "<p class='dish-b' style='margin:7px 0 0'>" + esc(d.fusion) + "</p>" +
     "<p class='dna' style='margin:7px 0 0'><span class='u'>" + esc(d.origin) +
       "</span> <span style='color:var(--ink-3)'>→</span> <span class='p'>" +
       esc(d.subOrigin) + "</span></p>" +
     "<div class='dcard-nums'>" +
-      "<span><span>Est.</span> <b>" + soles(d.cost) + "</b></span>" +
+      (CLIENT_BUILD ? "" : "<span><span>Est.</span> <b>" + soles(d.cost) + "</b></span>") +
       // The number itself, not the table cell's markup stripped with a regex —
       // that dragged the ×ratio badge in and read as "S/ 0.73 ×0.33".
       "<span><span>From recipe</span> <b>" +
@@ -2058,15 +2146,20 @@ function mxCard(d){
 }
 
 function mxHead(){
-  var cols = [["id","#",""],["name","Dish",""],["cost","Est. cost","right"],
-    ["gap","From recipe","right"],["price","Menu value","right"],["fc","FC%","right"]];
+  // The headers are built here, not in the static markup, so a client build
+  // simply does not have a cost, recipe-cost, FC% or supplier column - rather
+  // than having one that is empty, which invites the question.
+  var cols = CLIENT_BUILD
+    ? [["id","#",""],["name","Dish",""],["price","Menu value","right"]]
+    : [["id","#",""],["name","Dish",""],["cost","Est. cost","right"],
+       ["gap","From recipe","right"],["price","Menu value","right"],["fc","FC%","right"]];
   return "<thead><tr>" + cols.map(function(c){
     var on = mx.sort === c[0];
     return "<th class='sortable' data-sort='" + c[0] + "'" +
       (on ? " aria-sort='" + (mx.dir === 1 ? "ascending" : "descending") + "'" : "") +
       (c[2] ? " style='text-align:right'" : "") + "><span>" + esc(c[1]) + "</span>" +
       "<span class='arrow'>" + (on ? (mx.dir === 1 ? "\u2191" : "\u2193") : "\u2195") + "</span></th>";
-  }).join("") + "<th><span>Source</span></th></tr></thead>";
+  }).join("") + (CLIENT_BUILD ? "" : "<th><span>Source</span></th>") + "</tr></thead>";
 }
 
 function renderMatrix(){
@@ -3217,7 +3310,11 @@ function buildIngredientEdges(nodes, minShared){
 }
 
 function graphGeometry(){
+  // The client build removes the graph pane, and the force simulation keeps
+  // ticking after it goes. Returning a default rather than throwing lets the
+  // loop run harmlessly against nothing until it settles.
   var svg = document.getElementById("graphSvg");
+  if (!svg) return { w: 900, h: 600 };
   var r = svg.getBoundingClientRect();
   return { w: r.width || 900, h: r.height || 600 };
 }
@@ -3315,6 +3412,10 @@ function paintGraph(){
 }
 
 function tick(){
+  // The client build has no graph pane. Stopping the loop the moment its canvas
+  // is gone is cheaper and safer than teaching every function in the simulation
+  // to survive a missing element one at a time.
+  if (!document.getElementById("graphSvg")) { SIM.raf = 0; return; }
   stepSim();
   paintGraph();
   if (SIM.alpha > 0.005) SIM.raf = requestAnimationFrame(tick);
@@ -3843,6 +3944,29 @@ function initQuickSearch(){
 
 // Everything is painted; translate what is on screen and label the toggle.
 applyLanguage();
+
+/*
+ * The client trim, last.
+ *
+ * Doing this at the top broke the page: the renderers below bind their handlers
+ * to elements inside panes, and removing a pane before they run left them
+ * calling addEventListener on null. Everything renders first, then the panes a
+ * client does not get are taken out - not hidden, taken out, because an empty
+ * pane still renders and a hidden tab is still reachable from a keyboard.
+ *
+ * There is nothing in them to protect by this point; the data was stripped
+ * before the file was written. This is tidiness, not security.
+ */
+if (CLIENT_BUILD) {
+  [].forEach.call(document.querySelectorAll(".tab[data-pane]"), function(t){
+    if (PANES.indexOf(t.dataset.pane) === -1) t.remove();
+  });
+  [].forEach.call(document.querySelectorAll("[id^=pane-]"), function(el){
+    if (PANES.indexOf(el.id.slice(5)) === -1) el.remove();
+  });
+  document.documentElement.setAttribute("data-client", "1");
+  show("home");
+}
 })();
 </script>
 </body>
@@ -3866,6 +3990,9 @@ function assertScriptParses(pageHtml) {
 }
 assertScriptParses(html);
 
-const out = process.argv[2] || path.join(ROOT, "standalone.html");
+// The flag is not a filename. Default the client build to its own name so it
+// can never overwrite the working file by accident.
+const outArg = process.argv.slice(2).find((a) => !a.startsWith("--"));
+const out = outArg || path.join(ROOT, CLIENT_BUILD ? "menu-for-clients.html" : "standalone.html");
 fs.writeFileSync(out, html);
 console.log(`wrote ${out} (${(html.length / 1024).toFixed(0)} KB, ${DISHES.length} dishes)`);
