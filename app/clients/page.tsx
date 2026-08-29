@@ -1,3 +1,4 @@
+import { loadCopy } from "@/lib/copy";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireCan, CAN } from "@/lib/session";
@@ -9,17 +10,17 @@ export const metadata: Metadata = { title: "Clients" };
 
 export default async function ClientsPage() {
   const me = await requireCan(CAN.seeAllClients, "see the client list");
+  const t = await loadCopy(me.locale);
   const rows = await listClients(me);
 
   return (
     <>
       <section className="border-b border-line py-12">
         <h1 className="font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-          Clients
+          {t("clients.heading")}
         </h1>
         <p className="mt-4 max-w-2xl text-ink-2">
-          What they eat, recorded once. Every menu quoted for them is checked against it,
-          so an allergy noted in March still catches a dish in September.
+          {t("clients.lede")}
         </p>
       </section>
 
@@ -28,11 +29,11 @@ export default async function ClientsPage() {
 
         <div>
           <h2 className="font-display text-2xl font-semibold tracking-tight">
-            On the books · {rows.length}
+            {t("clients.onBooks")} · {rows.length}
           </h2>
           {rows.length === 0 ? (
             <p className="mt-4 text-sm text-ink-2">
-              Nobody yet. Add the first one and their diets follow them from then on.
+              {t("clients.none")}
             </p>
           ) : (
             <ul className="mt-4 divide-y divide-line/60">

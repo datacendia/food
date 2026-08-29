@@ -18,7 +18,7 @@ Needs Node 20 or newer (built on 22). The spreadsheet importer additionally
 needs Python 3 with `openpyxl` — `pip install openpyxl` — but only if you are
 re-importing the matrix. Everything else runs on Node alone.
 
-Before you start work: `npm run validate`. It should say 473 passing.
+Before you start work: `npm run validate`. It should say 480 passing.
 
 ## Where things stand
 
@@ -196,6 +196,43 @@ A booking with no district comes back as *unjudgeable* rather than being
 defaulted to somewhere plausible. Guessing San Isidro would produce a confident
 answer about a journey nobody is making, which is the kind of wrong that reads
 as right.
+
+## Both languages, or it does not save
+
+The app used to be English only while the standalone was at 100% Spanish —
+exactly backwards, since the chef reads Spanish and the chef pages were the
+English ones. The cause was never that translating is hard. It was that nothing
+made the second column compulsory, and an optional translation is an
+out-of-date one.
+
+Every phrase now lives in `lib/copy.ts` with both languages and a stable key,
+and `site_copy` in the database supersedes it. **A save with an empty Spanish is
+refused** — in the repository, where a second caller cannot skip it. Verified by
+stripping the `required` attribute in devtools and posting anyway; the server
+still says no.
+
+Keys are ids, never the English text. The standalone keys on English and gets
+away with it because the whole page is rebuilt at once; here, editing a heading
+would orphan its translation without a word. A missing phrase renders as
+`⟨key⟩`, so it looks wrong on the page rather than merely being absent.
+
+The language is stored on the account, not in a cookie — it is a fact about a
+person, not a browser. Default Spanish. `npm test` fails if any phrase is
+missing either language.
+
+## Admin
+
+`/admin` edits the words on the site and the editorial fields of a dish — name,
+description, menu price, category, licence, tier — without a deploy. Renaming a
+dish requires its Spanish name; rewriting a description requires its Spanish.
+Changing a price does not, because there is no Spanish for 42.
+
+**What Admin deliberately cannot edit: allergens and the vegetarian flag.** They
+are read from the recipe by `lib/dietary.ts`. A hand-editable allergen field is
+precisely what this repository shipped once — it disagreed with its own recipe on
+165 of 223 dishes and offered 50 gluten-bearing dishes as gluten-free. Change the
+recipe and the allergens follow. The screen says so where somebody would
+otherwise go looking for the field.
 
 ## Hosting it
 
